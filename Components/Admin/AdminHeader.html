@@ -1,0 +1,79 @@
+<!-- ==================== ADMIN TOP HEADER COMPONENT ==================== -->
+<header id="admin-header" class="sticky top-0 z-30 flex h-20 items-center justify-between border-b border-slate-200 bg-white px-4 transition-colors sm:px-8 dark:border-slate-800 dark:bg-slate-900">
+  <!-- Left Side: Mobile toggle + Page Title & Breadcrumbs -->
+  <div class="flex items-center gap-3">
+    <!-- Mobile Sidebar Trigger -->
+    <button id="admin-mobile-menu-btn" class="rounded-xl p-2 text-slate-500 hover:bg-slate-100 hover:text-slate-900 md:hidden dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white" aria-label="Toggle Navigation Menu">
+      <i class="fa-solid fa-bars text-lg"></i>
+    </button>
+
+    <div>
+      <div class="flex items-center gap-2 text-[11px] font-bold tracking-wider text-slate-400 uppercase dark:text-slate-500">
+        <span>Admin Studio</span>
+        <span>/</span>
+        <span id="admin-header-subtitle" class="text-primary font-bold"></span>
+      </div>
+      <h1 id="admin-header-title" class="text-lg font-black tracking-tight text-slate-900 sm:text-xl dark:text-white"></h1>
+    </div>
+  </div>
+
+  <!-- Right Side: Quick Actions, Theme, Notifications & User -->
+  <div class="flex items-center gap-2.5 sm:gap-4">
+
+    <!-- Return to Blog Site -->
+    <a href="../index.html" class="rounded-xl p-2.5 text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-800 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white" title="View Public Blog Site" target="_blank">
+      <i class="fa-solid fa-arrow-up-right-from-square text-sm"></i>
+    </a>
+
+    <!-- Theme Mode Toggle -->
+    <button id="admin-theme-toggle-btn" class="rounded-xl p-2.5 text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-800 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white" title="Toggle Dark/Light Mode">
+      <i class="fa-regular fa-sun sun-icon hidden text-base"></i>
+      <i class="fa-regular fa-moon moon-icon text-base"></i>
+    </button>
+
+    <!-- Notifications Bell Dropdown -->
+    <div class="relative">
+      <button id="admin-notif-btn" class="relative rounded-xl p-2.5 text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-800 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white" title="Notifications">
+        <i class="fa-regular fa-bell text-base"></i>
+        <span class="absolute top-2 right-2 h-2 w-2 rounded-full bg-rose-500 ring-2 ring-white dark:ring-slate-900"></span>
+      </button>
+
+      <!-- Dropdown Menu -->
+      <div id="admin-notif-dropdown" class="absolute right-0 z-50 mt-2 hidden w-80 rounded-2xl border border-slate-200 bg-white p-4 shadow-2xl dark:border-slate-800 dark:bg-slate-900">
+        <div class="flex items-center justify-between border-b border-slate-100 pb-3 dark:border-slate-800">
+          <h4 class="text-xs font-bold tracking-wider text-slate-900 uppercase dark:text-white">System Alerts</h4>
+          <span class="bg-primary-light text-primary rounded-full px-2 py-0.5 text-[10px] font-bold">2 New</span>
+        </div>
+        <div class="divide-y divide-slate-100 py-2 text-xs dark:divide-slate-800">
+          <div class="rounded-lg px-2 py-2.5 hover:bg-slate-50 dark:hover:bg-slate-800/40">
+            <p class="font-bold text-slate-800 dark:text-slate-200">New comment awaiting review</p>
+            <p class="mt-0.5 text-[11px] text-slate-400">Post: Modern CSS Architecture</p>
+            <span class="text-[10px] text-slate-400">10 mins ago</span>
+          </div>
+          <div class="rounded-lg px-2 py-2.5 hover:bg-slate-50 dark:hover:bg-slate-800/40">
+            <p class="font-bold text-slate-800 dark:text-slate-200">Server API connected</p>
+            <p class="mt-0.5 text-[11px] text-emerald-500">Endpoint sync active</p>
+            <span class="text-[10px] text-slate-400">1 hour ago</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Admin Profile Pill -->
+    <div class="flex items-center gap-2 border-l border-slate-200 pl-2 dark:border-slate-800">
+      <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80" alt="Admin" class="ring-primary/20 h-8 w-8 rounded-full object-cover ring-2" />
+      <div class="hidden text-left lg:block">
+        <p class="text-xs leading-none font-bold text-slate-800 dark:text-slate-200">Alex Morgan</p>
+        <span class="text-[10px] font-bold tracking-wider text-emerald-500 uppercase">Super Admin</span>
+      </div>
+    </div>
+  </div>
+</header>
+<script>
+    
+    function updateHeader(sub = 'Workspace', title='Main Dashboard'){
+        document.getElementById('admin-header-title').textContent = title;
+        document.getElementById('admin-header-subtitle').textContent = sub;
+    }
+    
+</script>

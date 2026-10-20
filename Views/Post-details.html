@@ -1,0 +1,1407 @@
+<style>
+/* ==========================================================================
+   QUILL POST CONTENT FORMATTING
+   ========================================================================== */
+
+#post-body {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  line-height: 1.8;
+  font-size: 1rem;
+  color: #334155; /* Slate 700 */
+}
+
+.dark #post-body {
+  color: #cbd5e1; /* Slate 300 */
+}
+
+/* Headings */
+#post-body h1 {
+  font-size: 2.25rem;
+  font-weight: 800;
+  line-height: 1.25;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  color: #0f172a;
+}
+#post-body h2 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  line-height: 1.3;
+  margin-top: 1.75rem;
+  margin-bottom: 0.85rem;
+  color: #0f172a;
+}
+#post-body h3 {
+  font-size: 1.35rem;
+  font-weight: 600;
+  line-height: 1.4;
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+  color: #0f172a;
+}
+
+.dark #post-body h1,
+.dark #post-body h2,
+.dark #post-body h3 {
+  color: #f8fafc;
+}
+
+/* Paragraphs & Spacing */
+#post-body p {
+  margin-bottom: 1.25rem;
+}
+
+/* Links */
+#post-body a {
+  color: #6366f1; /* Accent primary */
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  transition: color 0.15s ease-in-out;
+}
+#post-body a:hover {
+  color: #4f46e5;
+}
+.dark #post-body a {
+  color: #818cf8;
+}
+.dark #post-body a:hover {
+  color: #a5b4fc;
+}
+
+/* Quill Image Alignments & Embeds */
+#post-body img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 1rem;
+  margin: 1.75rem auto;
+  display: block;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+}
+
+/* Videos / Embeds */
+#post-body iframe.ql-video,
+#post-body iframe {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: 1rem;
+  margin: 1.75rem 0;
+  border: none;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+/* Blockquotes */
+#post-body blockquote {
+  border-left: 4px solid #6366f1;
+  padding-left: 1.25rem;
+  margin: 1.5rem 0;
+  font-style: italic;
+  color: #475569;
+  background: rgba(99, 102, 241, 0.04);
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  border-radius: 0 0.75rem 0.75rem 0;
+}
+.dark #post-body blockquote {
+  border-left-color: #818cf8;
+  color: #94a3b8;
+  background: rgba(129, 140, 248, 0.06);
+}
+
+/* Lists */
+#post-body ul {
+  list-style-type: disc;
+  padding-left: 1.5rem;
+  margin-bottom: 1.25rem;
+}
+#post-body ol {
+  list-style-type: decimal;
+  padding-left: 1.5rem;
+  margin-bottom: 1.25rem;
+}
+#post-body li {
+  margin-bottom: 0.35rem;
+}
+
+/* Code Blocks & Inline Syntax */
+#post-body pre.ql-syntax {
+  background-color: #0f172a;
+  color: #f8fafc;
+  padding: 1.25rem;
+  border-radius: 0.875rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.85rem;
+  line-height: 1.6;
+  overflow-x: auto;
+  margin: 1.5rem 0;
+  border: 1px solid #1e293b;
+}
+
+#post-body code:not(.ql-syntax) {
+  background-color: #f1f5f9;
+  color: #e11d48;
+  padding: 0.2rem 0.4rem;
+  border-radius: 0.375rem;
+  font-size: 0.875em;
+  font-family: ui-monospace, SFMono-Regular, monospace;
+}
+.dark #post-body code:not(.ql-syntax) {
+  background-color: #1e293b;
+  color: #fb7185;
+}
+
+/* ==========================================================================
+   QUILL ALIGNMENT HELPERS (Essential for Quill's built-in alignments)
+   ========================================================================== */
+#post-body .ql-align-center {
+  text-align: center;
+}
+#post-body .ql-align-right {
+  text-align: right;
+}
+#post-body .ql-align-justify {
+  text-align: justify;
+}
+
+/* Quill Indents */
+#post-body .ql-indent-1 { padding-left: 2rem; }
+#post-body .ql-indent-2 { padding-left: 4rem; }
+#post-body .ql-indent-3 { padding-left: 6rem; }
+    
+</style>
+
+<!-- Reading Progress Bar -->
+  <div id="reading-progress"></div>
+    <!-- ==================== ARTICLE HERO & HEADER ==================== -->
+  <main class="flex-grow">
+    
+    <article class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 sm:pt-14 pb-16">
+    
+        <div class="flex justify-between items-center mb-4 mx-2">
+            <a href="<?= ltSiteUrl() ?>/ThemeBrainDump/posts" class="hidden sm:inline-flex items-center gap-2 text-xs font-semibold text-slate-500 hover:text-primary transition-colors">
+                <i class="fa-solid fa-arrow-left"></i> All Articles
+            </a>
+            <button class="search-trigger flex items-center gap-2 px-3 py-2 text-sm text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800/80 hover:bg-slate-200 dark:hover:bg-slate-800 rounded-xl transition-colors focus:ring-2 focus:ring-primary" aria-label="Search articles (Ctrl+K)">
+                <i class="fa-solid fa-magnifying-glass text-xs"></i>
+                <span class="hidden sm:inline">Search</span>
+                <kbd class="hidden sm:inline-block text-[10px]s font-mono font-semibold px-1.5 py-0.5 rounded bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-400">Ctrl K</kbd>
+            </button>
+        </div>
+      
+      <!-- Meta Information -->
+      <div class="flex flex-wrap items-center gap-3 text-xs font-semibold uppercase tracking-wider mb-4">
+        <span id="post-category-badge" class="px-3 py-1 rounded-full bg-primary-light text-primary dark:bg-slate-800">Design</span>
+        <span class="text-slate-300 dark:text-slate-700">&bull;</span>
+        <span id="post-read-time" class="text-slate-500 dark:text-slate-400 normal-case font-medium">6 min read</span>
+        <span class="text-slate-300 dark:text-slate-700">&bull;</span>
+        <span id="post-views-count" class="text-slate-500 dark:text-slate-400 normal-case font-medium flex items-center gap-1.5"><i class="fa-regular fa-eye"></i> 14.2k views</span>
+      </div>
+
+      <!-- Title & Subtitle -->
+      <h1 id="post-title" class="text-3xl sm:text-5xl font-extrabold text-slate-900 dark:text-white tracking-tight leading-tight mb-6">
+        The Future of Web Interfaces: Design Systems, Tokens, and Beyond
+      </h1>
+      
+      <!--<p id="post-excerpt" class="text-lg sm:text-xl text-slate-600 dark:text-slate-300 leading-relaxed font-normal mb-8">-->
+      <!--  Explore how component architecture, fluid tokens, and semantic styling are reshaping how modern teams build resilient web experiences at enterprise scale.-->
+      <!--</p>-->
+
+      <!-- Author Card & Social Share Row -->
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-6 py-6 border-y border-slate-200 dark:border-slate-800 mb-10">
+        
+        <div class="flex items-center gap-4">
+          <img id="post-author-avatar" src="" alt="Author" class="w-13 h-13 rounded-full object-cover border-2 border-primary" style="width: 52px; height: 52px;" />
+          <div>
+            <div class="flex items-center gap-2">
+              <h3 id="post-author-name" class="text-base font-bold text-slate-900 dark:text-white">Alex Morgan</h3>
+              <button id="follow-author-btn" class="text-[11px] font-semibold px-2.5 py-0.5 rounded-full border border-slate-300 dark:border-slate-700 hover:border-primary text-slate-600 dark:text-slate-300 hover:text-primary transition-colors">Follow</button>
+            </div>
+            <p id="post-author-title" class="text-xs text-slate-500 dark:text-slate-400">Published on <span id="post-date">Aug 28, 2026</span></p>
+          </div>
+        </div>
+
+        <!-- Interactive Actions: Like, Bookmark & Social Sharing -->
+        <div class="flex items-center gap-2">
+          <!-- Like Button -->
+          <button id="like-btn" class="flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-800/80 hover:bg-rose-50 dark:hover:bg-rose-950/40 text-slate-700 dark:text-slate-300 hover:text-rose-500 transition-all font-medium text-xs">
+            <i class="fa-regular fa-heart text-sm" id="like-icon"></i>
+            <span id="like-count">342</span>
+          </button>
+
+          <!-- Bookmark Button -->
+          <button id="bookmark-btn" class="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800/80 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition-colors" title="Bookmark article">
+            <i class="fa-regular fa-bookmark text-sm" id="bookmark-icon"></i>
+          </button>
+
+          <!-- Divider -->
+          <span class="h-6 w-px bg-slate-200 dark:bg-slate-800 mx-1"></span>
+
+          <!-- Social Share Buttons -->
+          <button onclick="shareOnTwitter()" class="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800/80 hover:bg-sky-50 dark:hover:bg-sky-950/40 text-slate-600 dark:text-slate-300 hover:text-sky-500 transition-colors" title="Share on Twitter / X">
+            <i class="fa-brands fa-x-twitter text-sm"></i>
+          </button>
+          <button onclick="shareOnLinkedIn()" class="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800/80 hover:bg-blue-50 dark:hover:bg-blue-950/40 text-slate-600 dark:text-slate-300 hover:text-blue-600 transition-colors" title="Share on LinkedIn">
+            <i class="fa-brands fa-linkedin-in text-sm"></i>
+          </button>
+          <button onclick="copyArticleLink()" class="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800/80 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 hover:text-primary transition-colors" title="Copy article link">
+            <i class="fa-solid fa-link text-sm"></i>
+          </button>
+        </div>
+
+      </div>
+
+      <!-- Featured Image -->
+      <figure class="mb-12">
+        <div class="rounded-3xl overflow-hidden shadow-2xl border border-slate-200 dark:border-slate-800">
+          <img id="post-cover-image" src="https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?w=1200&auto=format&fit=crop&q=80" alt="Article Banner" class="w-full h-80 sm:h-[480px] object-cover" />
+        </div>
+        <figcaption class="text-center text-xs text-slate-400 dark:text-slate-500 mt-3 italic">
+          Photography and digital architecture composition &bull; BrainDump Visual Archive
+        </figcaption>
+      </figure>
+
+      <!-- Article Content -->
+      <!--<div id="post-body" class="article-content text-slate-800 dark:text-slate-200 leading-relaxed">-->
+        <!-- Injected via JavaScript -->
+      <!--</div>-->
+        <!--<div id="post-body" class="w-full post-body prose prose-sm dark:prose-invert max-w-none overflow-hidden prose-blockquote:border-l-4 prose-blockquote:border-accent prose-blockquote:pl-6 prose-blockquote:font-serif prose-blockquote:text-2xl prose-blockquote:italic prose-a:text-accent hover:prose-a:text-accent-hover space-y-0 [&_iframe]:w-full [&_iframe]:aspect-video [&_iframe]:rounded-xl"></div>-->
+        <div id="post-body" class="w-full"></div>
+        <div id="postMediaGallery" class="mt-16 border-t border-border pt-10 hidden">
+            <h3 class="mb-6 font-serif text-2xl font-semibold tracking-tight text-foreground">Attached Media</h3>
+            <div id="mediaGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                <!-- JS will inject dynamic media cards here -->
+            </div>
+        </div>
+
+      <!-- Tags & Category Footer -->
+      <div class="mt-12 pt-8 border-t border-slate-200 dark:border-slate-800">
+        <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">Tagged In</h4>
+        <div class="flex justify-between items-center">
+            
+            <div id="post-tags-container" class="flex flex-wrap gap-2">
+              <!-- Populated via JS -->
+            </div>
+            <div class="flex gap-2">
+                    <div class="relative inline-block" id="reaction-container">
+                        
+                        <!-- The Trigger Button -->
+                        <button id="reaction-trigger" type="button" aria-expanded="false" class="border-border bg-surface text-foreground hover:border-accent hover:text-accent flex items-center gap-2 rounded-full border p-1.5 text-sm font-semibold transition-all">
+                            <span id="reaction-icon" aria-hidden="true">
+                                 <i class="far fa-face-smile"></i> <!-- Default Icon -->
+                            </span>
+                            <span id="reaction-label">React</span>
+                            <span id="reaction-count" class="text-muted ml-1"></span>
+                        </button>
+                    
+                        <!-- The Popover Menu (Positioned absolutely above the button) -->
+                        <!-- hidden by default, bottom-[calc(100%+12px)] pushes it right above the button -->
+                        <div id="reaction-popover" class="hidden absolute bottom-[calc(100%+12px)] left-0 sm:left-1/2 sm:-translate-x-1/2 z-50 w-[280px] rounded-2xl border border-slate-200 bg-white p-4 shadow-xl transition-all duration-200 opacity-0 translate-y-2 origin-bottom-left sm:origin-bottom dark:border-slate-700 dark:bg-slate-800">
+                            <p class="mb-3 text-center text-xs font-semibold tracking-widest uppercase text-slate-500 dark:text-slate-400">Choose one reaction</p>
+                            
+                            <!-- Reaction Grid -->
+                            <div id="reaction-options" class="grid grid-cols-4 gap-2">
+                                <!-- Populated via JS. Example active state from the mockup: -->
+                                <!-- <button class="flex items-center justify-center rounded-xl bg-slate-100 p-2 text-2xl transition-colors hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600">❤️</button> -->
+                            </div>
+                            
+                            <!-- The little triangle pointer at the bottom -->
+                            <div class="absolute -bottom-2 left-8 sm:left-1/2 sm:-translate-x-1/2 border-8 border-transparent border-t-slate-200 dark:border-t-slate-700"></div>
+                            <div class="absolute -bottom-[7px] left-8 sm:left-1/2 sm:-translate-x-1/2 border-8 border-transparent border-t-white dark:border-t-slate-800"></div>
+                        </div>
+                    </div>
+                    <button id="report-btn" type="button" class="text-muted hover:text-red-500 ml-auto flex items-center gap-2 rounded-full p-1.5 text-sm font-medium transition-colors">
+                        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z" />
+                            <line x1="4" y1="22" x2="4" y2="15" />
+                        </svg>
+                        Report
+                    </button>
+            </div>
+        </div>
+      </div>
+
+      <!-- Author Bio Box -->
+      <div class="mt-12 p-8 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col sm:flex-row items-start sm:items-center gap-6">
+        <img id="author-bio-avatar" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80" alt="Author Bio" class="w-20 h-20 rounded-2xl object-cover border-2 border-slate-200 dark:border-slate-700 flex-shrink-0" />
+        <div class="flex-grow">
+          <div class="flex items-center justify-between">
+            <h3 id="author-bio-name" class="text-lg font-bold text-slate-900 dark:text-white">Alex Morgan</h3>
+            <div class="flex items-center gap-2">
+              <a href="https://twitter.com" target="_blank" class="text-slate-400 hover:text-primary text-sm p-1"><i class="fa-brands fa-x-twitter"></i></a>
+              <a href="https://github.com" target="_blank" class="text-slate-400 hover:text-primary text-sm p-1"><i class="fa-brands fa-github"></i></a>
+            </div>
+          </div>
+          <p id="author-bio-text" class="text-sm text-slate-600 dark:text-slate-400 mt-2 leading-relaxed">
+            Staff Frontend Architect & Design Systems Lead. Writing about the future of web interfaces, typography, and browser performance.
+          </p>
+        </div>
+      </div>
+
+      <!-- ==================== COMMENTS SECTION ==================== -->
+      <section id="comments-section" class="mt-16 pt-12 border-t border-slate-200 dark:border-slate-800">
+        <div class="flex items-center justify-between mb-8">
+          <h2 class="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-3">
+            <span>Discussion</span>
+            <span id="comments-count-badge" class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400">3</span>
+          </h2>
+          <span class="text-xs text-slate-400">Join the conversation</span>
+        </div>
+
+        <!-- New Comment Input Box -->
+        <div class="p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm mb-10">
+          <div class="flex items-start gap-4">
+            <img src="" alt="You" class="w-10 h-10 rounded-full object-cover flex-shrink-0" id="current-user-avatar" />
+            <div class="flex-grow">
+                <form id="comment-form">
+                  <textarea id="new-comment-input" rows="3" placeholder="What are your thoughts on this article?" class="w-full p-3.5 rounded-xl text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary resize-none"></textarea>
+                  <div class="flex items-center justify-between mt-3">
+                    <span class="text-xs text-slate-400">Be respectful and constructive.</span>
+                    <button id="submit-comment-btn" class="px-5 py-2 rounded-xl bg-primary hover:bg-primary-hover text-white text-xs font-semibold shadow-md shadow-indigo-500/20 transition-all flex items-center gap-2">
+                      <i class="fa-solid fa-paper-plane text-xs"></i> Post Comment
+                    </button>
+                  </div>
+                </form>
+            </div>
+          </div>
+        </div>
+
+        <!-- Comments List Container with Nested Replies -->
+        <div id="comments-tree-container" class="space-y-6">
+          <!-- Populated recursively via JavaScript -->
+        </div>
+
+      </section>
+
+      <!-- ==================== RELATED POSTS ==================== -->
+      <section class="mt-20 pt-12 border-t border-slate-200 dark:border-slate-800">
+        <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-6">Related Stories</h3>
+        <div id="related-posts-container" class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          <!-- Injected via JS -->
+        </div>
+      </section>
+
+    </article>
+    
+    <div id="mediaLightbox" class="fixed inset-0 z-[110] hidden items-center justify-center bg-black/90 p-4 opacity-0 backdrop-blur-sm transition-opacity duration-300 flex">
+        
+         <!--Close Button -->
+        <button id="btnCloseLightbox" class="absolute right-6 top-6 z-50 flex h-12 w-12 items-center justify-center rounded-full bg-white/10 text-white backdrop-blur-md transition-colors hover:bg-white/25 focus:outline-none">
+            <i class="fas fa-times text-xl"></i>
+        </button>
+    
+         <!--Content Container -->
+        <div id="lightboxContent" class="relative flex h-full w-full max-w-6xl scale-95 items-center justify-center transition-transform duration-300">
+             <!--JS will dynamically inject the <img> or <video> tag right here -->
+        </div>
+    </div>
+    
+        <!-- Report Post Modal -->
+<!-- Report Post Modal -->
+<div id="reportModal" class="fixed inset-0 z-[120] hidden items-center justify-center bg-black/60 p-4 backdrop-blur-sm transition-opacity duration-300 opacity-0 flex">
+    
+    <!-- Modal Content Box -->
+    <div class="relative w-full max-w-md scale-95 transform overflow-hidden rounded-2xl bg-white shadow-2xl transition-transform duration-300 border border-slate-200 dark:bg-slate-900 dark:border-slate-700" id="reportModalContent">
+        
+        <!-- Header -->
+        <div class="flex items-center justify-between border-b border-slate-200 px-6 py-4 dark:border-slate-800">
+            <h3 class="font-serif text-xl font-bold text-slate-900 dark:text-white">Report Post</h3>
+            <button type="button" class="close-report text-slate-400 transition-colors hover:text-slate-700 focus:outline-none dark:hover:text-slate-200">
+                <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+            </button>
+        </div>
+        
+        <!-- Body -->
+        <form id="reportForm" class="px-6 py-5">
+            <p class="mb-5 text-sm font-medium text-slate-600 dark:text-slate-400">Why are you reporting this post? Your report is anonymous.</p>
+            
+            <!-- Radio Options -->
+            <div class="space-y-4 mb-6">
+                <label class="group flex cursor-pointer items-start gap-3">
+                    <input type="radio" name="reportReason" value="spam" class="mt-0.5 h-4 w-4 border-slate-300 bg-white text-red-600 focus:ring-red-500 dark:border-slate-600 dark:bg-slate-800 dark:focus:ring-offset-slate-900" required>
+                    <span class="text-sm font-semibold text-slate-700 transition-colors group-hover:text-red-600 dark:text-slate-200 dark:group-hover:text-red-400">Spam or misleading</span>
+                </label>
+                <label class="group flex cursor-pointer items-start gap-3">
+                    <input type="radio" name="reportReason" value="harassment" class="mt-0.5 h-4 w-4 border-slate-300 bg-white text-red-600 focus:ring-red-500 dark:border-slate-600 dark:bg-slate-800 dark:focus:ring-offset-slate-900">
+                    <span class="text-sm font-semibold text-slate-700 transition-colors group-hover:text-red-600 dark:text-slate-200 dark:group-hover:text-red-400">Harassment or bullying</span>
+                </label>
+                <label class="group flex cursor-pointer items-start gap-3">
+                    <input type="radio" name="reportReason" value="hate_speech" class="mt-0.5 h-4 w-4 border-slate-300 bg-white text-red-600 focus:ring-red-500 dark:border-slate-600 dark:bg-slate-800 dark:focus:ring-offset-slate-900">
+                    <span class="text-sm font-semibold text-slate-700 transition-colors group-hover:text-red-600 dark:text-slate-200 dark:group-hover:text-red-400">Hate speech or graphic content</span>
+                </label>
+                <label class="group flex cursor-pointer items-start gap-3">
+                    <input type="radio" name="reportReason" value="copyright" class="mt-0.5 h-4 w-4 border-slate-300 bg-white text-red-600 focus:ring-red-500 dark:border-slate-600 dark:bg-slate-800 dark:focus:ring-offset-slate-900">
+                    <span class="text-sm font-semibold text-slate-700 transition-colors group-hover:text-red-600 dark:text-slate-200 dark:group-hover:text-red-400">Copyright violation</span>
+                </label>
+                <label class="group flex cursor-pointer items-start gap-3">
+                    <input type="radio" name="reportReason" value="other" class="mt-0.5 h-4 w-4 border-slate-300 bg-white text-red-600 focus:ring-red-500 dark:border-slate-600 dark:bg-slate-800 dark:focus:ring-offset-slate-900">
+                    <span class="text-sm font-semibold text-slate-700 transition-colors group-hover:text-red-600 dark:text-slate-200 dark:group-hover:text-red-400">Other</span>
+                </label>
+            </div>
+            
+            <!-- Optional Comments -->
+            <div class="mb-2">
+                <label for="reportComments" class="mb-2 block text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">Additional details (Optional)</label>
+                <textarea id="reportComments" rows="3" class="w-full rounded-xl border border-slate-300 bg-white p-3 text-sm text-slate-900 transition-all placeholder:text-slate-400 focus:border-red-500 focus:outline-none focus:ring-2 focus:ring-red-500/20 dark:border-slate-600 dark:bg-slate-800 dark:text-white dark:placeholder:text-slate-500" placeholder="Provide more context to help us investigate..."></textarea>
+            </div>
+            
+            <!-- Footer Actions -->
+            <div class="mt-8 flex items-center justify-end gap-3 border-t border-slate-200 pt-5 dark:border-slate-800">
+                <button type="button" class="close-report rounded-full px-5 py-2.5 text-sm font-medium text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white">Cancel</button>
+                <button type="submit" class="flex min-w-[120px] items-center justify-center rounded-full bg-red-600 px-6 py-2.5 text-sm font-bold text-white shadow-sm transition-colors hover:bg-red-700">Submit Report</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+  </main>
+  
+  <?php ltImport('ThemeBrainDump','Store.js')  ?>
+  <?php ltImport('ThemeBrainDump','Nav.js')  ?>
+  
+ <script>
+      let POST = [];
+      const urlParams = new URLSearchParams(window.location.search);
+      const postSlug = urlParams.get('slug') || 1;
+
+    function renderPostDetails() {
+      const defaultAvatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(POST.author || 'User')}&background=random`;
+      const avatarUrl = POST.avatar ? `${window.BLOG_CONFIG?.siteHostAddress}/${POST.avatar}` : defaultAvatar;
+        
+      document.title = `${domParser(POST.title)} — BrainDump Journal`;
+      document.getElementById('post-category-badge').textContent = POST.category;
+      document.getElementById('post-read-time').textContent = POST.readTime;
+      document.getElementById('post-views-count').innerHTML = `<i class="fa-regular fa-eye"></i> ${(POST.views / 1000).toFixed(1)}k views`;
+      document.getElementById('post-title').textContent = domParser(POST.title);
+    //   document.getElementById('post-excerpt').textContent = domParser(POST.excerpt);
+      document.getElementById('post-date').textContent = formatTime(POST.date);
+      document.getElementById('post-author-name').textContent = POST.author;
+      document.getElementById('post-author-avatar').src = avatarUrl;
+    //   document.getElementById('post-author-title').innerHTML = `${POST.author.title} &bull; Published on ${POST.publishedAt}`;
+      let coverImage = getPostCoverImage(POST);
+      document.getElementById('post-cover-image').src = coverImage;
+      document.getElementById('post-body').innerHTML = POST.content;
+
+      // Author Bio Box
+      document.getElementById('author-bio-avatar').src = avatarUrl;
+      document.getElementById('current-user-avatar').src = avatarUrl;
+      document.getElementById('author-bio-name').textContent = POST.author;
+      document.getElementById('author-bio-text').textContent = `${POST.bio}`;
+
+      // Tags
+      const tagsContainer = document.getElementById('post-tags-container');
+      tagsContainer.innerHTML = (POST.tags || ['technology', 'travel', 'lifestyle']).map(tag => `
+        <a href="index.html" class="px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-primary hover:text-white transition-colors">
+          #${tag}
+        </a>
+      `).join('');
+
+      // Like & Bookmark state
+      const isLiked = BlogStore.isLiked(POST.id);
+      const isBookmarked = BlogStore.isBookmarked(POST.id);
+              // 3. Render Attached Media (Gallery)
+      renderMediaGallery(POST.media);
+      updateLikeUI(POST.likes, isLiked);
+      updateBookmarkUI(isBookmarked);
+    }
+    
+    function renderMediaGallery(mediaArray) {
+        const galleryContainer = document.getElementById('postMediaGallery');
+        const mediaGrid = document.getElementById('mediaGrid');
+        
+        if (!mediaArray || mediaArray.length === 0) {
+            galleryContainer.classList.add('hidden');
+            return;
+        }
+    
+        galleryContainer.classList.remove('hidden');
+        mediaGrid.innerHTML = '';
+    
+        mediaArray.forEach((media, index) => {
+            const fullUrl = `${window.BLOG_CONFIG?.siteHostAddress}/${media.storagePath}`; // Adjust based on your API structure
+            const fileExt = media.originalName.split('.').pop().toLowerCase();
+            
+            let cardHTML = '';
+    // onclick="openLightbox('${fullUrl}', 'image')
+            // Handle Images
+            if (media.mimeType.startsWith('image/')) {
+                cardHTML = `
+                    <div id="lightBox" class="group relative aspect-square w-full cursor-pointer overflow-hidden rounded-xl bg-gray-100 shadow-sm" data-url="${fullUrl}" data-type="image">
+                        <img src="${fullUrl}" alt="${media.originalName}" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110" />
+                        <div class="absolute inset-0 bg-black/0 transition-colors group-hover:bg-black/20"></div>
+                        <i class="fas fa-expand absolute right-3 top-3 text-white opacity-0 drop-shadow-md transition-opacity group-hover:opacity-100"></i>
+                    </div>
+                `;
+            } 
+            
+            // Handle Videos
+            else if (media.mimeType.startsWith('video/')) {
+                cardHTML = `
+                    <div id="lightBox" class="group relative aspect-square w-full cursor-pointer overflow-hidden rounded-xl bg-gray-900 shadow-sm" data-url="${fullUrl}" data-type="video">
+                        <!-- You can use a video element as a silent, unplayable thumbnail -->
+                        <video src="${fullUrl}#t=1" class="h-full w-full object-cover opacity-60"></video>
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <div class="flex h-12 w-12 items-center justify-center rounded-full bg-white/20 text-white backdrop-blur-md transition-transform group-hover:scale-110 group-hover:bg-blue-600">
+                                <i class="fas fa-play ml-1"></i>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } 
+            
+            // Handle Audio
+            else if (media.mimeType.startsWith('audio/')) {
+                cardHTML = `
+                    <div class="col-span-full sm:col-span-2 md:col-span-3 flex items-center justify-between rounded-xl border border-gray-200 bg-gray-50 p-4 shadow-sm">
+                        <div class="flex items-center gap-3 overflow-hidden">
+                            <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-purple-100 text-purple-600">
+                                <i class="fas fa-music"></i>
+                            </div>
+                            <span class="truncate text-sm font-medium text-gray-700">${media.originalName}</span>
+                        </div>
+                        <audio controls class="h-10 w-48 md:w-64" preload="metadata">
+                            <source src="${fullUrl}" type="${media.mimeType}">
+                        </audio>
+                    </div>
+                `;
+            } 
+            
+            // Handle PDFs and standard Documents
+            else {
+                cardHTML = `
+                    <a href="${fullUrl}" target="_blank" rel="noopener noreferrer" class="group flex flex-col items-center justify-center rounded-xl border border-gray-200 bg-white p-6 text-center shadow-sm transition hover:border-blue-500 hover:bg-blue-50">
+                        <i class="fas fa-file-pdf mb-3 text-4xl text-red-500 transition-transform group-hover:-translate-y-1"></i>
+                        <span class="line-clamp-2 text-sm font-medium text-gray-700 group-hover:text-blue-700">${media.originalName}</span>
+                        <span class="mt-2 text-xs text-gray-400 border border-gray-200 px-2 py-1 rounded">Download PDF</span>
+                    </a>
+                `;
+            }
+    
+            // Parse HTML and append to grid
+            mediaGrid.insertAdjacentHTML('beforeend', cardHTML);
+        });
+        
+        document.addEventListener('click', function(e){
+            let el  = e.target.closest('#lightBox');
+            if(!el) return;
+            let fullUrl = el.dataset.url;
+            let type = el.dataset.type;
+            openLightbox(fullUrl, type);
+        })
+        
+    }
+    
+    function openLightbox(url, type) {
+        const lightbox = document.getElementById('mediaLightbox');
+        const contentDiv = document.getElementById('lightboxContent');
+        
+        // 1. Lock the background scrolling so the user can't scroll the article while viewing media
+        document.body.style.overflow = 'hidden';
+    
+        // 2. Clear out any previous media
+        contentDiv.innerHTML = '';
+    
+        // 3. Inject the exact media type requested
+        if (type === 'image') {
+            contentDiv.innerHTML = `<img src="${url}" class="max-h-[90vh] max-w-full rounded-lg object-contain shadow-2xl" alt="Gallery View" />`;
+        } 
+        else if (type === 'video') {
+            contentDiv.innerHTML = `
+                <video controls autoplay class="max-h-[90vh] w-full max-w-4xl rounded-lg bg-black shadow-2xl outline-none">
+                    <source src="${url}">
+                    Your browser does not support the video tag.
+                </video>
+            `;
+        }
+    
+        // 4. Reveal the lightbox and trigger the fade-in / scale-up animation
+        lightbox.classList.remove('hidden');
+        
+        // requestAnimationFrame ensures the 'hidden' class is fully removed before starting the transition
+        requestAnimationFrame(() => {
+            lightbox.classList.remove('opacity-0');
+            contentDiv.classList.remove('scale-95');
+            contentDiv.classList.add('scale-100');
+        });
+    }
+
+    document.addEventListener('click', (e)=>{
+        let btn = e.target.closest('#btnCloseLightbox');
+        if(!btn) return;
+        closeLightbox();
+    }); 
+     
+    function closeLightbox() {
+        const lightbox = document.getElementById('mediaLightbox');
+        const contentDiv = document.getElementById('lightboxContent');
+        
+        // 1. Trigger the fade-out / scale-down animation
+        lightbox.classList.add('opacity-0');
+        contentDiv.classList.remove('scale-100');
+        contentDiv.classList.add('scale-95');
+        
+        // 2. Wait for the CSS transition (300ms) to finish, then hide and clean up
+        setTimeout(() => {
+            lightbox.classList.add('hidden');
+            contentDiv.innerHTML = ''; // CRITICAL: This stops the video element from playing audio in the background
+            document.body.style.overflow = 'auto'; // Unlock background scrolling
+        }, 300);
+    }
+
+    // Allow the user to click anywhere on the dark background to close the lightbox
+    document.getElementById('mediaLightbox').addEventListener('click', (e) => {
+        // Only close if they clicked the background container itself, not the video/image inside it
+        if (e.target.id === 'mediaLightbox' || e.target.id === 'lightboxContent') {
+            closeLightbox();
+        }
+    });
+    
+
+    function updateLikeUI(count, isLiked) {
+      document.getElementById('like-count').textContent = count;
+      const likeIcon = document.getElementById('like-icon');
+      const likeBtn = document.getElementById('like-btn');
+      if (isLiked) {
+        likeIcon.className = 'fa-solid fa-heart text-sm text-rose-500';
+        likeBtn.classList.add('text-rose-600');
+      } else {
+        likeIcon.className = 'fa-regular fa-heart text-sm';
+        likeBtn.classList.remove('text-rose-600');
+      }
+    }
+
+    function updateBookmarkUI(isBookmarked) {
+      const bookmarkIcon = document.getElementById('bookmark-icon');
+      if (isBookmarked) {
+        bookmarkIcon.className = 'fa-solid fa-bookmark text-sm text-primary';
+      } else {
+        bookmarkIcon.className = 'fa-regular fa-bookmark text-sm';
+      }
+    }
+
+    function toggleReplyBox(commentId) {
+      const box = document.getElementById(`reply-form-${commentId}`);
+      if (box) {
+        box.classList.toggle('hidden');
+        if (!box.classList.contains('hidden')) {
+          const input = document.getElementById(`reply-input-${commentId}`);
+          if (input) input.focus();
+        }
+      }
+    }
+
+    function submitReply(parentCommentId) {
+      const input = document.getElementById(`reply-input-${parentCommentId}`);
+      if (!input || !input.value.trim()) {
+        BlogStore.showToast('Please type a reply first', 'error');
+        return;
+      }
+      BlogStore.addComment(POST.id, parentCommentId, input.value.trim());
+      POST = BlogStore.getPostById(POST.id);
+      renderComments();
+      BlogStore.showToast('Reply published!', 'success');
+    }
+
+    function handleUpvoteComment(commentId) {
+      const newVotes = BlogStore.upvoteComment(POST.id, commentId);
+      const span = document.getElementById(`upvote-count-${commentId}`);
+      if (span) span.textContent = newVotes;
+    }
+    
+// Configuration fallbacks
+const BASE_URL = window.BLOG_CONFIG?.BASE_URL || '';
+const SLUG = typeof postSlug !== 'undefined' ? postSlug : '';
+
+// --- Helpers ---
+
+const heartIcon = (isLiked) => isLiked 
+    ? '<i class="fa-solid fa-heart text-red-500"></i>' 
+    : '<i class="fa-regular fa-heart"></i>';
+
+// (Assuming you have a time formatter, fallback provided)
+const formatTime = (dateStr) => {
+    if(!dateStr) return 'Just now';
+    return typeof timeAgo === 'function' ? timeAgo(dateStr) : dateStr;
+};
+
+// --- Core Node Builder ---
+const commentNode = (c, depth = 0) => {
+    const wrap = document.createElement("div");
+    // Indent replies nicely with a left border
+    wrap.className = depth > 0 ? "ml-6 sm:ml-12 border-l-2 border-slate-200 dark:border-slate-800 pl-4 sm:pl-6 mt-4" : "mt-6";
+    
+    const loader = "<div class='w-4 h-4 rounded-full border-2 border-white border-t-transparent animate-spin mx-auto'></div>";
+    
+    const replies = c.replies || [];
+    const hasReplies = replies.length > 0;
+    
+    const authorName = c.author || 'Anonymous';
+    
+    const defaultAvatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(authorName)}&background=random`;
+    const avatarUrl = c.avatar ? `${window.BLOG_CONFIG?.siteHostAddress}/${c.avatar}` : defaultAvatar;
+    
+    const timeFormatted = formatTime(c.createdAt || c.created_at);
+    const commentId = c.id || c.ltId || c.lt_id;
+    const bodyContent = c.body || c.content || '';
+
+    // Build the inner HTML using your polished styling
+    wrap.innerHTML = `
+        <div class="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 shadow-sm transition-all hover:border-slate-300 dark:hover:border-slate-700">
+            <div class="flex items-center justify-between mb-3">
+                <div class="flex items-center gap-3">
+                    <img src="${avatarUrl}" alt="${c.author || 'Unknown'}" class="w-10 h-10 rounded-full object-cover border border-slate-200 dark:border-slate-700" />
+                    <div>
+                        <h4 class="text-xs font-bold text-slate-900 dark:text-white">${authorName}</h4>
+                        <span class="text-[10px] text-slate-400">${timeFormatted}</span>
+                    </div>
+                </div>
+                <button type="button" class="like-comment flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400 hover:text-red-500 transition-colors">
+                    <span class="like-icon mt-0.5"></span>
+                    <span class="like-count-display font-medium"></span>
+                </button>
+            </div>
+            
+            <p class="text-sm text-slate-700 dark:text-slate-300 leading-relaxed">${bodyContent}</p>
+            
+            <div class="mt-3 pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center gap-4 text-xs font-semibold text-slate-500 dark:text-slate-400">
+                <button type="button" class="reply-btn hover:text-blue-600 dark:hover:text-blue-400 transition-colors flex items-center gap-1.5">
+                    <i class="fa-solid fa-reply text-[10px]"></i> Reply
+                </button>
+                ${hasReplies ? `<button type="button" class="toggle-replies hover:text-slate-800 dark:hover:text-slate-200 transition-colors">Show <span class="font-bold reply-count">${replies.length}</span> replies</button>` : ""}
+            </div>
+            
+            <div class="reply-box hidden mt-4"></div>
+            <div class="children space-y-2 mt-2"></div>
+        </div>
+    `;
+    
+    const childrenEl = wrap.querySelector(".children");
+    if (hasReplies) {
+        replies.forEach((child) => childrenEl.appendChild(commentNode(child, depth + 1)));
+        childrenEl.classList.add("hidden"); // Hidden by default to keep tree clean
+    }
+    
+    // --- EVENT: Like Comment (Optimistic UI Update) ---
+    const likeBtn = wrap.querySelector(".like-comment");
+    const likeDisplay = likeBtn.querySelector(".like-count-display");
+    const iconContainer = likeBtn.querySelector(".like-icon");
+    
+    let isLiked = c.isLikedByUser || false; 
+    let currentLikeCount = parseInt(c.likes || c.upvotes) || 0;
+    
+    // Initial render
+    likeDisplay.textContent = currentLikeCount;
+    iconContainer.innerHTML = heartIcon(isLiked);
+    
+    likeBtn.addEventListener("click", async () => {
+        const previousState = isLiked;
+        const previousCount = currentLikeCount;
+    
+        // Optimistic UI change
+        isLiked = !isLiked;
+        currentLikeCount = isLiked ? currentLikeCount + 1 : currentLikeCount - 1;
+        
+        likeDisplay.textContent = currentLikeCount;
+        iconContainer.innerHTML = heartIcon(isLiked);
+
+        try {
+            const response = await fetch(`${BASE_URL}/blogs/comments/like`, {
+                method: 'POST',
+                headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+                body: JSON.stringify({ commentId: commentId })
+            });
+    
+            const { responseCategory } = await response.json();
+            if (responseCategory != '200') throw new Error('Server rejected the like');
+    
+        } catch (error) {
+            console.error("Failed to toggle like:", error);
+            // Revert on failure
+            isLiked = previousState;
+            currentLikeCount = previousCount;
+            likeDisplay.textContent = currentLikeCount;
+            iconContainer.innerHTML = heartIcon(isLiked);
+        }
+    });
+    
+    // --- EVENT: Toggle Replies ---
+    if (hasReplies) {
+        const toggle = wrap.querySelector(".toggle-replies");
+        toggle.addEventListener("click", () => {
+            const isHidden = childrenEl.classList.toggle("hidden");
+            const count = wrap.querySelector(".reply-count").textContent;
+            toggle.innerHTML = `${isHidden ? "Show" : "Hide"} <span class="font-bold reply-count">${count}</span> replies`;
+        });
+    }
+    
+    // --- EVENT: Reply Form ---
+    const replyBtn = wrap.querySelector(".reply-btn");
+    const replyBox = wrap.querySelector(".reply-box");
+    
+    replyBtn.addEventListener("click", () => {
+        // Close all other open reply boxes for cleanliness
+        document.querySelectorAll(".reply-box").forEach(box => {
+            if(box !== replyBox) {
+                box.classList.add("hidden");
+                if(box.querySelector("textarea")) box.querySelector("textarea").value = "";
+            }
+        });
+        
+        if (!replyBox.dataset.built) {
+            replyBox.innerHTML = `
+                <div class="flex flex-col gap-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 p-3 focus-within:border-blue-500 focus-within:ring-1 focus-within:ring-blue-500 transition-all shadow-inner">
+                    <div class="text-xs text-slate-500 dark:text-slate-400">Replying to <span class="text-blue-500 dark:text-blue-400 font-medium">@${authorName}</span></div>
+                    <textarea rows="2" class="w-full resize-none bg-transparent text-sm text-slate-900 dark:text-white focus:outline-none placeholder:text-slate-400" placeholder="Write a reply…"></textarea>
+                    <div class="flex justify-end gap-2 mt-1">
+                        <button type="button" class="cancel-reply rounded-full px-4 py-1.5 text-xs font-medium text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors">Cancel</button>
+                        <button type="button" class="send-reply rounded-full bg-blue-600 px-4 py-1.5 text-xs font-bold text-white hover:bg-blue-700 transition-colors shadow-sm flex items-center justify-center min-w-[70px]">Reply</button>
+                    </div>
+                </div>
+            `;
+            replyBox.dataset.built = "1";
+
+            replyBox.querySelector(".cancel-reply").addEventListener("click", () => {
+                replyBox.classList.add("hidden");
+                replyBox.querySelector("textarea").value = "";
+            });
+
+            replyBox.querySelector(".send-reply").addEventListener("click", async (e) => {
+                let btn = e.target;
+                const textBox = replyBox.querySelector("textarea");
+                const val = textBox.value.trim();
+                
+                if (!val) return;
+                
+                btn.innerHTML = loader;
+                
+                try {
+                    const response = await fetch(`${BASE_URL}/blogs/comments/create`, {
+                        method: 'POST',
+                        headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            postSlug: SLUG,
+                            body: val,
+                            parentId: commentId
+                        })
+                    });
+                    
+                    const { responseResult, responseData, responseCategory } = await response.json();
+                    
+                    if (responseCategory == '200') {
+                        // Create mock reply object
+                        const newReply = {
+                            ...responseData,
+                            likes: 0,
+                            replies: [],
+                        };
+                        
+                        // Inject into DOM recursively
+                        c.replies = c.replies || [];
+                        c.replies.push(newReply);
+                        
+                        childrenEl.classList.remove("hidden");
+                        childrenEl.appendChild(commentNode(newReply, depth + 1));
+                        
+                        // Clean up
+                        textBox.value = "";
+                        replyBox.classList.add("hidden");
+                        
+                        // Update master comments counter
+                        const masterCount = document.getElementById('comment-count');
+                        if (masterCount) masterCount.textContent = parseInt(masterCount.textContent) + 1;
+                        
+                        // Update local thread counter
+                        let repliesCountSpan = wrap.querySelector(".reply-count");
+                        if (!repliesCountSpan) {
+                            // First reply: Add the "Show/Hide X replies" button
+                            const replyBtnInBar = wrap.querySelector(".reply-btn");
+                            const toggleBtn = document.createElement("button");
+                            toggleBtn.type = "button";
+                            toggleBtn.className = "toggle-replies hover:text-slate-800 dark:hover:text-slate-200 transition-colors";
+                            toggleBtn.innerHTML = `Hide <span class="font-bold reply-count">1</span> reply`;
+                            
+                            toggleBtn.addEventListener("click", () => {
+                                const isHidden = childrenEl.classList.toggle("hidden");
+                                const currentCount = wrap.querySelector(".reply-count").textContent;
+                                toggleBtn.innerHTML = `${isHidden ? "Show" : "Hide"} <span class="font-bold reply-count">${currentCount}</span> replies`;
+                            });
+                            
+                            replyBtnInBar.insertAdjacentElement('afterend', toggleBtn);
+                        } else {
+                            repliesCountSpan.textContent = parseInt(repliesCountSpan.textContent) + 1;
+                        }
+                    } else {
+                        Swal.fire('Oops!!!', `Failed to post reply: ${responseResult}`, 'warning');
+                    }
+                } catch(err) {
+                    console.error("Reply error:", err);
+                } finally {
+                    btn.innerHTML = 'Reply';
+                }
+            });
+        }
+        
+        replyBox.classList.toggle("hidden");
+        if (!replyBox.classList.contains("hidden")) {
+            replyBox.querySelector("textarea").focus();
+        }
+    });
+    
+    return wrap;
+};
+
+// --- Initialization / Top Level Rendering ---
+function renderComments(commentsArray) {
+    const commentList = document.getElementById('comment-list') || document.getElementById('comments-tree-container');
+    const commentCount = document.getElementById('comment-count') || document.getElementById('comments-count-badge');
+    
+    // Count all nested items
+    const countAll = (items) => items.reduce((acc, c) => acc + 1 + countAll(c.replies || []), 0);
+    if(commentCount) commentCount.textContent = countAll(commentsArray || []);
+    
+    commentList.innerHTML = '';
+
+    if (!commentsArray || commentsArray.length === 0) {
+        commentList.innerHTML = `
+            <div class="py-8 text-center text-slate-400 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800">
+                <i class="fa-regular fa-comments text-3xl mb-2 text-slate-300 dark:text-slate-600"></i>
+                <p class="text-sm">No comments yet. Start the conversation!</p>
+            </div>
+        `;
+        return;
+    }
+
+    // Build the initial tree
+    commentsArray.forEach((c) => commentList.appendChild(commentNode(c, 0)));
+}
+
+// --- Event: Top-Level Comment Submission ---
+document.getElementById("submit-comment-btn")?.addEventListener("click", async (e) => {
+    e.preventDefault();
+    
+    const btn = e.target;
+    const originalBtnText = btn.innerHTML;
+    const input = document.getElementById("new-comment-input");
+    
+    const val = input.value.trim();
+    if (!val) {
+        Swal.fire('Notice', 'Please type a comment first!', 'warning');
+        return;
+    }
+    
+    const loader = "<div class='w-4 h-4 rounded-full border-2 border-white border-t-transparent animate-spin mx-auto'></div>";
+    btn.innerHTML = loader;
+    btn.disabled = true;
+    
+    try {
+        const response = await fetch(`${BASE_URL}/blogs/comments/create`, {
+            method: 'POST',
+            headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+            body: JSON.stringify({ postSlug: SLUG, body: val, parentId: null })
+        });
+
+        const { responseResult, responseData, responseCategory } = await response.json();
+
+        if (responseCategory == '200') {
+            input.value = '';
+            
+            const newComment = {
+                ...responseData,
+                likes: 0,
+                replies: []
+            };
+            
+            const commentList = document.getElementById('comment-list') || document.getElementById('comments-tree-container');
+            const commentCount = document.getElementById('comment-count') || document.getElementById('comments-count-badge');
+            
+            // Remove empty state
+            const emptyState = commentList.querySelector('.fa-comments');
+            if (emptyState) commentList.innerHTML = '';
+            
+            // Prepend new comment
+            commentList.insertBefore(commentNode(newComment, 0), commentList.firstChild);
+            
+            if(commentCount) commentCount.textContent = parseInt(commentCount.textContent) + 1;
+            
+            Swal.fire('Success', 'Your comment was published!', 'success');
+        } else {
+            Swal.fire('Oops!!!', `Failed to post comment: ${responseResult}`, 'warning');
+        }
+    } catch (error) {
+        console.error('Error posting comment:', error);
+        Swal.fire('Error', 'A network error occurred while posting.', 'error');
+    } finally {
+        btn.innerHTML = originalBtnText;
+        btn.disabled = false;
+    }
+});
+
+    // Reading Progress Bar
+    function setupReadingProgress() {
+      const bar = document.getElementById('reading-progress');
+      window.addEventListener('scroll', () => {
+        const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
+        const progress = (window.scrollY / totalHeight) * 100;
+        bar.style.width = `${Math.min(100, Math.max(0, progress))}%`;
+      });
+    }
+
+
+    // Social Sharing Helpers
+    function shareOnTwitter() {
+      const url = encodeURIComponent(window.location.href);
+      const text = encodeURIComponent(`Reading "${POST.title}" on BrainDump Blog Site:`);
+      window.open(`https://twitter.com/intent/tweet?url=${url}&text=${text}`, '_blank');
+    }
+
+    function shareOnLinkedIn() {
+      const url = encodeURIComponent(window.location.href);
+      window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${url}`, '_blank');
+    }
+
+    function copyArticleLink() {
+      navigator.clipboard.writeText(window.location.href).then(() => {
+        BlogStore.showToast('Article URL copied to clipboard!', 'success');
+      });
+    }
+    
+    /* ---------- reaction popover ---------- */
+        const trigger = document.getElementById('reaction-trigger');
+        const popover = document.getElementById('reaction-popover');
+        
+        // Toggle the popover when clicking the button
+        trigger?.addEventListener('click', (e) => {
+            e.stopPropagation(); // Prevent the document click listener below from firing immediately
+            
+            const isHidden = popover.classList.contains('hidden');
+            
+            if (isHidden) {
+                // Open it
+                popover.classList.remove('hidden');
+                trigger.setAttribute('aria-expanded', 'true');
+                // Small delay to allow CSS transitions to trigger
+                requestAnimationFrame(() => {
+                    popover.classList.remove('opacity-0', 'translate-y-2');
+                });
+            } else {
+                closeReactionPopover();
+            }
+        });
+    
+        // Function to close the popover with animation
+        function closeReactionPopover() {
+            popover.classList.add('opacity-0', 'translate-y-2');
+            trigger.setAttribute('aria-expanded', 'false');
+            
+            // Wait for transition before hiding completely
+            setTimeout(() => {
+                popover.classList.add('hidden');
+            }, 200); 
+        }
+    
+        // Close the popover if the user clicks anywhere else on the page
+        document.addEventListener('click', (e) => {
+            if (popover && !popover.classList.contains('hidden') && !popover.contains(e.target)) {
+                closeReactionPopover();
+            }
+        });
+        
+        const reactions = [
+            { type: "like", emoji: "👍", label: "Like" },
+            { type: "love", emoji: "❤️", label: "Love" },
+            { type: "laugh", emoji: "😂", label: "Haha" },
+            { type: "wow", emoji: "😮", label: "Wow" },
+            { type: "sad", emoji: "😢", label: "Sad" },
+            { type: "angry", emoji: "😡", label: "Angry" },
+            { type: "celebrate", emoji: "🎉", label: "Celebrate" },
+            { type: "dislike", emoji: "👎", label: "Dislike" }
+        ];
+
+        
+        const reactionOptions = document.querySelector("#reaction-options");
+        
+        reactionOptions.innerHTML = reactions.map(reaction => `
+            <button class="reaction-option hover:bg-gray-100 p-2 rounded-lg text-xl transition-transform hover:scale-110" data-reaction="${reaction.type}" aria-label="${reaction.label}" title="${reaction.label}">
+             <span aria-hidden="true">${reaction.emoji}</span>
+            </button>
+        `).join("");
+        
+        reactionOptions.addEventListener("click", async (event) => {
+            const button = event.target.closest(".reaction-option");
+            if (!button) return;
+        
+            const reactionType = button.dataset.reaction;
+            
+            // 1. Find the full reaction object from your array to get the emoji and label
+            const selectedReaction = reactions.find(r => r.type === reactionType);
+            
+            // 2. Update the main trigger button UI instantly (Optimistic UI)
+            const triggerIcon = document.getElementById("reaction-icon");
+            const triggerLabel = document.getElementById("reaction-label");
+            const triggerBtn = document.getElementById("reaction-trigger");
+            
+            triggerIcon.innerHTML = selectedReaction.emoji;
+            triggerLabel.textContent = selectedReaction.label;
+            triggerBtn.classList.add("text-accent", "border-accent"); // Highlight the button
+        
+            // 3. Close the popover (assuming you are using the Tailwind absolute positioning method)
+            const popover = document.getElementById('reaction-popover');
+            popover.classList.add('opacity-0', 'translate-y-2');
+            setTimeout(() => popover.classList.add('hidden'), 200);
+            
+            // 4. Send to your PHP backend
+            try {
+                const response = await fetch(`${window.BLOG_CONFIG.BASE_URL}/blogs/posts/react`, {
+                    method: 'POST',
+                    headers: { 
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json' 
+                    },
+                    body: JSON.stringify({ 
+                        postSlug: postSlug, // Assuming SLUG is defined globally on the post page
+                        reaction: reactionType 
+                    })
+                });
+        
+                const { responseCategory, responseResult } = await response.json();
+        
+                if (responseCategory != '200') {
+                    console.error("Failed to save reaction:", responseResult);
+                    // Optional: Revert UI if it fails
+                }
+            } catch (error) {
+                console.error("Network error saving reaction:", error);
+            }
+        });
+        
+        function initializeReactionUI(userReactionString) {
+        // If the database returned NULL (the user hasn't reacted), do nothing
+            if (!userReactionString) return;
+        
+            // 1. Find the matching reaction from the array
+            const previousReaction = reactions.find(r => r.type === userReactionString);
+            
+            if (previousReaction) {
+                // 2. Target the UI elements
+                const triggerIcon = document.getElementById("reaction-icon");
+                const triggerLabel = document.getElementById("reaction-label");
+                const triggerBtn = document.getElementById("reaction-trigger");
+        
+                // 3. Apply the saved emoji, label, and colors
+                triggerIcon.innerHTML = previousReaction.emoji;
+                triggerLabel.textContent = previousReaction.label;
+                triggerBtn.classList.add("text-accent", "border-accent");
+            }
+        }
+        
+//   /* ---------- report ---------- */
+    const reportModal = document.getElementById('reportModal');
+    const reportModalContent = document.getElementById('reportModalContent');
+    const reportBtn = document.getElementById('report-btn'); // The report button in your action bar
+    const closeBtns = document.querySelectorAll('.close-report');
+    const reportForm = document.getElementById('reportForm');
+    
+    // 1. Open Modal Logic
+    reportBtn?.addEventListener('click', () => {
+        reportModal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden'; // Lock background scrolling
+        
+        // requestAnimationFrame forces the browser to wait a split second before applying opacity, triggering the CSS transition
+        requestAnimationFrame(() => {
+            reportModal.classList.remove('opacity-0');
+            reportModalContent.classList.remove('scale-95');
+            reportModalContent.classList.add('scale-100');
+        });
+    });
+
+    // 2. Close Modal Logic
+    const closeReportModal = () => {
+        reportModal.classList.add('opacity-0');
+        reportModalContent.classList.remove('scale-100');
+        reportModalContent.classList.add('scale-95');
+        
+        // Wait for CSS animation to finish (300ms) before hiding
+        setTimeout(() => {
+            reportModal.classList.add('hidden');
+            document.body.style.overflow = 'auto'; // Unlock scrolling
+            reportForm.reset(); // Wipe form fields clean
+        }, 300);
+    };
+
+    // Close when clicking the 'Cancel' or 'X' buttons
+    closeBtns.forEach(btn => btn.addEventListener('click', closeReportModal));
+
+    // Close when clicking the dark background outside the modal
+    reportModal?.addEventListener('click', (e) => {
+        if (e.target === reportModal) closeReportModal();
+    });
+
+    // 3. Handle Form Submission
+    reportForm?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const submitBtn = reportForm.querySelector('button[type="submit"]');
+        const originalText = submitBtn.innerHTML;
+        const loader = "<div class='w-4 h-4 rounded-full border-2 border-white border-t-transparent animate-spin mx-auto'></div>";
+        
+        // Gather data
+        const reason = reportForm.querySelector('input[name="reportReason"]:checked')?.value;
+        const comments = document.getElementById('reportComments').value.trim();
+        
+        if (!reason) return;
+        
+        // Set loading state
+        submitBtn.innerHTML = loader;
+        submitBtn.disabled = true;
+        
+        try {
+            const response = await fetch(`${window.BLOG_CONFIG.BASE_URL}/blogs/reports/create`, {
+                method: 'POST',
+                 headers: { 'Accept': 'application/json' },
+                body: JSON.stringify({ 
+                    postSlug: postSlug, 
+                    reason: reason, 
+                    comments: comments 
+                })
+            });
+            const { responseResult, responseCategory } = await response.json();
+            
+            if (responseCategory == '200') {
+                closeReportModal();
+                Swal.fire({
+                    title: 'Report Received',
+                    text: 'Thank you for keeping the community safe. Our moderation team will review this post.',
+                    icon: 'success',
+                    confirmButtonColor: '#2B6CB0' // Brand blue
+                });
+            } else {
+                BlogStore.showToast(`'Something went wrong submitting your report.'`, 'error');
+            }
+            
+        } catch (error) {
+            console.error('Report submission failed:', error);
+            BlogStore.showToast(`Please check your connection and try again.`, 'error');
+        } finally {
+            // Restore button
+            submitBtn.innerHTML = originalText;
+            submitBtn.disabled = false;
+        }
+    });
+    
+    async function fetchSidebarWidget(type, containerId, currentPostId = null, currentPostCategory = null) {
+        const containerEl = document.getElementById(containerId);
+        
+        if (!containerEl) return;
+        
+        try {
+            // Construct the URL dynamically
+            let url = `${window.BLOG_CONFIG.BASE_URL}/blogs/posts/widget?limit=4&type=${type}`;
+            if (type === 'related' && currentPostId) {
+                url += `&postId=${currentPostId}&categoryId=${currentPostCategory || ''}`;
+            }
+    
+            const response = await fetch(url, {
+                headers: { Accept: "application/json" }
+            });
+    
+            if (!response.ok) {
+                throw new Error(`Error: API returned status ${response.status}`);
+            }
+    
+            const { responseData, responseResult, responseCategory } = await response.json();
+    
+            if (responseCategory == '200') {
+                const posts = Array.isArray(responseData) ? responseData : [];
+                
+                if (posts.length === 0) {
+                    containerEl.innerHTML = `<p class="text-xs italic text-muted">No ${type} posts available.</p>`;
+                    return;
+                }
+    
+                // Render the compact posts
+                containerEl.innerHTML = posts.map(post => `
+                    <a href="${window.BLOG_CONFIG?.siteHostAddress}/ThemeBrainDump/post?slug=${post.slug}" class="flex gap-4 p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-lg transition-all group">
+                      <img src="${getPostCoverImage(post)}" alt="${domParser(post.title)}" class="w-24 h-24 rounded-xl object-cover flex-shrink-0 group-hover:scale-105 transition-transform" />
+                      <div class="flex flex-col justify-between">
+                        <div>
+                          <span class="text-[10px] font-bold uppercase tracking-wider text-primary">${getCategoryName(post.category)}</span>
+                          <h4 class="text-sm font-bold text-slate-800 dark:text-white group-hover:text-primary transition-colors line-clamp-2 mt-1">${post.title}</h4>
+                        </div>
+                        <span class="text-xs text-slate-400">${post.readingTime} min read &bull; ${post?.author || "Unknown"}</span>
+                      </div>
+                    </a>
+                  `).join('');
+                
+            } else {
+                // Throwing the error here safely sends execution to the catch block
+                throw new Error(responseResult || 'Failed to fetch widget data');
+            }
+    
+        } catch (error) {
+            console.error(`Sidebar Widget Error (${type}):`, error);
+            
+            // Ensure errorMsgWidget exists before calling it, otherwise use a fallback
+            containerEl.innerHTML = `<p class="text-xs text-red-500 p-4 bg-red-50/50 rounded-lg">Unable to load ${type} posts.</p>`; 
+        }
+    }
+
+    
+    async function onLoadPost(slug){
+
+            
+        if(!slug){
+            Swal.fire({
+              title: 'Missing Slug',
+              text: 'Redirecting you to the blog list...',
+              icon: 'info',
+              timer: 3000,
+              showConfirmButton: false
+            }).then(() => {
+              window.location.href = `${window.BLOG_CONFIG?.siteHostAddress}/ThemeBrainDump/posts`;
+            });
+            return;
+        }
+        
+        try{
+              const response = await fetch(`${window.BLOG_CONFIG.BASE_URL}/blogs/posts/${encodeURIComponent(slug)}/slug`, {
+                        method: 'GET',
+                        headers: {
+                            'Accept': 'application/json'
+    
+                        }
+                    }) 
+
+            const userData = await response.json();
+
+            const { responseData, responseResult, responseCategory } = userData;
+            
+             if(responseCategory == 200){
+                 POST = responseData ?? [];
+                 
+
+                  renderPostDetails();
+                  renderComments(POST.comments);
+                  setupReadingProgress();
+                  
+                  // // update user reaction
+                initializeReactionUI(POST.userReaction);
+                fetchSidebarWidget('related', 'related-posts-container', responseData.ltId, responseData.category_id);
+
+             }else{
+                 BlogStore.showToast(`${responseResult}`, 'error');
+                
+             }
+             
+        }catch(error){
+             console.log(error);
+
+        }
+             
+    }
+    
+    document.addEventListener('DOMContentLoaded', () => {
+
+        onLoadPost(postSlug);
+    });
+    
+  </script>

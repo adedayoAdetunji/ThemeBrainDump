@@ -1,0 +1,645 @@
+<main class="mx-auto w-full space-y-6 p-2 sm:p-4">
+  <!-- Interactive Cloud Preview -->
+  <div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+    <div class="flex items-center justify-between mb-3">
+      <h3 class="text-xs font-extrabold tracking-wider text-slate-400 uppercase">Live Tag Cloud Preview</h3>
+      <span class="text-[10px] text-slate-400">Click a tag to filter the table</span>
+    </div>
+    <div class="flex flex-wrap gap-2.5" id="tag-cloud-container">
+      <span class="text-xs text-slate-400">Loading tag cloud...</span>
+    </div>
+  </div>
+
+  <!-- Action & Search Toolbar -->
+  <div class="flex flex-col items-center justify-between gap-4 rounded-3xl border border-slate-200 bg-white p-4 shadow-sm sm:flex-row sm:p-5 dark:border-slate-800 dark:bg-slate-900">
+    <div class="relative w-full sm:w-80">
+      <i class="fa-solid fa-magnifying-glass absolute top-1/2 left-3.5 -translate-y-1/2 text-xs text-slate-400"></i>
+      <input type="text" id="tag-search" placeholder="Search tags..." class="w-full rounded-xl border border-slate-200 bg-slate-50 py-2 pr-4 pl-9 text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-primary dark:border-slate-700 dark:bg-slate-800 dark:text-white" />
+    </div>
+
+    <button type="button" id="btn-open-tag-modal" class="flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-5 py-2.5 text-xs font-bold text-white shadow-md shadow-indigo-500/20 hover:bg-primary-hover sm:w-auto">
+      <i class="fa-solid fa-tag"></i> Create New Tag
+    </button>
+  </div>
+
+  <!-- Tags Datatable -->
+  <div class="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
+    <div class="overflow-x-auto">
+      <table class="w-full text-left text-xs">
+        <thead class="border-b border-slate-200 bg-slate-50 text-[10px] font-extrabold uppercase tracking-wider text-slate-400 dark:border-slate-800 dark:bg-slate-800/60">
+          <tr>
+            <th class="px-6 py-4">Tag Details</th>
+            <th class="px-4 py-4">Slug</th>
+            <th class="px-4 py-4">Color Accent</th>
+            <th class="px-4 py-4">Status</th>
+            <th class="px-6 py-4 text-right">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="tags-table-body" class="divide-y divide-slate-100 dark:divide-slate-800">
+          <tr>
+            <td colspan="5" class="py-12 text-center text-slate-400">Loading tags...</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Table Footer with Pagination Controls -->
+    <div class="flex flex-col sm:flex-row items-center justify-between border-t border-slate-100 dark:border-slate-800 p-4 gap-4 text-xs text-slate-400">
+      <span id="tags-count-indicator">Showing 0 of 0 tags</span>
+      <div id="tags-pagination" class="flex items-center gap-1.5"></div>
+    </div>
+  </div>
+</main>
+ 
+<!-- Tag Create / Edit Modal -->
+<div id="admin-tag-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+  <div class="bg-white dark:bg-slate-900 w-full max-w-md rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-800 flex flex-col overflow-hidden modal-content-animated">
+    
+    <div class="p-6 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
+          <i class="fa-solid fa-tag text-sm"></i>
+        </div>
+        <h3 id="admin-tag-modal-title" class="text-base font-black text-slate-900 dark:text-white">Create New Tag</h3>
+      </div>
+      <button type="button" class="btn-close-tag-modal p-2 text-slate-400 hover:text-slate-600 dark:hover:text-white rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800">
+        <i class="fa-solid fa-xmark text-base"></i>
+      </button>
+    </div>
+
+    <form id="admin-tag-modal-form" class="p-6 space-y-4">
+      <input type="hidden" id="modal-tag-id" />
+
+      <div>
+        <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1.5">Tag Name *</label>
+        <input type="text" id="modal-tag-name" required placeholder="e.g. NextJS" class="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary" />
+      </div>
+
+      <div>
+        <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1.5">Tag Slug</label>
+        <input type="text" id="modal-tag-slug" placeholder="e.g. nextjs" class="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary" />
+        <span class="mt-1 block text-[10px] text-slate-400">Leave empty to generate automatically from name</span>
+      </div>
+
+      <div>
+        <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1.5">Description</label>
+        <textarea id="modal-tag-desc" rows="2" placeholder="Brief summary of this tag..." class="w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary"></textarea>
+      </div>
+
+      <div>
+        <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1.5">Accent Color</label>
+        <div class="flex items-center gap-3">
+          <input type="color" id="modal-tag-color-picker" value="#4f46e5" class="h-9 w-12 cursor-pointer rounded-xl border border-slate-200 bg-transparent dark:border-slate-700" />
+          <input type="text" id="modal-tag-color-text" value="#4f46e5" placeholder="#4f46e5" class="w-full px-4 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-mono text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary uppercase" />
+        </div>
+      </div>
+
+      <div class="pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-end gap-3">
+        <button type="button" class="btn-close-tag-modal px-5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 text-xs font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">
+          Cancel
+        </button>
+        <button type="submit" class="px-6 py-2.5 rounded-xl bg-primary hover:bg-primary-hover text-white text-xs font-bold shadow-md shadow-indigo-500/20">
+          Save Tag
+        </button>
+      </div>
+    </form>
+
+  </div>
+</div>
+<?php  ltImport('ThemeBrainDump','Script.js') ?>
+<script>
+    
+    document.addEventListener('DOMContentLoaded', () => {
+        updateHeader('Metadata', "Manage Tags");
+  // State
+  let tagsData = [];
+  let filteredTags = [];
+  let currentPage = 1;
+  const itemsPerPage = 8;
+
+  // DOM Elements
+  const tableBody = document.getElementById('tags-table-body');
+  const cloudContainer = document.getElementById('tag-cloud-container');
+  const countIndicator = document.getElementById('tags-count-indicator');
+  const paginationContainer = document.getElementById('tags-pagination');
+  const searchInput = document.getElementById('tag-search');
+  const openModalBtn = document.getElementById('btn-open-tag-modal');
+  const modal = document.getElementById('admin-tag-modal');
+  const modalForm = document.getElementById('admin-tag-modal-form');
+  const modalTitle = document.getElementById('admin-tag-modal-title');
+
+  // Modal Inputs
+  const idInput = document.getElementById('modal-tag-id');
+  const nameInput = document.getElementById('modal-tag-name');
+  const slugInput = document.getElementById('modal-tag-slug');
+  const descInput = document.getElementById('modal-tag-desc');
+  const colorPicker = document.getElementById('modal-tag-color-picker');
+  const colorText = document.getElementById('modal-tag-color-text');
+
+  function slugify(text) {
+    return text
+      .toString()
+      .toLowerCase()
+      .trim()
+      .replace(/[\s\W-]+/g, '-')
+      .replace(/^-+|-+$/g, '');
+  }
+
+  // Sync Color Picker with Hex Text Field
+  if (colorPicker && colorText) {
+    colorPicker.addEventListener('input', (e) => {
+      colorText.value = e.target.value.toUpperCase();
+    });
+    colorText.addEventListener('input', (e) => {
+      if (/^#[0-9A-F]{6}$/i.test(e.target.value)) {
+        colorPicker.value = e.target.value;
+      }
+    });
+  }
+
+  // --- Modal Open / Close Logic ---
+  function openTagModal(ltId = null) {
+    modalForm.reset();
+    idInput.value = '';
+
+    if (ltId) {
+      const tag = tagsData.find(t => String(t.ltId) === String(ltId));
+      if (!tag) return;
+
+      modalTitle.textContent = 'Edit Tag';
+      idInput.value = tag.ltId;
+      nameInput.value = tag.tagName || '';
+      slugInput.value = tag.tagSlug || slugify(tag.tagName || '');
+      descInput.value = tag.tagDescription || '';
+      
+      const tagColor = (tag.tagColor && tag.tagColor.startsWith('#')) ? tag.tagColor : '#4F46E5';
+      colorPicker.value = tagColor;
+      colorText.value = tagColor.toUpperCase();
+    } else {
+      modalTitle.textContent = 'Create New Tag';
+      colorPicker.value = '#4F46E5';
+      colorText.value = '#4F46E5';
+    }
+
+    modal.classList.remove('hidden');
+  }
+
+  function closeTagModal() {
+    modal.classList.add('hidden');
+  }
+
+  modal.querySelectorAll('.btn-close-tag-modal').forEach(btn => {
+    btn.addEventListener('click', closeTagModal);
+  });
+
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) closeTagModal();
+  });
+
+  if (openModalBtn) {
+    openModalBtn.addEventListener('click', () => openTagModal());
+  }
+
+  if (nameInput && slugInput) {
+    nameInput.addEventListener('input', () => {
+      if (!idInput.value) {
+        slugInput.value = slugify(nameInput.value);
+      }
+    });
+  }
+
+  // --- Fetch Tags API ---
+  async function fetchTags() {
+    tableBody.innerHTML = `
+      <tr>
+        <td colspan="5" class="py-12 text-center text-slate-400">
+          <i class="fa-solid fa-spinner fa-spin text-base mr-2"></i> Loading tags...
+        </td>
+      </tr>
+    `;
+
+    try {
+      const response = await fetch(`${BASE_URL}/blogs/tags`, {
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': `Bearer ${LW_TOKEN}`
+        }
+      });
+
+      const res = await response.json();
+      if (res.responseCategory == 200 || res.responseCode == 201) {
+        tagsData = Array.isArray(res.responseData) ? res.responseData : [];
+        renderCloud();
+        applyFilter();
+      } else {
+        throw new Error(res.responseResult || 'Failed to fetch tags');
+      }
+    } catch (err) {
+      console.error(err);
+      tableBody.innerHTML = `
+        <tr>
+          <td colspan="5" class="py-8 text-center text-rose-500 font-semibold">
+            <i class="fa-solid fa-triangle-exclamation mr-1.5"></i> Unable to load tags from server.
+          </td>
+        </tr>
+      `;
+    }
+  }
+
+  // --- Live Tag Cloud Rendering ---
+  function renderCloud() {
+    if (!cloudContainer) return;
+
+    if (tagsData.length === 0) {
+      cloudContainer.innerHTML = '<span class="text-xs text-slate-400">No tags registered yet.</span>';
+      return;
+    }
+
+    cloudContainer.innerHTML = tagsData.map(tag => {
+      const color = (tag.tagColor && tag.tagColor.startsWith('#')) ? tag.tagColor : '#64748B';
+      return `
+        <button 
+          type="button" 
+          data-cloud-tag="${tag.tagName}" 
+          class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/60 hover:bg-slate-100 dark:hover:bg-slate-800 text-xs font-semibold text-slate-700 dark:text-slate-200 transition-all cursor-pointer shadow-sm"
+        >
+          <span class="w-2 h-2 rounded-full" style="background-color: ${color}"></span>
+          <span>${tag.tagName}</span>
+        </button>
+      `;
+    }).join('');
+  }
+
+  if (cloudContainer) {
+    cloudContainer.addEventListener('click', (e) => {
+      const btn = e.target.closest('button[data-cloud-tag]');
+      if (!btn) return;
+      const tagName = btn.dataset.cloudTag;
+      if (searchInput) {
+        searchInput.value = tagName;
+        applyFilter();
+      }
+    });
+  }
+
+  // --- Search & Filter ---
+  function applyFilter() {
+    const query = searchInput ? searchInput.value.toLowerCase().trim() : '';
+
+    filteredTags = tagsData.filter(tag => {
+      const name = (tag.tagName || '').toLowerCase();
+      const slug = (tag.tagSlug || '').toLowerCase();
+      const desc = (tag.tagDescription || '').toLowerCase();
+      return name.includes(query) || slug.includes(query) || desc.includes(query);
+    });
+
+    currentPage = 1;
+    renderTable();
+  }
+
+  if (searchInput) searchInput.addEventListener('input', applyFilter);
+
+  // --- Render Table & Pagination ---
+  function renderTable() {
+    const totalItems = filteredTags.length;
+    const totalPages = Math.ceil(totalItems / itemsPerPage) || 1;
+
+    if (currentPage > totalPages) currentPage = totalPages;
+
+    const startIdx = (currentPage - 1) * itemsPerPage;
+    const currentSlice = filteredTags.slice(startIdx, startIdx + itemsPerPage);
+
+    if (countIndicator) {
+      const shownCount = currentSlice.length;
+      countIndicator.textContent = `Showing ${shownCount > 0 ? startIdx + 1 : 0}-${startIdx + shownCount} of ${totalItems} tags`;
+    }
+
+    if (currentSlice.length === 0) {
+      tableBody.innerHTML = `
+        <tr>
+          <td colspan="5" class="py-12 text-center text-slate-400">No tags found matching criteria.</td>
+        </tr>
+      `;
+      renderPagination(totalPages);
+      return;
+    }
+
+    tableBody.innerHTML = currentSlice.map(tag => {
+      const isActive = (tag.status === 'isActive' || tag.status === 'Active' || tag.status == 1);
+      const tagColor = (tag.tagColor && tag.tagColor.startsWith('#')) ? tag.tagColor : '#64748B';
+
+      const statusBadge = isActive
+        ? 'bg-emerald-50 text-emerald-600 dark:bg-emerald-950/40 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800'
+        : 'bg-rose-50 text-rose-600 dark:bg-rose-950/40 dark:text-rose-400 border border-rose-200 dark:border-rose-800';
+
+      return `
+        <tr class="hover:bg-slate-50/70 dark:hover:bg-slate-800/40 transition-colors">
+          <!-- Tag Details -->
+          <td class="px-6 py-4 font-bold text-slate-900 dark:text-white">
+            <div class="flex items-center gap-3">
+              <span class="w-2.5 h-2.5 rounded-full flex-shrink-0" style="background-color: ${tagColor}"></span>
+              <div class="flex flex-col">
+                <span class="text-xs font-bold">${tag.tagName}</span>
+                ${tag.tagDescription ? `<span class="text-[10px] text-slate-400 font-normal line-clamp-1">${tag.tagDescription}</span>` : ''}
+              </div>
+            </div>
+          </td>
+
+          <!-- Slug -->
+          <td class="px-4 py-4 font-mono text-[11px] text-slate-500 dark:text-slate-400">
+            #${tag.tagSlug || slugify(tag.tagName)}
+          </td>
+
+          <!-- Color Accent -->
+          <td class="px-4 py-4">
+            <div class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/60 font-mono text-[11px]">
+              <span class="w-2 h-2 rounded-full" style="background-color: ${tagColor}"></span>
+              <span class="text-slate-600 dark:text-slate-300 uppercase">${tagColor}</span>
+            </div>
+          </td>
+
+          <!-- Interactive Toggle Active Status -->
+          <td class="px-4 py-4">
+            <button 
+              type="button" 
+              data-action="toggle-status" 
+              data-id="${tag.ltId}" 
+              class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider transition-all cursor-pointer ${statusBadge}"
+              title="Click to toggle status"
+            >
+              <i class="fa-solid fa-circle text-[5px]"></i>
+              <span>${isActive ? 'Active' : 'Inactive'}</span>
+            </button>
+          </td>
+
+          <!-- Actions -->
+          <td class="px-6 py-4 text-right">
+            <div class="inline-flex items-center gap-1.5">
+              <button 
+                type="button" 
+                data-action="edit" 
+                data-id="${tag.ltId}" 
+                class="p-1.5 rounded-lg text-slate-400 hover:text-primary hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" 
+                title="Edit Tag"
+              >
+                <i class="fa-solid fa-pen-to-square pointer-events-none"></i>
+              </button>
+              <button 
+                type="button" 
+                data-action="delete" 
+                data-id="${tag.ltId}" 
+                class="p-1.5 rounded-lg text-slate-400 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors" 
+                title="Delete Tag"
+              >
+                <i class="fa-solid fa-trash-can pointer-events-none"></i>
+              </button>
+            </div>
+          </td>
+        </tr>
+      `;
+    }).join('');
+
+    renderPagination(totalPages);
+  }
+
+  function renderPagination(totalPages) {
+    if (!paginationContainer) return;
+    if (totalPages <= 1) {
+      paginationContainer.innerHTML = '';
+      return;
+    }
+
+    let buttons = '';
+
+    buttons += `
+      <button 
+        type="button" 
+        data-page="${currentPage - 1}" 
+        ${currentPage === 1 ? 'disabled class="opacity-30 cursor-not-allowed"' : 'class="hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300"'} 
+        class="page-btn w-7 h-7 flex items-center justify-center rounded-lg border border-slate-200 dark:border-slate-800 text-[10px]"
+      >
+        <i class="fa-solid fa-chevron-left pointer-events-none"></i>
+      </button>
+    `;
+
+    for (let p = 1; p <= totalPages; p++) {
+      const activeClass = p === currentPage
+        ? 'bg-primary text-white font-bold border-primary shadow-sm'
+        : 'border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800';
+
+      buttons += `
+        <button 
+          type="button" 
+          data-page="${p}" 
+          class="page-btn w-7 h-7 flex items-center justify-center rounded-lg border text-xs font-semibold ${activeClass}"
+        >
+          ${p}
+        </button>
+      `;
+    }
+
+    buttons += `
+      <button 
+        type="button" 
+        data-page="${currentPage + 1}" 
+        ${currentPage === totalPages ? 'disabled class="opacity-30 cursor-not-allowed"' : 'class="hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300"'} 
+        class="page-btn w-7 h-7 flex items-center justify-center rounded-lg border border-slate-200 dark:border-slate-800 text-[10px]"
+      >
+        <i class="fa-solid fa-chevron-right pointer-events-none"></i>
+      </button>
+    `;
+
+    paginationContainer.innerHTML = buttons;
+  }
+
+  // --- Pagination Click Delegation ---
+  if (paginationContainer) {
+    paginationContainer.addEventListener('click', (e) => {
+      const btn = e.target.closest('.page-btn:not([disabled])');
+      if (!btn) return;
+      const target = parseInt(btn.dataset.page, 10);
+      if (target && target !== currentPage) {
+        currentPage = target;
+        renderTable();
+      }
+    });
+  }
+
+  // --- Form Submit: POST (Create) or PATCH (Update) ---
+  if (modalForm) {
+    modalForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const ltId = idInput.value;
+      const isEdit = Boolean(ltId);
+      const submitBtn = modalForm.querySelector('button[type="submit"]');
+      const originalText = submitBtn.innerHTML;
+
+      const payload = {
+        tagName: nameInput.value.trim(),
+        tagSlug: slugInput.value.trim() || slugify(nameInput.value.trim()),
+        tagDescription: descInput.value.trim(),
+        tagColor: colorText.value.trim() || colorPicker.value
+      };
+
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1.5"></i> Saving...';
+
+      try {
+        const endpoint = isEdit
+          ? `${BASE_URL}/blogs/tags/${encodeURIComponent(ltId)}`
+          : `${BASE_URL}/blogs/tags`;
+
+        const response = await fetch(endpoint, {
+          method: isEdit ? 'PATCH' : 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': `Bearer ${LW_TOKEN}`
+          },
+          body: JSON.stringify(payload)
+        });
+
+        const res = await response.json();
+
+        if (res.responseCategory == 200 || res.responseCode == 2006 || res.responseCode == 201) {
+          Swal.fire({
+            icon: 'success',
+            title: isEdit ? 'Tag Updated' : 'Tag Registered',
+            text: res.responseResult || 'Operation completed successfully.',
+            timer: 1600,
+            showConfirmButton: false
+          });
+
+          closeTagModal();
+          await fetchTags();
+        } else {
+          Swal.fire('Error', res.responseResult || 'Failed to save tag.', 'error');
+        }
+      } catch (err) {
+        console.error(err);
+        Swal.fire('Error', 'A network connection issue occurred.', 'error');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originalText;
+      }
+    });
+  }
+
+  // --- Toggle Active Status (PATCH /blogs/tags/{ltId}/toggle-active) ---
+  async function toggleTagStatus(ltId, btnElement) {
+    const originalContent = btnElement.innerHTML;
+    btnElement.disabled = true;
+    btnElement.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-[10px]"></i> Updating...';
+
+    try {
+      const response = await fetch(`${BASE_URL}/blogs/tags/${encodeURIComponent(ltId)}/toggle-active`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': `Bearer ${LW_TOKEN}`
+        }
+      });
+
+      const res = await response.json();
+
+      if (res.responseCategory == 200 || res.responseCode == 200) {
+        const tag = tagsData.find(t => String(t.ltId) === String(ltId));
+        if (tag) {
+          const currentlyActive = tag.status === 'isActive' || tag.status === 'Active' || tag.status == 1;
+          tag.status = currentlyActive ? 'Inactive' : 'isActive';
+        }
+
+        renderTable();
+
+        Swal.fire({
+          toast: true,
+          position: 'top-end',
+          icon: 'success',
+          title: res.responseResult || 'Tag status updated',
+          timer: 1400,
+          showConfirmButton: false
+        });
+      } else {
+        throw new Error(res.responseResult || 'Failed to update tag status');
+      }
+    } catch (err) {
+      console.error(err);
+      Swal.fire('Error', err.message || 'Status update failed', 'error');
+      btnElement.innerHTML = originalContent;
+      btnElement.disabled = false;
+    }
+  }
+
+  // --- Delete Tag API (DELETE /blogs/tags/{ltId}) ---
+  async function deleteTag(ltId) {
+    const tag = tagsData.find(t => String(t.ltId) === String(ltId));
+    const tagName = tag ? tag.tagName : 'this tag';
+
+    const { isConfirmed } = await Swal.fire({
+      title: 'Delete Tag?',
+      html: `Are you sure you want to remove <strong class="text-slate-900 dark:text-white">"${tagName}"</strong>?<br><span class="text-xs text-rose-500">Articles using this tag will have it detached.</span>`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#e11d48',
+      cancelButtonColor: '#64748b',
+      confirmButtonText: 'Yes, delete'
+    });
+
+    if (!isConfirmed) return;
+
+    try {
+      const response = await fetch(`${BASE_URL}/blogs/tags/${encodeURIComponent(ltId)}`, {
+        method: 'DELETE',
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': `Bearer ${LW_TOKEN}`
+        }
+      });
+
+      const res = await response.json();
+
+      if (res.responseCategory == 200 || res.responseCode == 201) {
+        tagsData = tagsData.filter(t => String(t.ltId) !== String(ltId));
+        renderCloud();
+        applyFilter();
+
+        Swal.fire({
+          icon: 'success',
+          title: 'Deleted',
+          text: res.responseResult || 'Tag removed successfully.',
+          timer: 1500,
+          showConfirmButton: false
+        });
+      } else {
+        throw new Error(res.responseResult || 'Could not delete tag');
+      }
+    } catch (err) {
+      console.error(err);
+      Swal.fire('Error', err.message || 'Failed to execute delete request', 'error');
+    }
+  }
+
+  // Table Event Delegation (Edit, Delete, Toggle Status)
+  tableBody.addEventListener('click', (e) => {
+    const btn = e.target.closest('button[data-action]');
+    if (!btn) return;
+
+    const action = btn.dataset.action;
+    const ltId = btn.dataset.id;
+
+    if (action === 'edit') {
+      openTagModal(ltId);
+    } else if (action === 'delete') {
+      deleteTag(ltId);
+    } else if (action === 'toggle-status') {
+      toggleTagStatus(ltId, btn);
+    }
+  });
+
+  // Initial Fetch
+  fetchTags();
+});
+    
+</script>

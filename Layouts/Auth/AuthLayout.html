@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Account Portal — BrainDump Journal</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            colors: {
+              primary: {
+                // Maps to root.style.setProperty('--color-primary', '...')
+                DEFAULT: '#4F46E5', 
+                hover: '#4338CA',   
+                light: '#EEF2FF',
+              }
+            },
+            fontFamily: {
+              sans: ['Inter', 'system-ui', 'sans-serif'],
+              serif: ['Merriweather', 'Georgia', 'serif'],
+              mono: ['JetBrains Mono', 'monospace']
+            }
+          }
+        }
+      };
+    </script>
+
+  <!-- Fonts & FontAwesome -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <link rel="stylesheet" href="assets/css/styles.css" />
+</head>
+<body class="bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100 min-h-full flex flex-col font-sans transition-colors duration-200">
+
+  <!-- Minimal Header -->
+  <header class="py-6 px-4 sm:px-8 border-b border-slate-200 dark:border-slate-800 bg-white/70 dark:bg-slate-900/70 backdrop-blur">
+    <div class="max-w-7xl mx-auto flex items-center justify-between">
+      <a href="index.html" class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-xl bg-primary flex items-center justify-center text-white">
+          <i class="fa-solid fa-feather-pointed"></i>
+        </div>
+        <span class="text-xl font-bold text-slate-900 dark:text-white">BrainDump</span>
+      </a>
+
+      <div class="flex items-center gap-3">
+        <button class="theme-toggle-btn p-2 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+          <i class="fa-regular fa-sun sun-icon hidden"></i>
+          <i class="fa-regular fa-moon moon-icon"></i>
+        </button>
+        <a href="index.html" class="text-xs font-semibold text-slate-600 dark:text-slate-400 hover:text-primary transition-colors flex items-center gap-1.5">
+          <i class="fa-solid fa-arrow-left"></i> Back to Journal
+        </a>
+      </div>
+    </div>
+  </header>
+
+    <?php  dddm::loadDynamicContent();  ?>
+    
+  <?php ltImport('ThemeBrainDump','Store.js')  ?>
+  <?php ltImport('ThemeBrainDump','Nav.js')  ?>
+  <script>
+  document.addEventListener('DOMContentLoaded', () => {
+    // Configuration fallback (assuming window.BLOG_CONFIG exists like in previous files)
+    const BASE_URL = window.BLOG_CONFIG?.BASE_URL || '';
+    const SITEHOSTADDRESS = window.BLOG_CONFIG?.siteHostAddress || '';
+    
+    switchAuthMode('signin');
+
+    // --- Utility: Loading State Manager ---
+    const setButtonLoading = (btn, isLoading, originalText = '') => {
+      if (isLoading) {
+        btn.dataset.original = btn.innerHTML;
+        btn.innerHTML = "<div class='w-4 h-4 rounded-full border-2 border-white border-t-transparent animate-spin mx-auto'></div>";
+        btn.disabled = true;
+      } else {
+        btn.innerHTML = btn.dataset.original || originalText;
+        btn.disabled = false;
+      }
+    };
+
+    // --- Sign In Form Submission ---
+    document.getElementById('signin-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = e.target.querySelector('button[type="submit"]');
+      const email = document.getElementById('signin-email').value.trim();
+      const password = document.getElementById('signin-password').value;
+
+      setButtonLoading(btn, true);
+
+      try {
+        const response = await fetch(`${BASE_URL}/blogs/auth/signin`, {
+            method: 'POST',
+            headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password })
+        });
+        
+        const { responseCategory, responseResult, responseData } = await response.json();
+
+        if (responseCategory == '200') {
+            let tokenName = responseData.tokenName;
+            let tokenValue = responseData[tokenName];
+            
+            let userDetailsKey = tokenName.split('_').slice(1).join('_') + '_userDetails';
+            if (typeof BlogStore !== 'undefined') BlogStore.showToast('Signed in successfully!', 'success');
+            localStorage.setItem(`${tokenName}`, tokenValue);
+            const userInfo = {
+                 ltId:responseData.ltId,
+                 username:responseData.username
+            }
+             localStorage.setItem(`${userDetailsKey}`, JSON.stringify(userInfo));
+             setTimeout(() => window.location.href = `${SITEHOSTADDRESS}/ThemeBrainDump/UserProfile`, 800);
+
+        } else {
+            if (typeof BlogStore !== 'undefined') BlogStore.showToast(responseResult || 'Authentication failed', 'error');
+        }
+      } catch (err) {
+          console.error("Signin Error:", err);
+          if (typeof BlogStore !== 'undefined') BlogStore.showToast('Network error occurred.', 'error');
+      } finally {
+          setButtonLoading(btn, false, 'Sign In');
+      }
+    });
+
+    // --- Sign Up Form Submission ---
+    document.getElementById('signup-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = e.target.querySelector('button[type="submit"]');
+      const name = document.getElementById('signup-name').value.trim();
+      const email = document.getElementById('signup-email').value.trim();
+      const pass = document.getElementById('signup-password').value;
+      const username = document.getElementById('signup-username').value;
+      const confirmPass = document.getElementById('signup-confirm-password').value;
+
+      if (pass !== confirmPass) {
+        if (typeof BlogStore !== 'undefined') BlogStore.showToast('Passwords do not match!', 'error');
+        return;
+      }
+      
+      if (username.length == '' || email.length == "") {
+        if (typeof BlogStore !== 'undefined') BlogStore.showToast('Username or Email must not be empty', 'error');
+        return;
+      }
+
+      if (pass.length < 8) {
+        if (typeof BlogStore !== 'undefined') BlogStore.showToast('Password must be at least 8 characters!', 'error');
+        return;
+      }
+
+      setButtonLoading(btn, true);
+        
+    try {
+        const response = await fetch(`${BASE_URL}/blogs/auth/signup`, {
+            method: 'POST',
+            headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, email, password: pass, username, confirmPass })
+        });
+        
+        const { responseCategory, responseResult, responseData } = await response.json();
+
+        if (responseCategory == '200') {
+            if (typeof BlogStore !== 'undefined') BlogStore.showToast(`Account created for ${name}! continue by signing in`, 'success');
+              setTimeout(() => {
+                  document.getElementById('signin-email').value = responseData.email || responseData.username;
+                  switchAuthMode('signin');
+              }, 800);
+        } else {
+            if (typeof BlogStore !== 'undefined') BlogStore.showToast(responseResult || 'Registration failed', 'error');
+        }
+      } catch (err) {
+          console.error("Signup Error:", err);
+          if (typeof BlogStore !== 'undefined') BlogStore.showToast('Network error occurred.', 'error');
+      } finally {
+          setButtonLoading(btn, false, 'Create Account');
+      }
+    });
+
+    // --- Password Strength Listener (Unchanged) ---
+    const signupPass = document.getElementById('signup-password');
+    if(signupPass) {
+        signupPass.addEventListener('input', (e) => {
+          const val = e.target.value;
+          const bar = document.getElementById('strength-bar');
+          const label = document.getElementById('strength-label');
+
+          let score = 0;
+          if (val.length >= 8) score++;
+          if (/[A-Z]/.test(val)) score++;
+          if (/[0-9]/.test(val)) score++;
+          if (/[^A-Za-z0-9]/.test(val)) score++;
+
+          if (val.length === 0) {
+            bar.style.width = '0%';
+            bar.className = 'h-full w-0 transition-all duration-300 bg-rose-500';
+            label.textContent = 'None';
+            label.className = 'font-bold text-slate-500';
+          } else if (score <= 1) {
+            bar.style.width = '25%';
+            bar.className = 'h-full transition-all duration-300 bg-rose-500';
+            label.textContent = 'Weak';
+            label.className = 'font-bold text-rose-500';
+          } else if (score === 2) {
+            bar.style.width = '50%';
+            bar.className = 'h-full transition-all duration-300 bg-amber-500';
+            label.textContent = 'Fair';
+            label.className = 'font-bold text-amber-500';
+          } else if (score === 3) {
+            bar.style.width = '75%';
+            bar.className = 'h-full transition-all duration-300 bg-blue-500';
+            label.textContent = 'Good';
+            label.className = 'font-bold text-blue-500';
+          } else {
+            bar.style.width = '100%';
+            bar.className = 'h-full transition-all duration-300 bg-emerald-500';
+            label.textContent = 'Strong';
+            label.className = 'font-bold text-emerald-500';
+          }
+        });
+    }
+
+    // --- Forgot Password Form ---
+    document.getElementById('forgot-form')?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = e.target.querySelector('button[type="submit"]');
+      const email = document.getElementById('forgot-email').value.trim();
+      
+      setButtonLoading(btn, true);
+
+      try {
+        const response = await fetch(`${BASE_URL}/blogs/auth/forgot-password`, {
+            method: 'POST',
+            headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email })
+        });
+        
+        const { responseCategory } = await response.json();
+
+        if (responseCategory == '200') {
+            document.getElementById('forgot-success-box').classList.remove('hidden');
+            if (typeof BlogStore !== 'undefined') BlogStore.showToast('Reset email sent!', 'info');
+        } else {
+            if (typeof BlogStore !== 'undefined') BlogStore.showToast('Failed to process request.', 'error');
+        }
+      } catch (err) {
+          console.error("Forgot Pass Error:", err);
+      } finally {
+          setButtonLoading(btn, false, 'Send Reset Link');
+      }
+    });
+  });
+
+  // --- Global UI Helpers ---
+  function switchAuthMode(mode) {
+
+    document.querySelectorAll('.auth-panel').forEach(p => p.classList.add('hidden'));
+    document.querySelectorAll('.auth-tab').forEach(t => {
+      t.className = 'auth-tab flex-1 py-2 text-xs font-bold rounded-xl transition-all text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white';
+    });
+
+    const targetPanel = document.getElementById(`auth-panel-${mode}`);
+    const targetTab = document.getElementById(`tab-${mode}`);
+
+    if (targetPanel) targetPanel.classList.remove('hidden');
+    if (targetTab) {
+      targetTab.className = 'auth-tab flex-1 py-2 text-xs font-bold rounded-xl transition-all text-white bg-blue-600 shadow-sm'; // Replaced 'bg-primary' with a standard tailwind class for visibility, update as needed
+    }
+  }
+
+  function togglePasswordVisibility(inputId, btn) {
+    const input = document.getElementById(inputId);
+    const icon = btn.querySelector('i');
+    if (input.type === 'password') {
+      input.type = 'text';
+      icon.className = 'fa-regular fa-eye-slash text-xs text-blue-600'; // updated to standard color
+    } else {
+      input.type = 'password';
+      icon.className = 'fa-regular fa-eye text-xs text-slate-400';
+    }
+  }
+</script>
+</body>
+</html>

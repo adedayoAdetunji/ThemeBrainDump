@@ -1,0 +1,1512 @@
+ <link href="https://cdn.quilljs.com/1.3.7/quill.snow.css" rel="stylesheet">
+ <main class="container flex-grow mx-auto px-4 sm:px-6 lg:px-8 py-10 w-full">
+    
+    <!-- Profile Card -->
+<div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/90 dark:border-slate-800 shadow-xl overflow-hidden mb-8">
+  
+  <!-- Banner Background (Reverted to original blue/purple/pink gradient) -->
+  <div class="h-52 sm:h-56 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 relative">
+    <div class="absolute inset-0 bg-black/15"></div>
+  </div>
+
+  <!-- User Header Content -->
+  <div class="px-6 sm:px-10 pb-8 relative flex flex-col xl:flex-row justify-between gap-8">
+    
+    <div class="flex flex-col sm:flex-row gap-6 text-center sm:text-left">
+      
+      <!-- Avatar (Negative margin applied ONLY here to pull it into the banner) -->
+      <div class="-mt-16 sm:-mt-20 relative group shrink-0 self-center sm:self-start z-10">
+        <img id="profile-avatar-display" src="https://ui-avatars.com/api/?name=User&background=random" alt="Profile Avatar" class="w-28 h-28 sm:w-36 sm:h-36 rounded-3xl object-cover ring-4 ring-white dark:ring-slate-900 shadow-xl bg-white dark:bg-slate-800" />
+        <button class="absolute inset-0 bg-slate-900/50 rounded-3xl opacity-0 group-hover:opacity-100 transition-all duration-200 flex items-center justify-center text-white text-xs font-bold gap-1.5 backdrop-blur-[2px]">
+          <i class="fa-solid fa-camera"></i> Change
+        </button>
+      </div>
+
+      <!-- Identity & Bio (Starts naturally below the banner line) -->
+      <div class="pt-2 sm:pt-3">
+        <div class="flex items-center gap-3 justify-center sm:justify-start">
+          <h1 id="profile-name-display" class="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">Alex Morgan</h1>
+          <span id="profile-role-badge" class="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-indigo-100 text-indigo-600 dark:bg-indigo-500/20 dark:text-indigo-300">Admin</span>
+        </div>
+        
+        <p id="profile-handle-display" class="text-xs text-slate-500 dark:text-slate-400 font-mono mt-1.5">@alexm &bull; alex.morgan@example.com</p>
+        
+        <p id="profile-bio-display" class="text-xs sm:text-sm text-slate-600 dark:text-slate-300 mt-3 max-w-xl leading-relaxed">
+          Staff Frontend Architect & Design Systems Lead. Writing about the future of web interfaces, typography, browser performance, and developer experience.
+        </p>
+
+        <!-- Social & Meta Details -->
+        <div class="flex flex-wrap items-center gap-4 mt-4 text-xs font-medium text-slate-500 dark:text-slate-400 justify-center sm:justify-start">
+          <div class="flex items-center gap-1.5">
+            <i class="fa-solid fa-location-dot opacity-75"></i><span id="profile-location-display"></span> 
+          </div>
+          <a href="" target="_blank" class="flex items-center gap-1.5 hover:text-indigo-500 transition-colors" id="profile-facebook-display">
+          </a>
+          <a href="" target="_blank" class="flex items-center gap-1.5 hover:text-indigo-500 transition-colors" id="profile-linkedin-display">
+          </a>
+          <a href="" target="_blank" class="flex items-center gap-1.5 hover:text-indigo-500 transition-colors" id="profile-x-display">
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Stats Counters -->
+    <div class="flex items-center justify-center gap-6 border-t xl:border-t-0 pt-6 xl:pt-4 border-slate-100 dark:border-slate-800/50 shrink-0 self-center xl:self-start xl:mt-2">
+      <div class="text-center px-2">
+        <span id="stat-posts-count" class="block text-2xl font-black text-slate-900 dark:text-white mb-1">2</span>
+        <p class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Articles</p>
+      </div>
+      <div class="h-10 w-px bg-slate-200 dark:bg-slate-800"></div>
+      <div class="text-center px-2">
+        <span id="stat-comments-count" class="block text-2xl font-black text-slate-900 dark:text-white mb-1">1</span>
+        <p class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Comments</p>
+      </div>
+      <div class="h-10 w-px bg-slate-200 dark:bg-slate-800"></div>
+      <div class="text-center px-2">
+        <span id="stat-bookmarks-count" class="block text-2xl font-black text-slate-900 dark:text-white mb-1">2</span>
+        <p class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Saved</p>
+      </div>
+    </div>
+
+  </div>
+</div>
+    <!-- Navigation Tabs -->
+    <div class="flex border-b border-slate-200 dark:border-slate-800 mb-8 overflow-x-auto scrollbar-none">
+      <button onclick="switchProfileTab('articles')" id=" tab-btn-articles" class="profile-tab-btn px-5 py-3 text-xs font-bold border-b-2 border-primary text-primary whitespace-nowrap flex items-center gap-2">
+        <i class="fa-regular fa-newspaper"></i> My Articles
+      </button>
+      <button onclick="switchProfileTab('comments')" id="tab-btn-comments" class="profile-tab-btn px-5 py-3 text-xs font-bold border-b-2 border-transparent text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white whitespace-nowrap flex items-center gap-2">
+        <i class="fa-regular fa-comment-dots"></i> My Comments
+      </button>
+      <button onclick="switchProfileTab('bookmarks')" id="tab-btn-bookmarks" class="profile-tab-btn px-5 py-3 text-xs font-bold border-b-2 border-transparent text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white whitespace-nowrap flex items-center gap-2">
+        <i class="fa-regular fa-bookmark"></i> Bookmarked
+      </button>
+      <button onclick="switchProfileTab('edit')" id="tab-btn-edit" class="profile-tab-btn px-5 py-3 text-xs font-bold border-b-2 border-transparent text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white whitespace-nowrap flex items-center gap-2">
+        <i class="fa-regular fa-pen-to-square"></i> Edit Profile
+      </button>
+      <button onclick="switchProfileTab('settings')" id="tab-btn-settings" class="profile-tab-btn px-5 py-3 text-xs font-bold border-b-2 border-transparent text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white whitespace-nowrap flex items-center gap-2">
+        <i class="fa-solid fa-sliders"></i> Settings & Privacy
+      </button>
+    </div>
+
+    <!-- ================= TAB 1: USER ARTICLES ================= -->
+    <section id="tab-panel-articles" class="tab-panel">
+      <div class="flex items-center justify-between mb-6">
+        <h3 class="text-base font-bold text-slate-900 dark:text-white">Articles Authored by You</h3>
+        <button id="create-new-post" class="px-4 py-2 rounded-xl bg-primary hover:bg-primary-hover text-white text-xs font-semibold shadow-md flex items-center gap-2">
+          <i class="fa-solid fa-plus text-xs"></i> Create New Post
+        </button>
+      </div>
+      <div id="user-posts-container" class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+        <!-- Injected via JS -->
+      </div>
+    </section>
+
+    <!-- ================= TAB 2: USER COMMENTS ================= -->
+    <section id="tab-panel-comments" class="tab-panel hidden">
+      <h3 class="text-base font-bold text-slate-900 dark:text-white mb-6">Your Recent Comments</h3>
+      <div id="user-comments-container" class="space-y-4">
+        <!-- Injected via JS -->
+      </div>
+    </section>
+
+    <!-- ================= TAB 3: BOOKMARKS ================= -->
+    <section id="tab-panel-bookmarks" class="tab-panel hidden">
+      <h3 class="text-base font-bold text-slate-900 dark:text-white mb-6">Saved Articles for Later</h3>
+      <div id="user-bookmarks-container" class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+        <!-- Injected via JS -->
+      </div>
+    </section>
+
+    <!-- ================= TAB 4: EDIT PROFILE ================= -->
+    <section id="tab-panel-edit" class="tab-panel hidden">
+      <div class="max-w-2xl bg-white dark:bg-slate-900 p-8 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm">
+        <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-6">Edit Profile Details</h3>
+        
+       <form id="edit-profile-form" class="space-y-5">
+          <!-- Row 1: Fullname & Username -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+            <div>
+              <label for="edit-name" class="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1.5">Full Name</label>
+              <input type="text" id="edit-name" name="fullname" class="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white text-xs focus:outline-none focus:ring-2 focus:ring-primary transition-all shadow-sm" />
+            </div>
+            <div>
+              <label for="edit-username" class="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1.5">Username</label>
+              <input type="text" id="edit-username" disabled class="w-full px-4 py-2.5 rounded-xl disabled:bg-slate-200 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white text-xs focus:outline-none focus:ring-2 focus:ring-primary transition-all shadow-sm disabled:cursor-not-allowed" />
+            </div>
+          </div>
+        
+          <!-- Row 2: Email & Location -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+            <div>
+              <label for="edit-email" class="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1.5">Email Address</label>
+              <input type="email" id="edit-email" disabled class="w-full px-4 py-2.5 rounded-xl disabled:bg-slate-200 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white text-xs focus:outline-none focus:ring-2 focus:ring-primary transition-all shadow-sm disabled:cursor-not-allowed " />
+            </div>
+            <div>
+              <label for="edit-location" class="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1.5">Location</label>
+              <input type="text" id="edit-location" name="location" placeholder="e.g. San Francisco, CA" class="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white text-xs focus:outline-none focus:ring-2 focus:ring-primary transition-all shadow-sm" />
+            </div>
+          </div>
+        
+          <!-- Row 3: Bio -->
+          <div>
+            <label for="edit-bio" class="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1.5">Bio</label>
+            <textarea id="edit-bio" name="bio" rows="3" class="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white text-xs focus:outline-none focus:ring-2 focus:ring-primary resize-none transition-all shadow-sm"></textarea>
+          </div>
+        
+          <!-- Row 4: Facebook & Twitter -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+            <div>
+              <label for="edit-facebook" class="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1.5">Facebook URL</label>
+              <input type="url" id="edit-facebook" name="facebook" placeholder="https://facebook.com/..." class="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white text-xs focus:outline-none focus:ring-2 focus:ring-primary transition-all shadow-sm" />
+            </div>
+            <div>
+              <label for="edit-twitter" class="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1.5">Twitter / X Handle</label>
+              <input type="text" id="edit-twitter" name="twitter" placeholder="@username" class="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white text-xs focus:outline-none focus:ring-2 focus:ring-primary transition-all shadow-sm" />
+            </div>
+          </div>
+        
+          <!-- Row 5: LinkedIn & Avatar Upload -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 items-end">
+            <div>
+              <label for="edit-linkedin" class="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1.5">LinkedIn URL</label>
+              <input type="url" id="edit-linkedin" name="linkedin" placeholder="https://linkedin.com/in/..." class="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white text-xs focus:outline-none focus:ring-2 focus:ring-primary transition-all shadow-sm" />
+            </div>
+            
+            <div>
+              <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1.5">Avatar Image</label>
+              <div class="flex items-center gap-4">
+                <!-- Live Preview -->
+                <img id="edit-avatar-preview" src="https://ui-avatars.com/api/?name=U&background=random" alt="Avatar Preview" class="w-11 h-11 rounded-full object-cover border-2 border-slate-200 dark:border-slate-700 shrink-0 bg-slate-100 dark:bg-slate-800" />
+                
+                <div class="flex-grow">
+                  <!-- Hidden file input triggered by the label -->
+                  <label for="edit-avatar" class="cursor-pointer flex items-center justify-center w-full px-4 py-2 rounded-xl bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-600 transition-colors shadow-sm">
+                     <i class="fa-solid fa-cloud-arrow-up text-primary mr-2"></i> Upload Photo
+                  </label>
+                  <input type="file" id="edit-avatar" name="avatarFile" accept="image/png, image/jpeg, image/webp" class="hidden" />
+                </div>
+              </div>
+              <!-- Validation Error Message -->
+              <p id="avatar-error" class="text-[10px] font-medium text-rose-500 mt-1.5 hidden"></p>
+            </div>
+          </div>
+        
+          <div class="pt-2">
+            <button type="submit" id="submit-profile-btn" class="py-3 px-6 rounded-xl bg-primary hover:bg-primary-hover text-white text-xs font-bold shadow-md shadow-primary/20 transition-all flex items-center gap-2">
+              <i class="fa-solid fa-user-check"></i> Save Changes
+            </button>
+          </div>
+        </form>
+        
+      </div>
+    </section>
+
+    <!-- ================= TAB 5: SETTINGS & PRIVACY ================= -->
+    <section id="tab-panel-settings" class="tab-panel hidden">
+      <div class="max-w-2xl space-y-8">
+        
+        <!-- Notifications Card -->
+        <div class="bg-white dark:bg-slate-900 p-8 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm">
+          <h3 class="text-base font-bold text-slate-900 dark:text-white mb-4">Notification Preferences</h3>
+          <div class="space-y-4">
+            <div class="flex items-center justify-between">
+              <div>
+                <h4 class="text-xs font-bold text-slate-800 dark:text-white">Comment Replies</h4>
+                <p class="text-[11px] text-slate-400">Receive an email whenever someone replies to your article or comment</p>
+              </div>
+              <input type="checkbox" id="setting-notify-comments" checked class="w-4 h-4 rounded text-primary focus:ring-primary" />
+            </div>
+            <div class="flex items-center justify-between border-t border-slate-100 dark:border-slate-800 pt-3">
+              <div>
+                <h4 class="text-xs font-bold text-slate-800 dark:text-white">Weekly Digest</h4>
+                <p class="text-[11px] text-slate-400">A weekly summary of top performing stories and community discussions</p>
+              </div>
+              <input type="checkbox" id="setting-notify-digest" checked class="w-4 h-4 rounded text-primary focus:ring-primary" />
+            </div>
+            <div class="flex items-center justify-between border-t border-slate-100 dark:border-slate-800 pt-3">
+              <div>
+                <h4 class="text-xs font-bold text-slate-800 dark:text-white">Security & Login Alerts</h4>
+                <p class="text-[11px] text-slate-400">Instant notification when a new device logs into your account</p>
+              </div>
+              <input type="checkbox" id="setting-notify-security" checked class="w-4 h-4 rounded text-primary focus:ring-primary" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Privacy & Security Card -->
+        <div class="bg-white dark:bg-slate-900 p-8 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm">
+          <h3 class="text-base font-bold text-slate-900 dark:text-white mb-4">Privacy & Security</h3>
+          <div class="space-y-4">
+            <div class="flex items-center justify-between">
+              <div>
+                <h4 class="text-xs font-bold text-slate-800 dark:text-white">Public Profile Visibility</h4>
+                <p class="text-[11px] text-slate-400">Allow other members to view your bio and authored articles</p>
+              </div>
+              <input type="checkbox" id="setting-privacy-profile" checked class="w-4 h-4 rounded text-primary focus:ring-primary" />
+            </div>
+            <div class="flex items-center justify-between border-t border-slate-100 dark:border-slate-800 pt-3">
+              <div>
+                <h4 class="text-xs font-bold text-slate-800 dark:text-white">Two-Factor Authentication (2FA)</h4>
+                <p class="text-[11px] text-slate-400">Secure your account with TOTP authenticator app verification</p>
+              </div>
+              <button onclick="toggle2FA()" id="btn-2fa" class="px-3 py-1.5 rounded-lg border border-slate-300 dark:border-slate-700 text-xs font-bold text-slate-700 dark:text-slate-300 hover:border-primary">
+                Enable 2FA
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Security: Change Password Card -->
+        <div class="bg-white dark:bg-slate-900 p-8 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm">
+          <div class="flex items-center gap-3 mb-4">
+            <div class="w-9 h-9 rounded-xl bg-primary-light text-primary dark:bg-slate-800 flex items-center justify-center text-sm">
+              <i class="fa-solid fa-lock"></i>
+            </div>
+            <div>
+              <h3 class="text-base font-bold text-slate-900 dark:text-white">Security: Change Password</h3>
+              <p class="text-[11px] text-slate-400">Ensure your account is using a secure, updated password</p>
+            </div>
+          </div>
+
+          <form id="profile-change-password-form" class="space-y-4 pt-2">
+            <div>
+              <label for="security-current-pass" class="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1.5">Current Password *</label>
+              <div class="relative">
+                <i class="fa-solid fa-key absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                <input type="password" id="security-current-pass" required placeholder="Enter current password" class="w-full pl-9 pr-10 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white text-xs focus:outline-none focus:ring-2 focus:ring-primary" />
+                <button type="button" onclick="togglePasswordVisibility('security-current-pass', this)" class="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
+                  <i class="fa-regular fa-eye text-xs"></i>
+                </button>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label for="security-new-pass" class="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1.5">New Password *</label>
+                <div class="relative">
+                  <i class="fa-solid fa-lock absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                  <input type="password" id="security-new-pass" required placeholder="Min. 8 characters" class="w-full pl-9 pr-10 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white text-xs focus:outline-none focus:ring-2 focus:ring-primary" />
+                  <button type="button" onclick="togglePasswordVisibility('security-new-pass', this)" class="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
+                    <i class="fa-regular fa-eye text-xs"></i>
+                  </button>
+                </div>
+              </div>
+
+              <div>
+                <label for="security-confirm-pass" class="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1.5">Confirm New Password *</label>
+                <div class="relative">
+                  <i class="fa-solid fa-check-double absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                  <input type="password" id="security-confirm-pass" required placeholder="Repeat new password" class="w-full pl-9 pr-10 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white text-xs focus:outline-none focus:ring-2 focus:ring-primary" />
+                  <button type="button" onclick="togglePasswordVisibility('security-confirm-pass', this)" class="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
+                    <i class="fa-regular fa-eye text-xs"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Password Requirements Checklist -->
+            <div class="p-3 bg-slate-50 dark:bg-slate-800/60 rounded-xl space-y-1 text-[11px] text-slate-500 dark:text-slate-400">
+              <div class="flex items-center gap-1.5"><i class="fa-solid fa-circle text-[5px]"></i> Minimum 8 characters</div>
+              <div class="flex items-center gap-1.5"><i class="fa-solid fa-circle text-[5px]"></i> Must match the confirmation password</div>
+            </div>
+
+            <button type="submit" class="py-2.5 px-6 rounded-xl bg-primary hover:bg-primary-hover text-white text-xs font-bold shadow-md shadow-indigo-500/20 transition-all flex items-center gap-2">
+              <i class="fa-solid fa-shield-halved text-xs"></i> Update Password
+            </button>
+          </form>
+        </div>
+
+        <!-- Danger Zone -->
+        <div class="bg-rose-50/50 dark:bg-rose-950/20 p-8 rounded-3xl border border-rose-200 dark:border-rose-900/50">
+          <h3 class="text-base font-bold text-rose-700 dark:text-rose-400 mb-2">Danger Zone</h3>
+          <p class="text-xs text-rose-600 dark:text-rose-300 mb-4">Permanently delete your profile and remove all associated articles.</p>
+          <button onclick="confirmDeleteAccount()" class="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold shadow-md">
+            Delete Account
+          </button>
+        </div>
+
+      </div>
+    </section>
+    
+    <!-- ==================== CREATE / EDIT POST MODAL ==================== -->
+<div id="post-editor-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[100] hidden flex items-center justify-center p-4 sm:p-6">
+  <div class="bg-white dark:bg-slate-900 w-full max-w-4xl rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-800 max-h-[80vh] flex flex-col overflow-hidden">
+    
+    <!-- Modal Header -->
+    <div class="p-6 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-white dark:bg-slate-900 z-10">
+      <h3 id="modal-post-title" class="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
+        <i class="fa-solid fa-pen-nib text-primary"></i> Write New Post
+      </h3>
+      <button type="button" onclick="closePostModal()" class="p-2 text-slate-400 hover:text-slate-600 dark:hover:text-white rounded-xl transition-colors">
+        <i class="fa-solid fa-xmark text-lg"></i>
+      </button>
+    </div>
+
+    <!-- Modal Form Body -->
+    <form id="post-editor-form" class="flex-grow overflow-y-auto p-6 space-y-6">
+      
+      <!-- Hidden Fields for API -->
+      <input type="hidden" name="ltId" id="editor-post-id" />
+      <input type="hidden" name="content" id="hiddenContentInput" />
+      <input type="hidden" name="slug" id="slugInput" />
+
+      <!-- Row 1: Title & Category -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="md:col-span-2">
+          <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-2">Post Title <span class="text-rose-500">*</span></label>
+          <input type="text" name="title" id="editor-title" required placeholder="e.g. The Future of Web Architecture" class="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary transition-all shadow-sm" />
+        </div>
+
+        <div class="md:col-span-1">
+          <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-2">Category <span class="text-rose-500">*</span></label>
+          <select name="categoryId" id="categorySelect" required class="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary transition-all shadow-sm cursor-pointer">
+            <option value="" disabled selected>Loading categories...</option>
+            <!-- Populated dynamically via JS -->
+          </select>
+        </div>
+      </div>
+
+      <!-- Row 2: Quill Editor -->
+      <div>
+        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-2">Post Body <span class="text-rose-500">*</span></label>
+        <div class="rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden shadow-sm bg-white dark:bg-slate-800">
+          <!-- Quill Toolbar will automatically inject here based on your JS init -->
+          <div id="quill-editor-container" class="min-h-[200px] sm:min-h-[22    0px] text-sm text-slate-900 dark:text-white bg-slate-50 dark:bg-slate-800"></div>
+        </div>
+      </div>
+
+      <!-- Row 3: Excerpt & Tags -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-2">Short Excerpt</label>
+          <textarea name="excerpt" id="editor-excerpt" rows="2" placeholder="A brief summary for the blog feed..." class="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary transition-all shadow-sm resize-none"></textarea>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-2">Tags</label>
+          <input type="text" name="tags" id="editor-tags" placeholder="e.g. Design, Frontend, UI (Comma separated)" class="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary transition-all shadow-sm" />
+        </div>
+      </div>
+
+      <!-- Row 4: Media Upload -->
+      <div class="p-5 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50">
+        <h4 class="text-sm font-bold text-slate-900 dark:text-white mb-1">Media Attachments</h4>
+        <p class="text-xs text-slate-500 dark:text-slate-400 mb-4">Upload up to 4 files (Images, PDFs, Video, or Audio). The first image will be used as the cover.</p>
+        
+        <div class="flex items-center gap-4">
+          <label for="additionalMedia" class="cursor-pointer px-4 py-2.5 rounded-xl bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-sm font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-600 transition-colors shadow-sm flex items-center gap-2">
+            <i class="fa-solid fa-cloud-arrow-up text-primary"></i> Choose Files
+          </label>
+          <input type="file" id="additionalMedia" name="media" class="hidden" multiple accept="image/*,application/pdf,video/*,audio/*">
+          <span id="mediaCount" class="text-xs font-medium text-slate-500 dark:text-slate-400">No files chosen</span>
+        </div>
+        
+        <!-- Media Previews -->
+        <div id="mediaPreviewContainer" class="mt-4 grid grid-cols-2 sm:grid-cols-4 gap-4 hidden">
+          <!-- JS will inject preview thumbnails here -->
+        </div>
+      </div>
+
+      <!-- Row 5: Co-Authors (Collapsible) -->
+      <details class="group rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 overflow-hidden shadow-sm">
+        <summary class="flex cursor-pointer items-center justify-between p-5 list-none outline-none [&::-webkit-details-marker]:hidden hover:bg-slate-50 dark:hover:bg-slate-800/80 transition-colors">
+          <div class="flex items-center gap-2">
+            <h4 class="text-sm font-bold text-slate-900 dark:text-white">Co-Authors & Contributors</h4>
+            <span class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-700 text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Optional</span>
+          </div>
+          <i class="fa-solid fa-chevron-down text-slate-400 transition-transform duration-300 group-open:-rotate-180"></i>
+        </summary>
+        
+        <div class="p-5 border-t border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-900/50">
+          <input type="hidden" name="coAuthors" id="coAuthorsData" value="[]" />
+          
+          <div class="flex flex-col sm:flex-row gap-3 mb-4">
+            <select id="authorSelect" class="flex-1 px-4 py-2.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary shadow-sm cursor-pointer">
+              <option value="" disabled selected>Select a user...</option>
+              <option value="2">Jane Doe</option>
+              <option value="5">John Smith</option>
+            </select>
+            
+            <select id="roleSelect" class="w-full sm:w-40 px-4 py-2.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary shadow-sm cursor-pointer">
+              <option value="co-author">Co-Author</option>
+              <option value="editor">Editor</option>
+              <option value="reviewer">Reviewer</option>
+            </select>
+            
+            <button type="button" id="addAuthorBtn" class="shrink-0 px-5 py-2.5 rounded-xl bg-slate-800 dark:bg-slate-700 text-white text-sm font-bold shadow-md hover:bg-slate-900 dark:hover:bg-slate-600 transition-colors">
+              Add
+            </button>
+          </div>
+          
+          <div id="contributorsList" class="flex flex-col gap-2 empty:hidden">
+            <!-- Rendered contributors appear here -->
+          </div>
+        </div>
+      </details>
+
+      <!-- Row 6: Publishing & SEO Settings (Collapsible) -->
+      <details class="group rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 overflow-hidden shadow-sm">
+        <summary class="flex cursor-pointer items-center justify-between p-5 list-none outline-none [&::-webkit-details-marker]:hidden hover:bg-slate-50 dark:hover:bg-slate-800/80 transition-colors">
+          <div class="flex items-center gap-2">
+            <h4 class="text-sm font-bold text-slate-900 dark:text-white">SEO & Publishing Settings</h4>
+            <span class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-700 text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Settings</span>
+          </div>
+          <i class="fa-solid fa-chevron-down text-slate-400 transition-transform duration-300 group-open:-rotate-180"></i>
+        </summary>
+        
+        <div class="p-5 border-t border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-900/50 space-y-5">
+          
+          <!-- SEO Fields -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div>
+              <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1.5">SEO Title</label>
+              <input type="text" name="seoTitle" placeholder="Optimized title for search engines..." class="w-full px-4 py-2.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary shadow-sm" />
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1.5">SEO Description</label>
+              <input type="text" name="seoDescription" placeholder="Meta description..." class="w-full px-4 py-2.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary shadow-sm" />
+            </div>
+          </div>
+
+          <!-- Status, Read Time & Comments -->
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-5 pt-2 border-t border-slate-200/50 dark:border-slate-700/50 mt-4">
+            <!--<div>-->
+            <!--  <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1.5">Status</label>-->
+            <!--  <select name="status" id="statusSelect" class="w-full px-4 py-2.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm font-medium text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary shadow-sm cursor-pointer">-->
+            <!--    <option value="draft">Draft</option>-->
+            <!--    <option value="scheduled">Scheduled</option>-->
+            <!--    <option value="published">Published</option>-->
+            <!--    <option value="archived">Archived</option>-->
+            <!--  </select>-->
+            <!--</div>-->
+            
+            <div>
+              <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1.5">Read Time (Mins)</label>
+              <input type="number" name="readingTime" id="readingTime" value="5" min="1" class="w-full px-4 py-2.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm font-medium text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary shadow-sm" />
+            </div>
+
+            <div class="flex items-center h-full pt-5">
+              <label class="flex items-center gap-2 cursor-pointer group">
+                <input type="checkbox" name="allowComments" id="allowComments" checked class="w-5 h-5 rounded text-primary focus:ring-primary border-slate-300 dark:border-slate-600 bg-transparent cursor-pointer" />
+                <span class="text-sm font-semibold text-slate-700 dark:text-slate-300 group-hover:text-slate-900 dark:group-hover:text-white transition-colors">Allow Comments</span>
+              </label>
+            </div>
+          </div>
+
+        </div>
+      </details>
+
+    </form>
+
+    <!-- Modal Footer -->
+    <div class="p-6 border-t border-slate-100 dark:border-slate-800 flex items-center justify-end gap-3 bg-white dark:bg-slate-900 z-10">
+      <button type="button" onclick="closePostModal()" id="cancelPostBtn" class="px-5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-sm font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors shadow-sm">
+        Cancel
+      </button>
+      <button type="submit" form="post-editor-form" id="submitPostBtn" class="px-6 py-2.5 rounded-xl bg-primary hover:bg-primary-hover text-white text-sm font-bold shadow-md shadow-primary/20 transition-all flex items-center gap-2">
+        <i class="fa-solid fa-cloud-arrow-up"></i> Save Post
+      </button>
+    </div>
+
+  </div>
+</div>
+    
+    
+  </main>
+    <?php ltImport('ThemeBrainDump','Store.js')  ?>
+  <?php ltImport('ThemeBrainDump','Nav.js')  ?>
+  <script src="https://cdn.quilljs.com/1.3.7/quill.js"></script>
+  <!--{"ltId":"179072257927183","username":"Teejay10"}-->
+   <script>
+   
+   
+let USER_DETAILS = null;
+let userId = null
+    
+
+document.addEventListener('DOMContentLoaded', () => {
+    
+    
+    // 1. Get User ID from LocalStorage
+    const userDetailsKey = <?= 
+        class_exists('ApiTokenDetails') && method_exists('ApiTokenDetails', 'appId')
+            ? json_encode(ApiTokenDetails::appId().'_userDetails')
+            : json_encode('userDetails');
+    ?>;
+    
+    let localUser = JSON.parse(localStorage.getItem(userDetailsKey));
+    
+    // 2. Fetch Fresh Data
+    if (localUser && localUser.ltId) {
+        onLoadUser(localUser.ltId);
+        userId = localUser.ltId;
+    } else {
+        BlogStore.showToast('User not found. Please log in.', 'error');
+        window.location.href = `${window.BLOG_CONFIG?.siteHostAddress}/ThemeBrainDump/auth`;
+        return;
+    }
+
+    // 3. Tab Routing
+    const hash = window.location.hash.replace('#', '');
+    if (['articles', 'comments', 'bookmarks', 'edit', 'settings'].includes(hash)) {
+        switchProfileTab(hash);
+    }
+
+});
+
+async function onLoadUser(userId) {
+    try {
+        const response = await fetch(`${window.BLOG_CONFIG?.BASE_URL || ''}/blogs/user/${encodeURIComponent(userId)}/record`, {
+            method: 'GET',
+            headers: { 'Accept': 'application/json' }
+        });
+
+        const userData = await response.json();
+        const { responseData, responseResult, responseCategory } = userData;
+        
+        if (responseCategory == 200) {
+            USER_DETAILS = responseData || {};
+            
+            // Initialize UI with fetched data
+            loadUserProfile(USER_DETAILS);
+            renderUserPosts(USER_DETAILS.posts || []);
+            renderUserComments(USER_DETAILS.comments || []);
+            renderUserBookmarks(); // No bookmarks in current payload, will fallback to empty state
+        } else {
+            BlogStore.showToast(responseResult || 'Failed to load user data', 'error');
+        }
+    } catch (error) {
+        console.error("Error loading user:", error);
+        BlogStore.showToast('Network error loading profile', 'error');
+    }
+}
+
+function loadUserProfile(user) {
+    if (!user) return;
+
+    // Fallbacks
+    const defaultAvatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(user.fullname || user.username || 'User')}&background=random`;
+    const avatarUrl = user.avatar ? `${window.BLOG_CONFIG?.siteHostAddress}/${user.avatar}` : defaultAvatar;
+    const role = user.role || 'Member'; 
+    const bioText = user.bio || 'This user prefers to keep an air of mystery about them.';
+    const userLocation = user.location;
+    
+    // Profile Display Elements
+    const elements = {
+        'profile-avatar-display': { prop: 'src', val: avatarUrl },
+        'profile-name-display': { prop: 'textContent', val: user.fullname || user.username },
+        'profile-handle-display': { prop: 'textContent', val: `@${user.username} • ${user.email}` },
+        'profile-bio-display': { prop: 'textContent', val: bioText },
+        'profile-role-badge': { prop: 'textContent', val: role },
+        'profile-location-display': { prop: 'textContent', val: userLocation },
+        'profile-x-display': { prop: 'innerHTML', val: `<i class="fa-brands fa-x opacity-75"></i> ${user.twitter}` },
+        'profile-facebook-display': { prop: 'innerHTML', val: `<i class="fa-brands fa-facebook opacity-75"></i> ${user.facebook}` },
+        'profile-linkedin-display': { prop: 'innerHTML', val: `<i class="fa-brands fa-linkedin opacity-75"></i> ${user.linkedin}` }
+    };
+
+    for (const [id, data] of Object.entries(elements)) {
+        const el = document.getElementById(id);
+        if (el) el[data.prop] = data.val;
+    }
+    document.getElementById('profile-x-display').href = user.twitter;
+    document.getElementById('profile-facebook-display').href = user.facebook;
+    document.getElementById('profile-linkedin-display').href = user.linkedin;
+
+    // Pre-fill Edit Form Inputs
+    const inputs = {
+        'edit-name': user.fullname,
+        'edit-username': user.username,
+        'edit-email': user.email,
+        'edit-location': userLocation,
+        'edit-bio': bioText,
+        'edit-twitter': user.twitter,
+        'edit-linkedin': user.linkedin,
+        'edit-facebook': user.facebook
+    };
+
+    for (const [id, val] of Object.entries(inputs)) {
+        const el = document.getElementById(id);
+        if (el) el.value = val || '';
+    }
+}
+
+function renderUserPosts(posts) {
+    const container = document.getElementById('user-posts-container');
+    const postsCount = document.getElementById('stat-posts-count');
+    if (postsCount) postsCount.textContent = posts.length;
+
+    if (!posts.length) {
+        if (container) container.innerHTML = `<p class="text-sm text-slate-400 col-span-2 py-8 text-center bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800">You haven't written any articles yet.</p>`;
+        return;
+    }
+
+    if (container) {
+        container.innerHTML = posts.map(post => {
+            let coverImg = getPostCoverImage(post);
+
+            const statusClass = post.status === 'published' ? 'bg-emerald-600 text-white' : 'bg-amber-500 text-white';
+
+            return `
+            <div class="flex flex-col bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+                <div class="relative h-40">
+                    <img src="${coverImg}" alt="${post.title}" class="w-full h-full object-cover" />
+                    <span class="absolute top-3 left-3 px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider ${statusClass} shadow-sm">
+                        ${post.status}
+                    </span>
+                </div>
+                <div class="p-5 flex flex-col justify-between flex-grow">
+                    <div>
+                        <span class="text-[10px] font-bold uppercase tracking-wider text-primary">Article</span>
+                        <h4 class="text-sm font-bold text-slate-900 dark:text-white mt-1 line-clamp-2 hover:text-primary transition-colors">
+                            <a href="${window.BLOG_CONFIG?.siteHostAddress}/ThemeBrainDump/post?slug=${post.slug}" target="_blank">${post.title}</a>
+                        </h4>
+                    </div>
+                    <div class="pt-4 mt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs text-slate-400 font-medium">
+                        <span><i class="fa-regular fa-eye mr-1"></i> ${post.viewCount || 0}</span>
+                        <div class="flex items-center gap-2">
+                            <button onclick="handleEdit(${post.ltId})" class="p-1.5 hover:text-primary transition-colors"><i class="fa-regular fa-pen-to-square"></i></button>
+                            <button onclick="handleDeleteMyPost(${post.ltId})" class="p-1.5 hover:text-rose-500 transition-colors"><i class="fa-regular fa-trash-can"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            `;
+        }).join('');
+    }
+}
+
+function renderUserComments(comments) {
+    const container = document.getElementById('user-comments-container');
+    
+    // Flatten comments and their replies to get an accurate total count
+    let flatComments = [];
+    const flatten = (arr) => {
+        arr.forEach(c => {
+            flatComments.push(c);
+            if (c.replies && c.replies.length > 0) flatten(c.replies);
+        });
+    };
+    flatten(comments);
+
+    const commentsCount = document.getElementById('stat-comments-count');
+    if (commentsCount) commentsCount.textContent = flatComments.length;
+
+    if (!flatComments.length) {
+        if (container) container.innerHTML = `<p class="text-sm text-slate-400 py-8 text-center bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800">You haven't participated in any discussions yet.</p>`;
+        return;
+    }
+
+    if (container) {
+        // Render the flattened comments list based on the new JSON payload
+        container.innerHTML = flatComments.map(c => {
+            // Safely format date
+            const dateObj = new Date(c.createdAt);
+            const dateStr = !isNaN(dateObj) ? dateObj.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }) : c.createdAt;
+            return `
+            <div class="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm hover:border-slate-300 dark:hover:border-slate-700 transition-colors">
+                <div class="flex items-center justify-between text-xs text-slate-400 mb-3">
+                    <span class="truncate pr-4">On <a href="${window.BLOG_CONFIG?.siteHostAddress}/ThemeBrainDump/post?slug=${c.postSlug}" target="_blank" class="font-semibold text-primary hover:underline">${c.postTitle}</a></span>
+                    <span class="whitespace-nowrap font-medium">${dateStr}</span>
+                </div>
+                <p class="text-sm text-slate-700 dark:text-slate-300 leading-relaxed border-l-2 border-slate-200 dark:border-slate-700 pl-3">"${c.body}"</p>
+                
+                <div class="mt-3 pt-3 border-t border-slate-100 dark:border-slate-800/50 flex items-center justify-end text-[11px] font-bold text-slate-400 gap-4">
+                    <span class="${c.likes > 0 ? 'text-rose-500' : ''}"><i class="fa-solid fa-heart mr-1"></i> ${c.likes}</span>
+                    <span class="${c.status === 'approved' ? 'text-emerald-500' : 'text-amber-500'} uppercase tracking-wider">${c.status}</span>
+                </div>
+            </div>
+            `;
+        }).join('');
+    }
+}
+
+function renderUserBookmarks() {
+    const container = document.getElementById('user-bookmarks-container');
+    // Assuming bookmarks aren't in the user record payload yet.
+    // Replace this array with actual data when available.
+    const bookmarks = []; 
+    
+    const bookmarksCount = document.getElementById('stat-bookmarks-count');
+    if (bookmarksCount) bookmarksCount.textContent = bookmarks.length;
+
+    if (!bookmarks.length) {
+        if (container) container.innerHTML = `<p class="text-sm text-slate-400 col-span-2 py-8 text-center bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800">No bookmarked articles. Click the bookmark icon on any post to save it here!</p>`;
+        return;
+    }
+    
+    // ... HTML rendering logic for bookmarks ...
+}
+
+function switchProfileTab(tabName) {
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.add('hidden'));
+    document.querySelectorAll('.profile-tab-btn').forEach(b => {
+        b.className = 'profile-tab-btn px-5 py-3 text-xs font-bold border-b-2 border-transparent text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white whitespace-nowrap flex items-center gap-2 transition-colors';
+    });
+
+    const panel = document.getElementById(`tab-panel-${tabName}`);
+    const btn = document.getElementById(`tab-btn-${tabName}`);
+    
+    if (panel) panel.classList.remove('hidden');
+    if (btn) btn.className = 'profile-tab-btn px-5 py-3 text-xs font-bold border-b-2 border-primary text-primary whitespace-nowrap flex items-center gap-2 transition-colors';
+    
+    window.location.hash = tabName;
+}
+
+let newAvatarBase64 = null; // Holds the newly uploaded image data
+const avatarInput = document.getElementById('edit-avatar');
+const avatarPreview = document.getElementById('edit-avatar-preview');
+const avatarProfile = document.getElementById('profile-avatar-display');
+const avatarError = document.getElementById('avatar-error');
+
+// --- 1. Handle File Upload, Validation & Preview ---
+if (avatarInput) {
+    avatarInput.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        
+        // Reset state
+        avatarError.classList.add('hidden');
+        newAvatarBase64 = null;
+        
+        if (!file) return;
+
+        // Validate File Type
+        if (!file.type.startsWith('image/')) {
+            avatarError.textContent = 'Please upload a valid image file (JPEG, PNG, WEBP).';
+            avatarError.classList.remove('hidden');
+            avatarInput.value = ''; // clear input
+            return;
+        }
+
+        // Validate File Size (Max 2MB)
+        const maxSizeBytes = 2 * 1024 * 1024;
+        if (file.size > maxSizeBytes) {
+            avatarError.textContent = 'Image size must be less than 2MB.';
+            avatarError.classList.remove('hidden');
+            avatarInput.value = ''; // clear input
+            return;
+        }
+
+        // Generate Preview using FileReader
+        const reader = new FileReader();
+        reader.onload = function(event) {
+            const base64String = event.target.result;
+            avatarPreview.src = base64String;
+            avatarProfile.src = base64String;
+            newAvatarBase64 = base64String; // Save to global state for submission
+        };
+        reader.readAsDataURL(file);
+    });
+}
+
+const form = document.getElementById('edit-profile-form');
+if (form) {
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const submitBtn = document.getElementById('submit-profile-btn');
+        const originalText = submitBtn.innerHTML;
+
+        let formData = new FormData(form);
+        
+        if(userId){
+            formData.append('ltId', userId);
+        }else{
+            Swal.fire('Failed to update profile: No User Id found', 'error');
+            return;
+        }
+        submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
+        submitBtn.disabled = true;
+        
+        Swal.fire({
+            title: 'Notice!',
+            text: `Are you sure you want to update your record?`,
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, Update',
+            cancelButtonText: 'No, Cancel'
+        }).then(async result => {
+            if (result.isConfirmed) {
+
+                try {
+
+                    const response = await fetch(`${window.BLOG_CONFIG?.BASE_URL}/blogs/user/update`, {
+                        method: 'POST',
+                        headers: { 
+                            'Authorization': `Bearer ${window.BLOG_CONFIG.LW_TOKEN}`,
+                            'Accept': 'application/json'
+                        },
+                        body: formData
+                    });
+                    const result = await response.json();
+                    if (result.responseCategory != 200) throw new Error(result.responseResult);
+                    
+        
+                    // SIMULATED SUCCESS LOGIC
+                    USER_DETAILS = { ...USER_DETAILS, ...result.responseData };
+                    
+                    // Re-render the UI with new details
+                    loadUserProfile(USER_DETAILS);
+                    
+                    Swal.fire('Success', 'Profile updated successfully!', 'success');
+                    
+                } catch (error) {
+                    console.error(error);
+                    Swal.fire('Error', error.message || 'Failed to update profile.', 'error');
+                } finally {
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.disabled = false;
+                }
+            }
+        }); 
+    });
+}
+
+
+let editId = null;
+let contributors = [];
+let existingMedia = [];
+let deletedMediaIds = [];
+let attachedFiles = [];
+
+const formElements = {
+    modal: document.getElementById('post-editor-modal'),
+    form: document.getElementById('post-editor-form'),
+    postId: document.getElementById('editor-post-id'),
+    title: document.getElementById('editor-title'),
+    categorySelect: document.getElementById('categorySelect'),
+    slug: document.getElementById('slugInput'),
+    excerpt: document.getElementById('editor-excerpt'),
+    tags: document.getElementById('editor-tags'),
+    status: document.getElementById('statusSelect'),
+    readingTime: document.getElementById('readingTime'),
+    allowComments: document.getElementById('allowComments'),
+    seoTitle: document.querySelector('input[name="seoTitle"]'),
+    seoDescription: document.querySelector('input[name="seoDescription"]'),
+    submitBtn: document.getElementById('submitPostBtn')
+};
+
+const contributorEl = {
+    authorSelect: document.getElementById('authorSelect'),
+    roleSelect: document.getElementById('roleSelect'),
+    addAuthorBtn: document.getElementById('addAuthorBtn'),
+    contributorsList: document.getElementById('contributorsList'),
+    coAuthorsDataInput: document.getElementById('coAuthorsData'),
+};
+
+const mediaEl = {
+    count: document.getElementById('mediaCount'),
+    container: document.getElementById('mediaPreviewContainer'),
+    input: document.getElementById('additionalMedia')
+};
+
+// Initialize Quill Editor
+
+var quill = new Quill('#quill-editor-container', {
+      theme: 'snow',
+      placeholder: 'Write your full post text here...',
+      modules: {
+        toolbar: [
+          ['bold', 'italic', 'underline', 'strike'],        // toggled buttons
+          ['blockquote', 'code-block'],
+          ['link', 'video'], 
+          
+          [{ 'header': 1 }, { 'header': 2 }],               // custom button values
+          [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+          [{ 'script': 'sub'}, { 'script': 'super' }],      // superscript/subscript
+          [{ 'indent': '-1'}, { 'indent': '+1' }],          // outdent/indent
+          [{ 'direction': 'rtl' }],                         // text direction
+    
+          [{ 'size': ['small', false, 'large', 'huge'] }],  // custom dropdown
+          [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+    
+          [{ 'color': [] }, { 'background': [] }],          // dropdown with defaults
+          [{ 'font': [] }],
+          [{ 'align': [] }],
+    
+          ['clean']                                         // remove formatting button
+        ]
+      }
+    });
+
+// Update reading time dynamically
+quill.on('text-change', () => {
+    const text = quill.getText().trim();
+    const wordCount = text.split(/\s+/).filter(Boolean).length;
+    formElements.readingTime.value = Math.max(1, Math.ceil(wordCount / 200));
+});
+
+document.getElementById('create-new-post').addEventListener('click', function(){
+    populateCategory();
+    openPostModal();
+});
+
+// --- Modal Controls ---
+function openPostModal() {
+    formElements.modal.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+}
+
+function closePostModal() {
+    formElements.modal.classList.add('hidden');
+    document.body.style.overflow = '';
+    resetForm();
+}
+
+function resetForm() {
+    editId = null;
+    formElements.form.reset();
+    quill.setContents([]);
+    contributors = [];
+    existingMedia = [];
+    deletedMediaIds = [];
+    attachedFiles = [];
+    updateContributorsUI();
+    renderAllMedia();
+}
+
+// --- Category Population ---
+async function populateCategory(selectedValue = "") {
+    const catRes = await BlogStore.fetchCategoriesFromServer();
+    const categories = catRes.responseData || [];
+    
+    // Assuming `categories` is a globally available array of category objects
+    const options = (categories || []).map(c => 
+        `<option value="${c.ltId}" ${c.ltId == selectedValue ? 'selected' : ''}>${c.categoryName || c.name}</option>`
+    ).join('');
+    
+    formElements.categorySelect.innerHTML =  `<option value="" disabled ${!selectedValue ? 'selected' : ''}>Select Category...</option>${options}`;
+}
+
+// --- Contributor Logic ---
+contributorEl.addAuthorBtn?.addEventListener('click', () => {
+    const authorId = parseInt(contributorEl.authorSelect.value);
+    const authorName = contributorEl.authorSelect.options[contributorEl.authorSelect.selectedIndex]?.text;
+    const role = contributorEl.roleSelect.value;
+
+    if (!authorId) {
+        Swal.fire("Oops!", 'Please select an author first.', 'info');
+        return;
+    }
+
+    if (contributors.some(c => c.authorId === authorId)) {
+        Swal.fire("Oops!", 'This author has already been added.', 'info');
+        return;
+    }
+
+    contributors.push({ authorId, name: authorName, role });
+    contributorEl.authorSelect.value = "";
+    updateContributorsUI();
+});
+
+function removeContributor(authorId) {
+    contributors = contributors.filter(a => a.authorId !== authorId);
+    updateContributorsUI();
+}
+
+function updateContributorsUI() {
+    contributorEl.contributorsList.innerHTML = contributors.map(c => `
+        <div class="flex items-center justify-between rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 py-2.5 text-sm shadow-sm">
+            <div class="flex items-center gap-3">
+                <span class="font-bold text-slate-900 dark:text-white">${c.name}</span>
+                <span class="rounded-md bg-blue-50 dark:bg-blue-900/30 px-2 py-1 text-[10px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-wider">
+                    ${c.role.replace('-', ' ')}
+                </span>
+            </div>
+            <button type="button" onclick="removeContributor(${c.authorId})" class="text-slate-400 hover:text-rose-500 transition-colors focus:outline-none">
+                <i class="fa-solid fa-xmark text-base"></i>
+            </button>
+        </div>
+    `).join('');
+
+    contributorEl.coAuthorsDataInput.value = JSON.stringify(contributors);
+}
+
+// --- Media Logic ---
+mediaEl.input?.addEventListener('change', (e) => {
+    const newFiles = Array.from(e.target.files);
+    const activeExistingCount = existingMedia.filter(m => !deletedMediaIds.includes(m.mediaId)).length;
+    
+    if (attachedFiles.length + activeExistingCount + newFiles.length > 4) {
+        Swal.fire('Oops!', "You can only attach a maximum of 4 files.", 'warning');
+        mediaEl.input.value = ''; 
+        return;
+    }
+
+    attachedFiles = attachedFiles.concat(newFiles);
+    renderAllMedia();
+});
+
+function initExistingMedia(mediaArray) {
+    existingMedia = mediaArray || [];
+    renderAllMedia();
+}
+
+function renderAllMedia() {
+    mediaEl.container.innerHTML = '';
+    
+    const activeExistingMedia = existingMedia.filter(m => !deletedMediaIds.includes(m.mediaId));
+    const totalCount = activeExistingMedia.length + attachedFiles.length;
+
+    if (totalCount === 0) {
+        mediaEl.container.classList.add('hidden');
+        mediaEl.count.textContent = "No files chosen";
+        return;
+    }
+
+    mediaEl.container.classList.remove('hidden');
+    mediaEl.count.textContent = `${totalCount} file(s) selected`;
+
+    // Render Existing Media
+    activeExistingMedia.forEach(media => {
+        const visual = media.mimeType.startsWith('image/') 
+            ? `<img src="${window.BLOG_CONFIG?.BASE_URL || ''}/${media.storagePath}" class="absolute inset-0 w-full h-full object-cover opacity-50 dark:opacity-30" />`
+            : `<div class="text-slate-500 font-bold text-lg mb-1">${media.originalName.split('.').pop().toUpperCase()}</div>`;
+
+        // Prepare the content string
+        const content = `${visual}<span class="text-[10px] font-bold truncate w-full relative z-10 px-2 text-slate-900 dark:text-white pointer-events-none">${media.originalName}</span>`;
+
+        // Pass content directly into the builder
+        const previewDiv = createPreviewDiv(media.mediaId, content, () => {
+            deletedMediaIds.push(media.mediaId);
+            renderAllMedia();
+        });
+
+        mediaEl.container.appendChild(previewDiv);
+    });
+
+    // Render New Uploaded Files
+    attachedFiles.forEach((file, index) => {
+        let visual = '';
+        if (file.type.startsWith('image/')) {
+            visual = `<img src="${URL.createObjectURL(file)}" class="absolute inset-0 w-full h-full object-cover opacity-50 dark:opacity-30" />`;
+        } else if (file.type === 'application/pdf') {
+            visual = `<div class="text-rose-500 font-bold text-2xl mb-1">PDF</div>`;
+        } else if (file.type.startsWith('video/')) {
+            visual = `<div class="text-blue-500 font-bold text-2xl mb-1"><i class="fa-solid fa-video"></i></div>`;
+        } else if (file.type.startsWith('audio/')) {
+            visual = `<div class="text-purple-500 font-bold text-2xl mb-1"><i class="fa-solid fa-music"></i></div>`;
+        }
+
+        // Prepare the content string
+        const content = `
+            ${visual}
+            <span class="text-[10px] font-bold truncate w-full relative z-10 px-2 text-slate-900 dark:text-white pointer-events-none">${file.name}</span>
+            <span class="text-[9px] font-medium text-slate-500 dark:text-slate-400 relative z-10 pointer-events-none">${(file.size / (1024 * 1024)).toFixed(2)} MB</span>
+        `;
+
+        // Pass content directly into the builder
+        const previewDiv = createPreviewDiv(null, content, () => {
+            attachedFiles.splice(index, 1);
+            renderAllMedia();
+        });
+
+        mediaEl.container.appendChild(previewDiv);
+    });
+}
+
+function createPreviewDiv(id, innerContent, onRemove) {
+    const div = document.createElement('div');
+    div.className = "relative rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-2 flex flex-col items-center justify-center text-center overflow-hidden h-28 shadow-sm";
+    if (id) div.id = `existing-media-${id}`; 
+
+    // 1. Set the visual HTML content FIRST
+    div.innerHTML = innerContent;
+
+    // 2. Create and append the button SECOND, preserving its event listener
+    const removeBtn = document.createElement('button');
+    removeBtn.type = 'button'; 
+    removeBtn.innerHTML = '<i class="fa-solid fa-xmark"></i>';
+    removeBtn.className = "absolute top-1.5 right-1.5 bg-rose-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-[10px] hover:bg-rose-600 transition z-20 shadow-md cursor-pointer";
+    
+    removeBtn.onclick = (e) => { 
+        e.preventDefault(); 
+        e.stopPropagation();
+        onRemove(); 
+    };
+    
+    div.appendChild(removeBtn);
+    
+    return div;
+}
+
+// --- Edit/Create Actions ---
+function handleEdit(ltId) {
+    // Assuming `posts` array is globally available
+    const post = (USER_DETAILS.posts || []).find(p => p.ltId == ltId);
+    if (!post) return;
+    
+    editId = ltId;
+    
+    formElements.postId.value = post.ltId || '';
+    formElements.title.value = post.title ? decodeHtml(post.title) : '';
+    formElements.slug.value = post.slug || '';
+    formElements.excerpt.value = post.excerpt ? decodeHtml(post.excerpt) : '';
+    formElements.seoTitle.value = post.seoTitle || '';
+    formElements.seoDescription.value = post.seoDescription || '';
+    formElements.allowComments.checked = post.allowComments == '1';
+    
+    // Custom Tags Parsing if available
+    formElements.tags.value = post.tags ? (Array.isArray(post.tags) ? post.tags.join(', ') : post.tags) : '';
+
+    formElements.categorySelect.innerHTML = populateCategory(post.categoryId);
+    quill.root.innerHTML = decodeHtml(post.content || '');
+    
+    contributors = typeof post.coAuthors === 'string' ? JSON.parse(post.coAuthors) : (post.coAuthors || []);
+    updateContributorsUI();
+
+    initExistingMedia(post.media);
+    
+    document.getElementById('modal-post-title').innerHTML = '<i class="fa-solid fa-pen-to-square text-primary"></i> Edit Post';
+    openPostModal();
+}
+
+ //// Delete event Listener
+function handleDeleteMyPost(ltId){
+    Swal.fire({
+        title: 'Notice!',
+        text: `Are you sure you want to delete this post?`,
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, Delete',
+        cancelButtonText: 'No, Cancel'
+    }).then(async result => {
+        if (result.isConfirmed) {
+
+            try{
+                
+                 const response = await fetch(`${window.BLOG_CONFIG?.BASE_URL}/blogs/posts/${ltId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${window.BLOG_CONFIG.LW_TOKEN}`,
+                        'Accept': 'application/json'
+
+                    }
+                });
+            
+                const data = await response.json();
+                
+                const {responseData, responseResult, responseCategory} = data;
+                if(responseCategory == '200'){
+                    let msg = `Post Deleted successfully ✌️`;
+                    Swal.fire('Notice!!!',msg,'success').then(function(){
+                        USER_DETAILS.posts = USER_DETAILS.posts.filter(s => +s.ltId !== +ltId);
+                        renderUserPosts(USER_DETAILS.posts);
+                    });
+                     
+                }else{
+                    Swal.fire('Error!!!', `${responseResult}`, 'warning');
+                }
+                
+            }catch(error){
+                Swal.fire('Error!!!', `${error}`, 'warning');
+            }
+        }
+    }); 
+
+};
+
+// Optional helper for decoding entities
+function decodeHtml(html) {
+    const txt = document.createElement("textarea");
+    txt.innerHTML = html;
+    return txt.value;
+}
+
+// --- Form Submit handler ---
+formElements.form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const titleVal = formElements.title.value.trim();
+    if(!titleVal){
+        Swal.fire('Notice', 'Post Title field is required', 'warning');
+        return;
+    }
+    
+    let formData = new FormData(formElements.form);
+    formData.set('content', quill.root.innerHTML);
+    formData.set('author', userId);
+    
+    attachedFiles.forEach(file => formData.append('additionalMedia[]', file));
+    
+    if (deletedMediaIds.length > 0) {
+        formData.append('deletedMedia', JSON.stringify(deletedMediaIds));
+    }
+
+    const originalBtnText = formElements.submitBtn.innerHTML;
+    const isEdit = !!editId;
+    
+    Swal.fire({
+        title: 'Confirm',
+        text: `Are you sure you want to ${isEdit ? 'update' : 'publish'} this post?`,
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: `Yes, ${isEdit ? 'Update' : 'Publish'}`,
+        cancelButtonText: 'Cancel'
+    }).then(async result => {
+        if (result.isConfirmed) {
+            formElements.submitBtn.innerHTML = '<span class="animate-pulse flex items-center gap-2"><i class="fa-solid fa-spinner fa-spin"></i> Processing...</span>';
+            formElements.submitBtn.disabled = true;
+
+            try {
+                let url = `${window.BLOG_CONFIG?.BASE_URL || ''}/blogs/posts`;
+                if (isEdit) {
+                    url += `/${editId}`;
+                    formData.append('_method', 'PATCH');
+                }
+
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${window.BLOG_CONFIG.LW_TOKEN}`,
+                        'Accept': 'application/json'
+
+                    },
+                    body: formData
+                });
+
+                const { responseData, responseCategory, responseResult } = await response.json();
+
+                if (responseCategory == 200) {
+                    // Update global state and UI
+                    if (isEdit) {
+                        USER_DETAILS.posts = (USER_DETAILS.posts || []).map(s => +s.ltId === +editId ? { ...s, ...responseData } : s);
+                    } else {
+                        USER_DETAILS.posts = [...(USER_DETAILS.posts || []), responseData];
+                    }
+                    
+                    Swal.fire('Success', `Post ${isEdit ? 'updated' : 'added'} successfully!`, 'success').then(() => {
+                        // Assuming renderUserPosts is globally available from the previous script
+                        if (typeof renderUserPosts === 'function') renderUserPosts(USER_DETAILS.posts);
+                        closePostModal();
+                    });
+                } else {
+                    Swal.fire('Error', responseResult || 'An error occurred', 'warning');
+                }
+            } catch (error) {
+                console.error('Post Submit Error:', error);
+                Swal.fire('Error', 'Network error occurred', 'error');
+            } finally {
+                formElements.submitBtn.innerHTML = originalBtnText;
+                formElements.submitBtn.disabled = false;
+            }
+        }
+    });
+});
+
+formElements.title.addEventListener('input', function(){
+    formElements.slug.value = slugify(this.value);
+})
+
+function slugify(text) {
+    return text
+        .trim()
+        .toLowerCase()
+        .replace(/'/g, "")              // Remove apostrophes
+        .replace(/&/g, "and")           // Optional: replace &
+        .replace(/[^a-z0-9\s-]/g, "")   // Remove other special characters
+        .replace(/\s+/g, "-")           // Replace spaces with hyphens
+        .replace(/-+/g, "-")            // Remove duplicate hyphens
+        .replace(/^-|-$/g, "");         // Trim leading/trailing hyphens
+}  
+
+function togglePasswordVisibility(inputId, btn) {
+  const input = document.getElementById(inputId);
+  const icon = btn.querySelector('i');
+  if (!input) return;
+  if (input.type === 'password') {
+    input.type = 'text';
+    icon.className = 'fa-regular fa-eye-slash text-xs text-primary';
+  } else {
+    input.type = 'password';
+    icon.className = 'fa-regular fa-eye text-xs text-slate-400';
+  }
+}
+
+// Form Submission & Validation Handler
+document.addEventListener('DOMContentLoaded', () => {
+  const form = document.getElementById('profile-change-password-form');
+  if (!form) return;
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const currentPass = document.getElementById('security-current-pass').value.trim();
+    const newPass = document.getElementById('security-new-pass').value;
+    const confirmPass = document.getElementById('security-confirm-pass').value;
+    const submitBtn = form.querySelector('button[type="submit"]');
+
+    // --- Client Validation ---
+    if (!currentPass) {
+      Swal.fire('Notice', 'Please provide your current password.', 'warning');
+      return;
+    }
+
+    if (newPass.length < 8) {
+      Swal.fire('Notice', 'New password must be at least 8 characters long.', 'warning');
+      return;
+    }
+
+    if (newPass !== confirmPass) {
+      Swal.fire('Notice', 'New passwords do not match.', 'warning');
+      return;
+    }
+
+    if (currentPass === newPass) {
+      Swal.fire('Notice', 'New password must be different from your current password.', 'warning');
+      return;
+    }
+
+    // --- API Request ---
+    const originalBtnHTML = submitBtn.innerHTML;
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-xs"></i> Updating...';
+
+    try {
+      const payload = {
+        currentPassword: currentPass,
+        password: newPass,
+        confirm: confirmPass
+      };
+
+      const response = await fetch(`${window.BLOG_CONFIG?.BASE_URL || ''}/users/${userId}/change-password`, {
+        method: 'PATCH',
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': `Bearer ${window.BLOG_CONFIG.LW_TOKEN}`
+        },
+        body: JSON.stringify(payload)
+      });
+
+      const result = await response.json();
+      const { responseCategory, responseResult, message } = result;
+
+      if (responseCategory == 200) {
+        Swal.fire('Success', responseResult || 'Password updated successfully!', 'success');
+        form.reset();
+
+        // Reset visibility icons back to closed-eye state
+        form.querySelectorAll('input[type="text"]').forEach((inp) => {
+          inp.type = 'password';
+        });
+        form.querySelectorAll('button[type="button"] i').forEach((icon) => {
+          icon.className = 'fa-regular fa-eye text-xs';
+        });
+      } else {
+        Swal.fire('Error', responseResult || message || 'Unable to update password. Verify your current password.', 'error');
+      }
+    } catch (error) {
+      console.error('Password Update Error:', error);
+      Swal.fire('Error', 'Network error. Please try again later.', 'error');
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = originalBtnHTML;
+    }
+  });
+});
+
+async function confirmDeleteAccount() {
+  const currentUsername = USER_DETAILS?.username || '';
+  const confirmationKeyword = currentUsername || 'DELETE';
+
+  const { value: userInput } = await Swal.fire({
+    title: 'Are you absolutely sure?',
+    html: `
+      <div class="text-left text-md text-slate-600 dark:text-slate-300 space-y-2">
+        <p>This action is <strong class="text-rose-600 font-bold">permanent</strong> and cannot be undone.</p>
+        <p>All your posts, media attachments, and comments will be permanently erased.</p>
+        <p class="pt-2">Type <span class="font-mono font-bold text-slate-900 dark:text-white bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded border border-slate-300 dark:border-slate-700">${confirmationKeyword}</span> below to confirm:</p>
+      </div>
+    `,
+    input: 'text',
+    inputPlaceholder: `Type ${confirmationKeyword}`,
+    inputAttributes: {
+      autocapitalize: 'off',
+      autocorrect: 'off'
+    },
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#e11d48',
+    cancelButtonColor: '#64748b',
+    confirmButtonText: 'Yes, delete my account',
+    cancelButtonText: 'Cancel',
+    showLoaderOnConfirm: true,
+    preConfirm: (input) => {
+      if (!input || input.trim() !== confirmationKeyword) {
+        Swal.showValidationMessage(`Input does not match "${confirmationKeyword}".`);
+        return false;
+      }
+      return input.trim();
+    },
+    allowOutsideClick: () => !Swal.isLoading()
+  });
+
+  if (!userInput) return;
+
+  try {
+    const userKey = <?= 
+      class_exists('ApiTokenDetails') && method_exists('ApiTokenDetails', 'appId')
+        ? json_encode(ApiTokenDetails::appId() . '_userDetails')
+        : json_encode('userDetails');
+    ?>;
+
+    const response = await fetch(`${window.BLOG_CONFIG?.BASE_URL || ''}/blogs/user/${encodeURIComponent(USER_DETAILS.ltId)}`, {
+      method: 'DELETE',
+      headers: {
+        'Accept': 'application/json',
+        'Authorization': `Bearer ${window.BLOG_CONFIG.LW_TOKEN}`
+      },
+      body: JSON.stringify({
+        confirmation: userInput
+      })
+    });
+
+    const result = await response.json();
+    const { responseCategory, responseResult, message } = result;
+
+    if (responseCategory == 200) {
+      await Swal.fire({
+        title: 'Account Deleted',
+        text: responseResult || 'Your account and data have been removed.',
+        icon: 'success',
+        confirmButtonColor: '#4f46e5'
+      });
+
+      // Clear local auth session data
+      localStorage.removeItem(userKey);
+      sessionStorage.clear();
+
+      window.location.href = `${window.BLOG_CONFIG?.siteHostAddress || ''}/ThemeBrainDump/auth`;
+    } else {
+      Swal.fire('Failed', responseResult || message || 'Could not delete account.', 'error');
+    }
+  } catch (error) {
+    console.error('Account Deletion Error:', error);
+    Swal.fire('Error', 'A network error occurred while attempting to delete your account.', 'error');
+  }
+}
+
+//     function removeBookmark(id) {
+//       BlogStore.toggleBookmark(id);
+//       BlogStore.showToast('Bookmark removed', 'info');
+//       renderUserBookmarks();
+//     }
+
+
+
+
+//     function toggle2FA() {
+//       const btn = document.getElementById('btn-2fa');
+//       if (btn.textContent.includes('Enable')) {
+//         btn.textContent = '2FA Enabled ✓';
+//         btn.className = 'px-3 py-1.5 rounded-lg bg-emerald-600 text-white text-xs font-bold';
+//         BlogStore.showToast('Two-factor authentication enabled successfully!', 'success');
+//       } else {
+//         btn.textContent = 'Enable 2FA';
+//         btn.className = 'px-3 py-1.5 rounded-lg border border-slate-300 dark:border-slate-700 text-xs font-bold text-slate-700 dark:text-slate-300 hover:border-primary';
+//         BlogStore.showToast('Two-factor authentication disabled', 'info');
+//       }
+//     }
+
+    
+    
+  </script>
+  

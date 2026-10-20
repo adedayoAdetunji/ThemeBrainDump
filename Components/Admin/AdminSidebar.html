@@ -1,0 +1,239 @@
+<!-- ==================== ADMIN SIDEBAR COMPONENT ==================== -->
+<aside id="admin-sidebar" class="fixed inset-y-0 left-0 z-40 flex w-64 flex-shrink-0 -translate-x-full flex-col justify-between border-r border-slate-200 bg-white transition-transform duration-250 ease-in-out md:static md:translate-x-0 dark:border-slate-800 dark:bg-slate-900">
+  <div class="flex h-full flex-col overflow-y-auto">
+    <!-- Brand / Studio Logo -->
+    <div class="flex h-20 items-center justify-between border-b border-slate-100 px-6 dark:border-slate-800 flex-shrink-0">
+      <a href="<?= ltSiteUrl() ?>/ThemeBrainDump/posts" class="flex items-center gap-3">
+        <div class="bg-primary flex h-10 w-10 items-center justify-center rounded-2xl text-white shadow-lg shadow-indigo-500/30">
+          <i class="fa-solid fa-feather-pointed text-base"></i>
+        </div>
+        <div>
+          <span class="bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-lg font-black tracking-tight text-transparent dark:from-white dark:to-slate-300"><?=  ltSiteName()  ?></span>
+          <span class="text-primary block text-[10px] font-extrabold tracking-wider uppercase">Admin Studio</span>
+        </div>
+      </a>
+
+      <!-- Close button on mobile -->
+      <button type="button" id="admin-sidebar-close-btn" class="rounded-lg p-1.5 text-slate-400 hover:text-slate-600 md:hidden dark:hover:text-white focus:outline-none">
+        <i class="fa-solid fa-xmark text-lg"></i>
+      </button>
+    </div>
+
+    <!-- Navigation Menu Mount -->
+    <div class="flex-grow space-y-6 p-4">
+      <div>
+        <p class="mb-2 px-4 text-[10px] font-extrabold tracking-wider text-slate-400 uppercase dark:text-slate-500">Navigation</p>
+        <nav id="mainNav" class="space-y-1">
+          <!-- Dynamic navigation items will render here -->
+          <div class="px-4 py-3 text-xs text-slate-400 animate-pulse">Loading navigation...</div>
+        </nav>
+      </div>
+    </div>
+
+    <!-- Bottom Actions & User Profile -->
+    <div class="space-y-3 border-t border-slate-100 p-4 dark:border-slate-800 flex-shrink-0">
+      <a href="<?= ltSiteUrl() ?>/ThemeBrainDump/posts" class="flex items-center gap-3 rounded-xl px-4 py-2.5 text-xs font-semibold text-slate-600 transition-colors hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800">
+        <i class="fa-solid fa-arrow-left text-xs"></i>
+        <span>Return to Blog</span>
+      </a>
+
+      <div class="flex items-center gap-3 rounded-2xl border border-slate-100 bg-slate-50 p-2.5 dark:border-slate-800 dark:bg-slate-800/60">
+        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=120&auto=format&fit=crop&q=80" alt="Avatar" class="ring-primary/20 h-8 w-8 rounded-full object-cover ring-2" />
+        <div class="min-w-0 flex-1">
+          <p class="truncate text-xs font-bold text-slate-800 dark:text-white" id="sidebar-username">Alex Morgan</p>
+          <span class="text-[10px] font-bold text-emerald-500">&bull; Online</span>
+        </div>
+        <a href="<?= ltSiteUrl() ?>/ThemeBrainDump/auth" class="p-1.5 text-slate-400 transition-colors hover:text-rose-500" title="Log Out">
+          <i class="fa-solid fa-arrow-right-from-bracket text-xs"></i>
+        </a>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<!-- Backdrop overlay for mobile menu -->
+<div id="admin-sidebar-backdrop" class="fixed inset-0 z-30 hidden bg-slate-900/50 backdrop-blur-sm md:hidden"></div>
+<?php  ltImport('ThemeBrainDump','Script.js') ?>
+<script>
+    
+document.addEventListener("DOMContentLoaded", () => {
+
+
+  // Base fallback menu
+  let ASIDE = [
+    {
+      ltId: "dashboard",
+      menuName: "Dashboard",
+      icon: "fa-solid fa-chart-pie",
+      routePath: "/admin-end/dashboard",
+      menuLevel: 1
+    }
+  ];
+
+  const sidebar = document.getElementById("admin-sidebar");
+  const backdrop = document.getElementById("admin-sidebar-backdrop");
+  const closeBtn = document.getElementById("admin-sidebar-close-btn");
+  const openBtn = document.getElementById("admin-sidebar-open-btn"); // e.g. hamburger button in header
+
+  // --- Mobile Drawer Controls ---
+  function openMobileSidebar() {
+    if (!sidebar) return;
+    sidebar.classList.remove("-translate-x-full");
+    backdrop?.classList.remove("hidden");
+    document.body.style.overflow = "hidden";
+  }
+
+  function closeMobileSidebar() {
+    if (!sidebar) return;
+    sidebar.classList.add("-translate-x-full");
+    backdrop?.classList.add("hidden");
+    document.body.style.overflow = "";
+  }
+
+  closeBtn?.addEventListener("click", closeMobileSidebar);
+  backdrop?.addEventListener("click", closeMobileSidebar);
+  openBtn?.addEventListener("click", openMobileSidebar);
+
+  // --- Active Route Detection ---
+  function isRouteActive(routePath) {
+    if (!routePath) return false;
+    const currentPath = window.location.pathname.toLowerCase();
+    const targetPath = routePath.toLowerCase();
+    return currentPath === targetPath || (targetPath !== "/" && currentPath.endsWith(targetPath));
+  }
+
+  // --- Recursive Menu Renderer ---
+  function renderMenu() {
+    const nav = document.getElementById("mainNav");
+    if (!nav) return;
+
+    nav.innerHTML = ASIDE
+      .filter(item => item.menuLevel === 1)
+      .map(item => renderMenuItem(item, 0))
+      .join("");
+  }
+
+  function renderMenuItem(item, level = 0) {
+    const hasChildren = Array.isArray(item.children) && item.children.length > 0;
+    const submenuId = `submenu-${item.ltId}`;
+    const fullRoute = item.routePath ? `${siteHostAddress}${item.routePath}` : "#";
+    const active = isRouteActive(item.routePath);
+
+    // Padding hierarchy by nesting level
+    const paddingClass = level === 0 
+      ? "px-4 py-3 text-xs" 
+      : level === 1 
+        ? "pl-8 pr-4 py-2.5 text-xs" 
+        : "pl-12 pr-4 py-2 text-xs";
+
+    // Modern active vs inactive styles
+    const stateClasses = active
+      ? "bg-primary text-white shadow-md shadow-indigo-500/20 font-bold"
+      : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold";
+
+    let html = `
+      <div class="menu-item-wrapper">
+        <a 
+          href="${fullRoute}" 
+          class="menu-link flex w-full items-center justify-between rounded-2xl ${paddingClass} ${stateClasses} transition-all"
+          data-menu-id="${item.ltId}" 
+          ${hasChildren ? `data-submenu="${submenuId}"` : ""}
+        >
+          <span class="flex items-center gap-3 truncate">
+            <i class="${item.icon || 'fa-solid fa-layer-group'} w-4 text-center ${active ? 'text-white' : 'text-slate-400 dark:text-slate-500'}"></i>
+            <span class="truncate">${item.menuName}</span>
+          </span>
+          ${hasChildren ? `
+            <i class="fa-solid fa-chevron-down text-[10px] transition-transform duration-200" id="chevron-${item.ltId}"></i>
+          ` : ""}
+        </a>
+    `;
+
+    if (hasChildren) {
+      // If a child is active, keep submenu opened by default
+      const childActive = item.children.some(c => isRouteActive(c.routePath));
+
+      html += `
+        <div 
+          class="submenu ${childActive ? '' : 'hidden'} space-y-1 my-1 overflow-hidden transition-all duration-200" 
+          id="${submenuId}"
+        >
+          ${item.children.map(child => renderMenuItem(child, level + 1)).join("")}
+        </div>
+      `;
+    }
+
+    html += `</div>`;
+    return html;
+  }
+
+  // --- Fetch API Menus ---
+  async function loadMenus() {
+    try {
+      const response = await fetch(`${BASE_URL}/menus/is-navigation?packageName=ThemeBrainDump`, {
+        method: "GET",
+        headers: {
+          "Authorization": `Bearer ${LW_TOKEN}`,
+          "Accept": "application/json"
+        }
+      });
+
+      const { responseData, responseCategory } = await response.json();
+
+      if (responseCategory === 200 && Array.isArray(responseData)) {
+        // Prevent duplicate initial items if API includes Dashboard
+        const hasApiDashboard = responseData.some(m => (m.menuName || '').toLowerCase() === 'dashboard');
+        if (hasApiDashboard) {
+          ASIDE = responseData;
+        } else {
+          ASIDE.push(...responseData);
+        }
+        renderMenu();
+      }
+    } catch (error) {
+      console.error("Failed to load navigation menus:", error);
+      renderMenu(); // Fallback to base dashboard
+    }
+  }
+
+  // --- Accordion Event Delegation ---
+  document.addEventListener("click", (e) => {
+    const menuLink = e.target.closest("[data-submenu]");
+    if (!menuLink) return;
+
+    e.preventDefault();
+
+    const submenuId = menuLink.dataset.submenu;
+    const targetSubmenu = document.getElementById(submenuId);
+    if (!targetSubmenu) return;
+
+    const targetChevron = menuLink.querySelector(".fa-chevron-down");
+    const isOpening = targetSubmenu.classList.contains("hidden");
+
+    // Scope peer lookup to parent container
+    const parentContainer = menuLink.closest(".submenu") || document.getElementById("mainNav");
+    const peerSubmenus = parentContainer.querySelectorAll(":scope > .menu-item-wrapper > .submenu:not(.hidden)");
+
+    // Close sibling submenus
+    peerSubmenus.forEach(sub => {
+      if (sub.id !== submenuId) {
+        sub.classList.add("hidden");
+        const peerChevron = sub.previousElementSibling?.querySelector(".fa-chevron-down");
+        peerChevron?.classList.remove("rotate-180");
+      }
+    });
+
+    // Toggle current submenu
+    if (isOpening) {
+      targetSubmenu.classList.remove("hidden");
+      targetChevron?.classList.add("rotate-180");
+    } else {
+      targetSubmenu.classList.add("hidden");
+      targetChevron?.classList.remove("rotate-180");
+    }
+  });
+
+  loadMenus();
+});
+    
+</script>

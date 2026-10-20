@@ -1,0 +1,57 @@
+<!-- ==================== FOOTER ==================== -->
+  <footer class="bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 mt-20">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div class="md:col-span-2">
+          <a href="index.html" class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-xl bg-primary flex items-center justify-center text-white">
+              <i class="fa-solid fa-feather-pointed"></i>
+            </div>
+            <span class="text-xl font-bold text-slate-900 dark:text-white"><?=  ltSiteName()  ?></span>
+          </a>
+          <p class="text-sm text-slate-500 dark:text-slate-400 mt-4 max-w-sm leading-relaxed">
+            An open publication devoted to exceptional web craftsmanship, modern frontend architecture, resilient design systems, and thoughtful engineering.
+          </p>
+          <div class="flex items-center gap-3 mt-6">
+            <a href="#" class="w-9 h-9 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500 hover:text-primary transition-colors" aria-label="Twitter"><i class="fa-brands fa-x-twitter"></i></a>
+            <a href="#" class="w-9 h-9 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500 hover:text-primary transition-colors" aria-label="GitHub"><i class="fa-brands fa-github"></i></a>
+            <a href="#" class="w-9 h-9 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500 hover:text-primary transition-colors" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
+            <a href="#" class="w-9 h-9 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500 hover:text-primary transition-colors" aria-label="RSS Feed"><i class="fa-solid fa-rss"></i></a>
+          </div>
+        </div>
+
+        <div>
+          <h4 class="text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-white mb-4">Navigation</h4>
+          <ul class="space-y-2.5 text-sm text-slate-600 dark:text-slate-400">
+            <li><a href="index.html" class="hover:text-primary transition-colors">Home & Articles</a></li>
+            <li><a href="about.html" class="hover:text-primary transition-colors">About <?=  ltSiteName()  ?></a></li>
+            <li><a href="contact.html" class="hover:text-primary transition-colors">Contact & Support</a></li>
+            <li><a href="profile.html" class="hover:text-primary transition-colors">User Profile</a></li>
+            <li><a href="admin.html" class="hover:text-primary transition-colors">Admin Dashboard</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-white mb-4">Categories</h4>
+          <ul class="space-y-2.5 text-sm text-slate-600 dark:text-slate-400">
+            <li><a href="#" onclick="filterByCategory('Design'); return false;" class="hover:text-primary transition-colors">Design Systems</a></li>
+            <li><a href="#" onclick="filterByCategory('Engineering'); return false;" class="hover:text-primary transition-colors">Web Engineering</a></li>
+            <li><a href="#" onclick="filterByCategory('AI'); return false;" class="hover:text-primary transition-colors">Artificial Intelligence</a></li>
+            <li><a href="#" onclick="filterByCategory('Culture'); return false;" class="hover:text-primary transition-colors">Digital Culture</a></li>
+            <li><a href="#" onclick="filterByCategory('Tutorials'); return false;" class="hover:text-primary transition-colors">Tutorials & Guides</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="pt-8 mt-12 border-t border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500 dark:text-slate-400">
+        <p>&copy; 2026 <?=  ltSiteName()  ?> Media Inc. All rights reserved. Built with clean HTML, Tailwind CSS, & Vanilla JS.</p>
+        <div class="flex items-center gap-6">
+          <a href="#" class="hover:underline">Privacy Policy</a>
+          <a href="#" class="hover:underline">Terms of Service</a>
+          <a href="#" class="hover:underline">RSS</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+  </body>
+</html>

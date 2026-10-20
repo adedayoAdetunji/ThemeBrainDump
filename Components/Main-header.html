@@ -1,0 +1,172 @@
+  <style>
+      
+/* Desktop Only (> 768px) Hover Rules */
+    @media (min-width: 768px) {
+      .nav-menu-root:hover .level-2-menu {
+        visibility: visible !important;
+        opacity: 1 !important;
+      }
+    
+      .nav-menu-root:hover .menu-caret {
+        transform: rotate(180deg);
+      }
+    
+      .category-item:hover .level-3-menu {
+        visibility: visible !important;
+        opacity: 1 !important;
+        display: block !important;
+      }
+    }
+    
+    /* Mobile Active State */
+    .level-2-menu.mobile-open {
+      visibility: visible !important;
+      opacity: 1 !important;
+    }
+      
+  </style>
+  
+  <header class="sticky top-0 z-40 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200/80 dark:border-slate-800">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16 sm:h-20">
+        
+        <!-- Logo -->
+        <div class="flex items-center gap-8">
+          <a href="index.html" class="flex items-center gap-3 group focus:outline-none" aria-label="<?=  ltSiteName()  ?> Home">
+            <div class="w-10 h-10 rounded-xl bg-primary flex items-center justify-center text-white shadow-md shadow-indigo-500/20 group-hover:scale-105 transition-transform">
+              <i class="fa-solid fa-feather-pointed text-lg"></i>
+            </div>
+            <div>
+              <span class="text-xl font-extrabold tracking-tight bg-gradient-to-r from-slate-900 to-slate-700 dark:from-white dark:to-slate-300 bg-clip-text text-transparent"><?=  ltSiteName()  ?></span>
+              <span class="hidden sm:inline-block text-[10px] font-bold uppercase tracking-widest text-primary ml-1.5 px-1.5 py-0.5 rounded bg-primary-light dark:bg-slate-800">Journal</span>
+            </div>
+          </a>
+
+          <!-- Desktop Navigation -->
+          <!--<nav class="hidden md:flex items-center gap-1" aria-label="Main Navigation">-->
+          <!--  <a href="index.html" class="nav-link px-3.5 py-2 text-sm font-medium rounded-lg text-slate-700 dark:text-slate-300 hover:text-primary dark:hover:text-primary transition-colors">Articles</a>-->
+          <!--  <a href="about.html" class="nav-link px-3.5 py-2 text-sm font-medium rounded-lg text-slate-700 dark:text-slate-300 hover:text-primary dark:hover:text-primary transition-colors">About</a>-->
+          <!--  <a href="contact.html" class="nav-link px-3.5 py-2 text-sm font-medium rounded-lg text-slate-700 dark:text-slate-300 hover:text-primary dark:hover:text-primary transition-colors">Contact</a>-->
+          <!--  <a href="admin.html" class="nav-link px-3.5 py-2 text-sm font-medium rounded-lg text-slate-700 dark:text-slate-300 hover:text-primary dark:hover:text-primary transition-colors flex items-center gap-1.5">-->
+          <!--    <span>Admin</span>-->
+          <!--    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>-->
+          <!--  </a>-->
+          <!--</nav>-->
+        </div>
+
+        <!-- Right Header Actions -->
+        <div class="flex items-center gap-2.5 sm:gap-3">
+            
+          <nav class="flex items-center gap-6">
+              <!-- Dynamic Menu Mount Point -->
+              <div id="blog-category-menu-container"></div>
+          </nav>
+          
+
+          <!-- Dark / Light Theme Toggle -->
+          <button class="theme-toggle-btn p-2.5 text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" aria-label="Toggle dark mode">
+            <i class="fa-regular fa-sun text-lg sun-icon hidden"></i>
+            <i class="fa-regular fa-moon text-lg moon-icon"></i>
+          </button>
+
+          <!-- User Menu Dropdown -->
+          <div class="relative">
+            <button id="user-menu-btn" class="flex items-center gap-2 p-1 rounded-full hover:ring-2 hover:ring-primary focus:outline-none" aria-label="Open user menu" aria-expanded="false">
+              <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=120&auto=format&fit=crop&q=80" alt="Avatar" class="current-user-avatar w-9 h-9 rounded-full object-cover border border-slate-200 dark:border-slate-700" />
+            </button>
+
+            <!-- Dropdown Menu -->
+            <div id="user-menu-dropdown" class="hidden absolute right-0 mt-2 w-64 bg-white dark:bg-slate-900 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-800 py-2 z-50 animate-in fade-in slide-in-from-top-2 duration-150">
+              <div class="px-4 py-3 border-b border-slate-100 dark:border-slate-800">
+                <p class="text-sm font-semibold text-slate-800 dark:text-white current-user-name">Alex Morgan</p>
+                <p class="text-xs text-slate-500 dark:text-slate-400 truncate current-user-email">alex.morgan@example.com</p>
+              </div>
+              <div class="py-1">
+                <a href="<?= ltSiteUrl() ?>/ThemeBrainDump/UserProfile" class="flex items-center gap-3 px-4 py-2 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">
+                  <i class="fa-regular fa-user text-slate-400 w-4"></i> Profile & Posts
+                </a>
+                <a href="<?= ltSiteUrl() ?>/ThemeBrainDump/UserProfile#bookmarks" class="flex items-center gap-3 px-4 py-2 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">
+                  <i class="fa-regular fa-bookmark text-slate-400 w-4"></i> Saved Articles
+                </a>
+                <!--<a href="admin.html" class="flex items-center gap-3 px-4 py-2 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">-->
+                <!--  <i class="fa-solid fa-chart-line text-slate-400 w-4"></i> Admin Dashboard-->
+                <!--</a>-->
+                <a href="<?= ltSiteUrl() ?>/ThemeBrainDump/UserProfile#settings" class="flex items-center gap-3 px-4 py-2 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">
+                  <i class="fa-solid fa-shield-halved text-slate-400 w-4"></i> Security & Settings
+                </a>
+              </div>
+              <div class="border-t border-slate-100 dark:border-slate-800 pt-1">
+                <a href="<?= ltSiteUrl() ?>/ThemeBrainDump/auth" class="flex items-center gap-3 px-4 py-2 text-sm text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/30">
+                  <i class="fa-solid fa-arrow-right-from-bracket text-rose-500 w-4"></i> Switch / Sign Out
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Mobile Hamburger Toggle -->
+          <button id="mobile-menu-toggle" class="md:hidden p-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl" aria-label="Open mobile navigation">
+            <i class="fa-solid fa-bars text-lg"></i>
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </header>
+    <!-- ==================== MOBILE DRAWER ==================== -->
+  <div id="mobile-drawer-backdrop" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden transition-opacity"></div>
+  <div id="mobile-drawer" class="fixed inset-y-0 right-0 max-w-xs w-full bg-white dark:bg-slate-900 z-50 shadow-2xl p-6 flex flex-col justify-between translate-x-full transition-transform duration-300 ease-in-out">
+    <div>
+      <div class="flex items-center justify-between pb-6 border-b border-slate-100 dark:border-slate-800">
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 rounded-lg bg-primary flex items-center justify-center text-white">
+            <i class="fa-solid fa-feather-pointed text-sm"></i>
+          </div>
+          <span class="font-bold text-lg text-slate-900 dark:text-white"><?=  ltSiteName()  ?></span>
+        </div>
+        <button id="mobile-drawer-close" class="p-2 text-slate-400 hover:text-slate-600 dark:hover:text-white rounded-lg">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+
+      <nav class="mt-6 flex flex-col gap-1">
+        <a href="index.html" class="flex items-center gap-3 px-3 py-2.5 rounded-xl font-medium text-slate-800 dark:text-white hover:bg-slate-100 dark:hover:bg-slate-800">
+          <i class="fa-regular fa-newspaper text-primary w-5"></i> Articles
+        </a>
+        <a href="<?= ltSiteUrl() ?>/ThemeBrainDump/about-us" class="flex items-center gap-3 px-3 py-2.5 rounded-xl font-medium text-slate-800 dark:text-white hover:bg-slate-100 dark:hover:bg-slate-800">
+          <i class="fa-regular fa-address-card text-primary w-5"></i> About
+        </a>
+        <a href="<?= ltSiteUrl() ?>/ThemeBrainDump/contact-us" class="flex items-center gap-3 px-3 py-2.5 rounded-xl font-medium text-slate-800 dark:text-white hover:bg-slate-100 dark:hover:bg-slate-800">
+          <i class="fa-regular fa-envelope text-primary w-5"></i> Contact
+        </a>
+        <a href="<?= ltSiteUrl() ?>/ThemeBrainDump/UserProfile" class="flex items-center gap-3 px-3 py-2.5 rounded-xl font-medium text-slate-800 dark:text-white hover:bg-slate-100 dark:hover:bg-slate-800">
+          <i class="fa-regular fa-user text-primary w-5"></i> Profile & Bookmarks
+        </a>
+        <!--<a href="admin.html" class="flex items-center gap-3 px-3 py-2.5 rounded-xl font-medium text-slate-800 dark:text-white hover:bg-slate-100 dark:hover:bg-slate-800">-->
+        <!--  <i class="fa-solid fa-gauge text-primary w-5"></i> Admin Dashboard-->
+        <!--</a>-->
+      </nav>
+    </div>
+
+    <div class="pt-6 border-t border-slate-100 dark:border-slate-800 flex flex-col gap-2">
+      <a href="<?= ltSiteUrl() ?>/ThemeBrainDump/auth" class="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-primary text-white font-semibold text-xs shadow-md hover:bg-primary-hover">
+        <i class="fa-solid fa-arrow-right-to-bracket"></i> Sign In
+      </a>
+      <a href="<?= ltSiteUrl() ?>/ThemeBrainDump/auth" class="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-semibold text-xs hover:bg-slate-50 dark:hover:bg-slate-800">
+        <i class="fa-solid fa-user-plus"></i> Create Account
+      </a>
+    </div>
+  </div>
+  
+    <!-- ==================== SEARCH MODAL ==================== -->
+  <div id="search-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-start justify-center pt-20 px-4">
+    <div class="bg-white dark:bg-slate-900 w-full max-w-2xl rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden">
+      <div class="p-4 border-b border-slate-200 dark:border-slate-800 flex items-center gap-3">
+        <i class="fa-solid fa-magnifying-glass text-slate-400"></i>
+        <input id="search-modal-input" type="text" placeholder="Search articles, tags, authors, or topics..." class="w-full bg-transparent text-slate-900 dark:text-white text-sm focus:outline-none" />
+        <button id="search-modal-close" class="text-xs text-slate-400 hover:text-slate-600 dark:hover:text-white px-2 py-1 rounded-md border border-slate-200 dark:border-slate-700">ESC</button>
+      </div>
+      <div id="search-modal-results" class="p-3 max-h-96 overflow-y-auto space-y-1">
+        <!-- Live search results -->
+      </div>
+    </div>
+  </div>

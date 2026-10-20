@@ -1,0 +1,168 @@
+<!-- Dashboard Content Workspace -->
+<!-- High-Level Metric Tiles -->
+<div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+  <!-- 1. Total Views -->
+  <div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+    <div class="flex items-center justify-between">
+      <span class="text-xs font-extrabold uppercase tracking-wider text-slate-400">Total Views</span>
+      <span class="rounded-full bg-emerald-50 px-2.5 py-0.5 text-[10px] font-bold text-emerald-600 dark:bg-emerald-950/40">Active</span>
+    </div>
+    <div class="mt-2 text-3xl font-black text-slate-900 dark:text-white" id="stat-total-views">--</div>
+    <p class="mt-1 text-[11px] text-slate-400">Across all published articles</p>
+  </div>
+
+  <!-- 2. Total Articles -->
+  <div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+    <div class="flex items-center justify-between">
+      <span class="text-xs font-extrabold uppercase tracking-wider text-slate-400">Total Articles</span>
+      <span class="rounded-full bg-primary/10 px-2.5 py-0.5 text-[10px] font-bold text-primary">Catalog</span>
+    </div>
+    <div class="mt-2 text-3xl font-black text-slate-900 dark:text-white" id="stat-total-articles">--</div>
+    <p class="mt-1 text-[11px] text-slate-400">Published & drafts combined</p>
+  </div>
+
+  <!-- 3. Comments -->
+  <div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+    <div class="flex items-center justify-between">
+      <span class="text-xs font-extrabold uppercase tracking-wider text-slate-400">Comments</span>
+      <span class="rounded-full bg-amber-50 px-2.5 py-0.5 text-[10px] font-bold text-amber-600 dark:bg-amber-950/40" id="badge-pending-comments">0 Pending</span>
+    </div>
+    <div class="mt-2 text-3xl font-black text-slate-900 dark:text-white" id="stat-total-comments">--</div>
+    <p class="mt-1 text-[11px] text-slate-400">Reader discussions</p>
+  </div>
+
+  <!-- 4. Taxonomies -->
+  <div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+    <div class="flex items-center justify-between">
+      <span class="text-xs font-extrabold uppercase tracking-wider text-slate-400">Taxonomies</span>
+      <span class="rounded-full bg-indigo-50 px-2.5 py-0.5 text-[10px] font-bold text-indigo-600 dark:bg-indigo-950/40">Organized</span>
+    </div>
+    <div class="mt-2 text-3xl font-black text-slate-900 dark:text-white" id="stat-total-taxonomies">--</div>
+    <p class="mt-1 text-[11px] text-slate-400">Active categories and tags</p>
+  </div>
+</div>
+
+<!-- Middle Section: Replaced Right Card with Top Categories -->
+<div class="grid grid-cols-1 gap-6 lg:grid-cols-12 mt-6">
+  <!-- Left Chart (8 cols) -->
+  <div class="lg:col-span-8 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+    <div class="flex items-center justify-between mb-4">
+      <div>
+        <h3 class="text-base font-bold text-slate-900 dark:text-white">Publishing & View Activity</h3>
+        <p class="text-xs text-slate-400">Traffic volume across recent publications</p>
+      </div>
+      <span class="rounded-xl border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-semibold text-slate-600 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">Last 30 Days</span>
+    </div>
+    <div id="chart-timeline-container" class="min-h-[220px] flex items-end gap-2 pt-8"></div>
+  </div>
+
+  <!-- Right Operational Card: Top Categories (4 cols) -->
+  <div class="lg:col-span-4 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900 flex flex-col justify-between">
+    <div>
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-base font-bold text-slate-900 dark:text-white">Top Categories</h3>
+        <span class="text-xs font-bold text-primary">By Views</span>
+      </div>
+      <div id="top-categories-list" class="space-y-3">
+        <p class="text-xs text-slate-400">Loading categories...</p>
+      </div>
+    </div>
+
+    <!-- Moderation Quick Alert -->
+    <div id="moderation-alert-box" class="mt-6 rounded-2xl border border-slate-100 bg-slate-50 p-4 text-xs dark:border-slate-800 dark:bg-slate-800/60">
+      <div class="flex items-center gap-2 font-bold text-slate-700 dark:text-slate-200">
+        <i class="fa-solid fa-shield-halved text-primary"></i> Moderation Notice
+      </div>
+      <p class="mt-1 text-[11px] text-slate-500 dark:text-slate-400" id="moderation-alert-text">All reports and comments are up to date.</p>
+    </div>
+  </div>
+</div>
+<script>
+
+    
+    document.addEventListener('DOMContentLoaded', async () => {
+      updateHeader();
+      const formatNumber = num => new Intl.NumberFormat().format(num || 0);
+    
+      try {
+        const response = await fetch(`${BASE_URL}/blogs/admin/dashboard-metrics`, {
+          headers: {
+            'Accept': 'application/json',
+            'Authorization': `Bearer ${LW_TOKEN}`
+          }
+        });
+    
+        const res = await response.json();
+        if (res.responseCategory !== 200) return;
+    
+        const { cards, topCategories, trend } = res.responseData;
+    
+        // 1. Populate Metric Cards
+        document.getElementById('stat-total-views').textContent = formatNumber(cards.totalViews);
+        document.getElementById('stat-total-articles').textContent = formatNumber(cards.totalArticles);
+        document.getElementById('stat-total-comments').textContent = formatNumber(cards.totalComments);
+        document.getElementById('stat-total-taxonomies').textContent = formatNumber(cards.totalTaxonomies);
+    
+        // Pending Comments Badge
+        const pendingCommentsBadge = document.getElementById('badge-pending-comments');
+        if (pendingCommentsBadge) {
+          pendingCommentsBadge.textContent = `${cards.pendingComments} Pending`;
+          if (cards.pendingComments > 0) {
+            pendingCommentsBadge.className = 'rounded-full bg-amber-500 text-white px-2.5 py-0.5 text-[10px] font-bold animate-pulse';
+          }
+        }
+    
+        // 2. Populate Moderation Alert
+        const alertText = document.getElementById('moderation-alert-text');
+        if (alertText) {
+          if (cards.pendingReports > 0 || cards.pendingComments > 0) {
+            alertText.innerHTML = `You have <strong class="text-rose-500">${cards.pendingReports} pending report(s)</strong> and <strong class="text-amber-500">${cards.pendingComments} comment(s)</strong> awaiting moderation.`;
+          } else {
+            alertText.textContent = 'All queues clear. No pending moderation actions required.';
+          }
+        }
+    
+        // 3. Populate Right Column: Top Categories
+        const catContainer = document.getElementById('top-categories-list');
+        if (catContainer && Array.isArray(topCategories)) {
+          if (topCategories.length === 0) {
+            catContainer.innerHTML = '<p class="text-xs text-slate-400">No categories found.</p>';
+          } else {
+            const maxViews = Math.max(...topCategories.map(c => Number(c.viewCount) || 1), 1);
+            catContainer.innerHTML = topCategories.map(cat => {
+              const percent = Math.round(((Number(cat.viewCount) || 0) / maxViews) * 100);
+              return `
+                <div class="space-y-1">
+                  <div class="flex justify-between text-xs font-semibold">
+                    <span class="text-slate-700 dark:text-slate-300">${cat.name}</span>
+                    <span class="text-slate-400 font-mono text-[11px]">${formatNumber(cat.viewCount)} views</span>
+                  </div>
+                  <div class="h-2 w-full rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
+                    <div class="h-full bg-primary rounded-full transition-all duration-500" style="width: ${percent}%"></div>
+                  </div>
+                </div>
+              `;
+            }).join('');
+          }
+        }
+    
+        // 4. Render Simple Trend Chart Bars (Past 30 days)
+        const chartContainer = document.getElementById('chart-timeline-container');
+        if (chartContainer && Array.isArray(trend) && trend.length > 0) {
+          const maxViews = Math.max(...trend.map(t => Number(t.views) || 1), 1);
+          chartContainer.innerHTML = trend.map(t => {
+            const height = Math.max(Math.round(((Number(t.views) || 0) / maxViews) * 100), 10);
+            return `
+              <div class="flex-1 flex flex-col items-center gap-1 group relative">
+                <div class="w-full bg-slate-100 dark:bg-slate-800 group-hover:bg-primary transition-all rounded-t-lg" style="height: ${height * 1.5}px" title="${t.label}: ${t.views} views"></div>
+                <span class="text-[9px] text-slate-400 truncate w-full text-center">${t.label}</span>
+              </div>
+            `;
+          }).join('');
+        }
+      } catch (err) {
+        console.error('Failed to load dashboard metrics:', err);
+      }
+    });
+    
+</script>

@@ -1,0 +1,538 @@
+  <!-- Comments Workspace -->
+   <main class="mx-auto w-full space-y-6 p-2 sm:p-4">
+  <!-- Moderation Status Cards -->
+  <div class="grid grid-cols-1 gap-5 sm:grid-cols-3">
+    <div class="flex items-center justify-between rounded-3xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+      <div>
+        <span class="text-[10px] font-extrabold tracking-wider text-slate-400 uppercase">Approved Comments</span>
+        <div class="mt-1 text-2xl font-black text-emerald-600 dark:text-emerald-400" id="stat-approved">0</div>
+      </div>
+      <div class="flex h-10 w-10 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-500 dark:bg-emerald-950/40">
+        <i class="fa-solid fa-check"></i>
+      </div>
+    </div>
+
+    <div class="flex items-center justify-between rounded-3xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+      <div>
+        <span class="text-[10px] font-extrabold tracking-wider text-slate-400 uppercase">Pending Review</span>
+        <div class="mt-1 text-2xl font-black text-amber-600 dark:text-amber-400" id="stat-pending">0</div>
+      </div>
+      <div class="flex h-10 w-10 items-center justify-center rounded-2xl bg-amber-50 text-amber-500 dark:bg-amber-950/40">
+        <i class="fa-solid fa-clock"></i>
+      </div>
+    </div>
+
+    <div class="flex items-center justify-between rounded-3xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+      <div>
+        <span class="text-[10px] font-extrabold tracking-wider text-slate-400 uppercase">Flagged as Spam</span>
+        <div class="mt-1 text-2xl font-black text-rose-600 dark:text-rose-400" id="stat-spam">0</div>
+      </div>
+      <div class="flex h-10 w-10 items-center justify-center rounded-2xl bg-rose-50 text-rose-500 dark:bg-rose-950/40">
+        <i class="fa-solid fa-triangle-exclamation"></i>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filter Controls -->
+  <div class="flex flex-col items-center justify-between gap-4 rounded-3xl border border-slate-200 bg-white p-4 shadow-sm sm:flex-row sm:p-5 dark:border-slate-800 dark:bg-slate-900">
+    <div class="flex w-full flex-grow items-center gap-3 sm:w-auto">
+      <div class="relative w-full sm:w-72">
+        <i class="fa-solid fa-magnifying-glass absolute top-1/2 left-3.5 -translate-y-1/2 text-xs text-slate-400"></i>
+        <input type="text" id="comment-search" placeholder="Search comments by author or keyword..." class="w-full rounded-xl border border-slate-200 bg-slate-50 py-2 pr-4 pl-9 text-xs text-slate-900 focus:ring-2 focus:ring-primary focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-white" />
+      </div>
+
+      <select id="comment-filter-status" class="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs text-slate-700 focus:ring-2 focus:ring-primary focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">
+        <option value="all">All Moderation Status</option>
+        <option value="approved">Approved</option>
+        <option value="pending">Pending</option>
+        <option value="spam">Spam</option>
+      </select>
+    </div>
+
+    <button type="button" id="btn-bulk-approve" class="flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-600 px-4 py-2.5 text-xs font-bold text-white shadow-md shadow-emerald-600/20 hover:bg-emerald-700 sm:w-auto">
+      <i class="fa-solid fa-check-double"></i> Approve All Pending
+    </button>
+  </div>
+
+  <!-- Comments List / Table -->
+  <div class="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
+    <div class="overflow-x-auto">
+      <table class="w-full text-left text-xs">
+        <thead class="border-b border-slate-200 bg-slate-50 text-[10px] font-extrabold uppercase tracking-wider text-slate-400 dark:border-slate-800 dark:bg-slate-800/60">
+          <tr>
+            <th class="px-6 py-4">Author & Comment Content</th>
+            <th class="px-4 py-4">Associated Article</th>
+            <th class="px-4 py-4">Status</th>
+            <th class="px-4 py-4">Submitted</th>
+            <th class="px-6 py-4 text-right">Moderation Actions</th>
+          </tr>
+        </thead>
+        <tbody id="comments-table-body" class="divide-y divide-slate-100 dark:divide-slate-800">
+          <tr>
+            <td colspan="5" class="py-12 text-center text-slate-400">Loading comments...</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Table Footer with Pagination Controls -->
+    <div class="flex flex-col sm:flex-row items-center justify-between border-t border-slate-100 dark:border-slate-800 p-4 gap-4 text-xs text-slate-400">
+      <span id="comments-count-indicator">Showing 0 of 0 comments</span>
+      <div id="comments-pagination" class="flex items-center gap-1.5"></div>
+    </div>
+  </div>
+</main>
+
+<?php  ltImport('ThemeBrainDump','Script.js') ?>
+    <script>
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            updateHeader('Commnuity', "Manage Comments");
+  // State
+  let rawCommentsData = [];
+  let flattenedComments = [];
+  let filteredComments = [];
+  let currentPage = 1;
+  const itemsPerPage = 8;
+
+  // DOM Elements
+  const tableBody = document.getElementById('comments-table-body');
+  const countIndicator = document.getElementById('comments-count-indicator');
+  const paginationContainer = document.getElementById('comments-pagination');
+  const searchInput = document.getElementById('comment-search');
+  const statusFilter = document.getElementById('comment-filter-status');
+  const bulkApproveBtn = document.getElementById('btn-bulk-approve');
+
+  // Counters
+  const statApproved = document.getElementById('stat-approved');
+  const statPending = document.getElementById('stat-pending');
+  const statSpam = document.getElementById('stat-spam');
+
+  // --- Flatten Helper (Traverses parent comments & nested replies) ---
+  function flattenCommentsList(list) {
+    const flat = [];
+    function traverse(nodes, isReply = false) {
+      if (!Array.isArray(nodes)) return;
+      nodes.forEach(item => {
+        flat.push({ ...item, isReply });
+        if (Array.isArray(item.replies) && item.replies.length > 0) {
+          traverse(item.replies, true);
+        }
+      });
+    }
+    traverse(list);
+    return flat;
+  }
+
+  // --- Fetch Comments from Server ---
+  async function fetchComments() {
+    tableBody.innerHTML = `
+      <tr>
+        <td colspan="5" class="py-12 text-center text-slate-400">
+          <i class="fa-solid fa-spinner fa-spin text-base mr-2"></i> Loading comments...
+        </td>
+      </tr>
+    `;
+
+    try {
+      const response = await fetch(`${BASE_URL}/blogs/comments`, {
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': `Bearer ${LW_TOKEN}`
+        }
+      });
+
+      const res = await response.json();
+      if (res.responseCategory == 200 || res.responseCode == 201) {
+        rawCommentsData = Array.isArray(res.responseData) ? res.responseData : [];
+        flattenedComments = flattenCommentsList(rawCommentsData);
+        updateCounters();
+        applyFilters();
+      } else {
+        throw new Error(res.responseResult || 'Failed to load comments');
+      }
+    } catch (err) {
+      console.error(err);
+      tableBody.innerHTML = `
+        <tr>
+          <td colspan="5" class="py-8 text-center text-rose-500 font-semibold">
+            <i class="fa-solid fa-triangle-exclamation mr-1.5"></i> Unable to load comments from server.
+          </td>
+        </tr>
+      `;
+    }
+  }
+
+  // --- Update Top Status Tiles ---
+  function updateCounters() {
+    if (statApproved) {
+      statApproved.textContent = flattenedComments.filter(c => (c.status || '').toLowerCase() === 'approved').length;
+    }
+    if (statPending) {
+      statPending.textContent = flattenedComments.filter(c => (c.status || '').toLowerCase() === 'pending').length;
+    }
+    if (statSpam) {
+      statSpam.textContent = flattenedComments.filter(c => (c.status || '').toLowerCase() === 'spam').length;
+    }
+  }
+
+  // --- Search & Filter ---
+  function applyFilters() {
+    const query = searchInput ? searchInput.value.toLowerCase().trim() : '';
+    const selectedStatus = statusFilter ? statusFilter.value.toLowerCase() : 'all';
+
+    filteredComments = flattenedComments.filter(item => {
+      const author = (item.commentedBy || item.author || 'Anonymous').toLowerCase();
+      const body = (item.body || '').toLowerCase();
+      const title = (item.title || '').toLowerCase();
+      const status = (item.status || 'pending').toLowerCase();
+
+      const matchesQuery = author.includes(query) || body.includes(query) || title.includes(query);
+      const matchesStatus = (selectedStatus === 'all') || (status === selectedStatus);
+
+      return matchesQuery && matchesStatus;
+    });
+
+    currentPage = 1;
+    renderTable();
+  }
+
+  if (searchInput) searchInput.addEventListener('input', applyFilters);
+  if (statusFilter) statusFilter.addEventListener('change', applyFilters);
+
+  // --- Render Table & Pagination ---
+  function renderTable() {
+    const totalItems = filteredComments.length;
+    const totalPages = Math.ceil(totalItems / itemsPerPage) || 1;
+
+    if (currentPage > totalPages) currentPage = totalPages;
+
+    const startIdx = (currentPage - 1) * itemsPerPage;
+    const currentSlice = filteredComments.slice(startIdx, startIdx + itemsPerPage);
+
+    if (countIndicator) {
+      const shownCount = currentSlice.length;
+      countIndicator.textContent = `Showing ${shownCount > 0 ? startIdx + 1 : 0}-${startIdx + shownCount} of ${totalItems} comments`;
+    }
+
+    if (currentSlice.length === 0) {
+      tableBody.innerHTML = `
+        <tr>
+          <td colspan="5" class="py-12 text-center text-slate-400">No comments found matching criteria.</td>
+        </tr>
+      `;
+      renderPagination(totalPages);
+      return;
+    }
+
+    tableBody.innerHTML = currentSlice.map(item => {
+      const authorName = item.commentedBy || item.author || 'Anonymous';
+      const postSlug = item.postSlug || '';
+      const postUrl = `${siteHostAddress || ''}/ThemeBrainDump/post?slug=${encodeURIComponent(postSlug)}`;
+      const currentStatus = (item.status || 'pending').toLowerCase();
+
+      const statusBadgeStyles = {
+        approved: 'bg-emerald-50 text-emerald-600 dark:bg-emerald-950/40 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800',
+        pending: 'bg-amber-50 text-amber-600 dark:bg-amber-950/40 dark:text-amber-400 border-amber-200 dark:border-amber-800',
+        spam: 'bg-rose-50 text-rose-600 dark:bg-rose-950/40 dark:text-rose-400 border-rose-200 dark:border-rose-800'
+      };
+
+      return `
+        <tr class="hover:bg-slate-50/70 dark:hover:bg-slate-800/40 transition-colors">
+          <!-- Author & Comment Body -->
+          <td class="px-6 py-4 max-w-sm">
+            <div class="flex flex-col gap-1">
+              <div class="flex items-center gap-2">
+                <span class="font-bold text-slate-900 dark:text-white">${authorName}</span>
+                ${item.isReply ? '<span class="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-[9px] font-bold text-slate-500 uppercase tracking-wider"><i class="fa-solid fa-reply mr-1"></i>Reply</span>' : ''}
+              </div>
+              <p class="text-xs text-slate-600 dark:text-slate-300 line-clamp-3 leading-relaxed">${item.body || ''}</p>
+            </div>
+          </td>
+
+          <!-- Associated Article -->
+          <td class="px-4 py-4 max-w-xs">
+            <div class="flex flex-col">
+              <span class="font-semibold text-slate-800 dark:text-slate-200 truncate" title="${item.title || ''}">${item.title || 'Untitled Post'}</span>
+              <span class="text-[10px] text-slate-400">Post Author: ${item.postAuthor}</span>
+            </div>
+          </td>
+
+          <!-- Moderation Status Dropdown -->
+          <td class="px-4 py-4">
+            <select 
+              data-action="change-status" 
+              data-id="${item.ltId}" 
+              class="rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider focus:outline-none focus:ring-2 focus:ring-primary ${statusBadgeStyles[currentStatus] || ''}"
+            >
+              <option value="approved" ${currentStatus === 'approved' ? 'selected' : ''}>Approved</option>
+              <option value="pending" ${currentStatus === 'pending' ? 'selected' : ''}>Pending</option>
+              <option value="spam" ${currentStatus === 'spam' ? 'selected' : ''}>Spam</option>
+            </select>
+          </td>
+
+          <!-- Submission Date -->
+          <td class="px-4 py-4 text-[11px] text-slate-400 whitespace-nowrap">
+            ${item.createdAt || 'N/A'}
+          </td>
+
+          <!-- Moderation Actions -->
+          <td class="px-6 py-4 text-right">
+            <div class="inline-flex items-center gap-2">
+              <a 
+                href="${postUrl}" 
+                target="_blank" 
+                class="px-2.5 py-1 rounded-lg text-primary hover:bg-indigo-50 dark:hover:bg-indigo-950/50 font-bold text-xs inline-flex items-center gap-1 transition-colors"
+                title="View Post"
+              >
+                <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i> View
+              </a>
+              <button 
+                type="button" 
+                data-action="delete" 
+                data-id="${item.ltId}" 
+                class="p-1.5 rounded-lg text-slate-400 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors" 
+                title="Delete Comment"
+              >
+                <i class="fa-solid fa-trash-can pointer-events-none"></i>
+              </button>
+            </div>
+          </td>
+        </tr>
+      `;
+    }).join('');
+
+    renderPagination(totalPages);
+  }
+
+  function renderPagination(totalPages) {
+    if (!paginationContainer) return;
+    if (totalPages <= 1) {
+      paginationContainer.innerHTML = '';
+      return;
+    }
+
+    let buttons = '';
+
+    buttons += `
+      <button 
+        type="button" 
+        data-page="${currentPage - 1}" 
+        ${currentPage === 1 ? 'disabled class="opacity-30 cursor-not-allowed"' : 'class="hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300"'} 
+        class="page-btn w-7 h-7 flex items-center justify-center rounded-lg border border-slate-200 dark:border-slate-800 text-[10px]"
+      >
+        <i class="fa-solid fa-chevron-left pointer-events-none"></i>
+      </button>
+    `;
+
+    for (let p = 1; p <= totalPages; p++) {
+      const activeClass = p === currentPage
+        ? 'bg-primary text-white font-bold border-primary shadow-sm'
+        : 'border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800';
+
+      buttons += `
+        <button 
+          type="button" 
+          data-page="${p}" 
+          class="page-btn w-7 h-7 flex items-center justify-center rounded-lg border text-xs font-semibold ${activeClass}"
+        >
+          ${p}
+        </button>
+      `;
+    }
+
+    buttons += `
+      <button 
+        type="button" 
+        data-page="${currentPage + 1}" 
+        ${currentPage === totalPages ? 'disabled class="opacity-30 cursor-not-allowed"' : 'class="hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300"'} 
+        class="page-btn w-7 h-7 flex items-center justify-center rounded-lg border border-slate-200 dark:border-slate-800 text-[10px]"
+      >
+        <i class="fa-solid fa-chevron-right pointer-events-none"></i>
+      </button>
+    `;
+
+    paginationContainer.innerHTML = buttons;
+  }
+
+  // --- Pagination Click Delegation ---
+  if (paginationContainer) {
+    paginationContainer.addEventListener('click', (e) => {
+      const btn = e.target.closest('.page-btn:not([disabled])');
+      if (!btn) return;
+
+      const page = parseInt(btn.dataset.page, 10);
+      if (page && page !== currentPage) {
+        currentPage = page;
+        renderTable();
+      }
+    });
+  }
+
+  // --- Change Status API ---
+  async function updateStatus(ltId, newStatus, selectElement = null) {
+    if (selectElement) selectElement.disabled = true;
+
+    try {
+      const response = await fetch(`${BASE_URL}/blogs/comments/update-status`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': `Bearer ${LW_TOKEN}`
+        },
+        body: JSON.stringify({ ltId: ltId, status: newStatus })
+      });
+
+      const res = await response.json();
+
+      if (res.responseCategory == 200 || res.responseCode == 201) {
+        const item = flattenedComments.find(c => String(c.ltId) === String(ltId));
+        if (item) item.status = newStatus;
+
+        updateCounters();
+        renderTable();
+
+        Swal.fire({
+          toast: true,
+          position: 'top-end',
+          icon: 'success',
+          title: res.responseResult || 'Comment status updated',
+          timer: 1400,
+          showConfirmButton: false
+        });
+      } else {
+        throw new Error(res.responseResult || 'Failed to update status');
+      }
+    } catch (err) {
+      console.error(err);
+      Swal.fire('Error', err.message || 'Status update failed', 'error');
+      if (selectElement) {
+        const orig = flattenedComments.find(c => String(c.ltId) === String(ltId));
+        if (orig) selectElement.value = orig.status;
+      }
+    } finally {
+      if (selectElement) selectElement.disabled = false;
+    }
+  }
+
+  // --- Delete Comment API ---
+  async function deleteComment(ltId) {
+    const { isConfirmed } = await Swal.fire({
+      title: 'Delete Comment?',
+      text: 'This will remove the comment and any replies associated with it.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#e11d48',
+      cancelButtonColor: '#64748b',
+      confirmButtonText: 'Yes, delete'
+    });
+
+    if (!isConfirmed) return;
+
+    try {
+      const response = await fetch(`${BASE_URL}/blogs/comments/${encodeURIComponent(ltId)}`, {
+        method: 'DELETE',
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': `Bearer ${LW_TOKEN}`
+        }
+      });
+
+      const res = await response.json();
+
+      if (res.responseCategory == 200 || res.responseCode == 201) {
+        flattenedComments = flattenedComments.filter(c => String(c.ltId) !== String(ltId));
+        updateCounters();
+        applyFilters();
+
+        Swal.fire({
+          icon: 'success',
+          title: 'Deleted',
+          text: res.responseResult || 'Comment removed successfully.',
+          timer: 1500,
+          showConfirmButton: false
+        });
+      } else {
+        throw new Error(res.responseResult || 'Could not delete comment');
+      }
+    } catch (err) {
+      console.error(err);
+      Swal.fire('Error', err.message || 'Failed to delete comment', 'error');
+    }
+  }
+
+  // --- Bulk Approve Pending ---
+  if (bulkApproveBtn) {
+    bulkApproveBtn.addEventListener('click', async () => {
+      const pendingItems = flattenedComments.filter(c => (c.status || '').toLowerCase() === 'pending');
+
+      if (pendingItems.length === 0) {
+        Swal.fire('Notice', 'There are no pending comments to approve.', 'info');
+        return;
+      }
+
+      const { isConfirmed } = await Swal.fire({
+        title: 'Approve All Pending?',
+        text: `Are you sure you want to approve ${pendingItems.length} pending comment(s)?`,
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#059669',
+        cancelButtonColor: '#64748b',
+        confirmButtonText: 'Approve All'
+      });
+
+      if (!isConfirmed) return;
+
+      const originalBtnHtml = bulkApproveBtn.innerHTML;
+      bulkApproveBtn.disabled = true;
+      bulkApproveBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1.5"></i> Approving...';
+
+      try {
+        await Promise.all(
+          pendingItems.map(item =>
+            fetch(`${BASE_URL}/blogs/comments/update-status`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'Authorization': `Bearer ${LW_TOKEN}`
+              },
+              body: JSON.stringify({ ltId: item.ltId, status: 'approved' })
+            })
+          )
+        );
+
+        pendingItems.forEach(item => (item.status = 'approved'));
+        updateCounters();
+        renderTable();
+
+        Swal.fire('Success', 'All pending comments have been approved.', 'success');
+      } catch (err) {
+        console.error(err);
+        Swal.fire('Error', 'An error occurred during bulk approval.', 'error');
+      } finally {
+        bulkApproveBtn.disabled = false;
+        bulkApproveBtn.innerHTML = originalBtnHtml;
+      }
+    });
+  }
+
+  // Table Event Delegation (Status Change & Deletion)
+  tableBody.addEventListener('change', (e) => {
+    const select = e.target.closest('select[data-action="change-status"]');
+    if (!select) return;
+    updateStatus(select.dataset.id, select.value, select);
+  });
+
+  tableBody.addEventListener('click', (e) => {
+    const deleteBtn = e.target.closest('button[data-action="delete"]');
+    if (!deleteBtn) return;
+    deleteComment(deleteBtn.dataset.id);
+  });
+
+  // Initial Fetch
+  fetchComments();
+});
+        
+    </script>

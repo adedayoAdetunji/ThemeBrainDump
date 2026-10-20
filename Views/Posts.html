@@ -1,0 +1,671 @@
+ <style>
+     
+         /* Hide scrollbar for Chrome, Safari, and Opera */
+    .scrollbar-none::-webkit-scrollbar {
+      display: none;
+    }
+    
+    /* Hide scrollbar for IE, Edge */
+    .scrollbar-none {
+      -ms-overflow-style: none; /* IE and Edge */
+    }
+    
+    /* Hide scrollbar for Firefox */
+    .scrollbar-none {
+      scrollbar-width: none; /* Firefox */
+    }
+     
+ </style>
+ 
+ <!-- ==================== MAIN CONTENT ==================== -->
+  <main class="container flex-grow mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+    
+    <!-- Hero Featured Post -->
+    <section id="hero-post-container" class="mb-14">
+      <!-- Injected via JavaScript -->
+    </section>
+
+    <!-- Toolbar: Categories, Search, Sort & View Switcher -->
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 mb-8 border-b border-slate-200 dark:border-slate-800">
+      
+      <!-- Category Pills -->
+      <div class="flex items-center gap-1.5 overflow-x-auto pb-2 md:pb-0 scrollbar-none" id="category-pills">
+          <!-- Dynamically populated -->
+      </div>
+
+      <!-- Controls: Sort & Layout Mode -->
+      <div class="flex items-center gap-3">
+        <button class="search-trigger flex items-center gap-2 px-3 py-2 text-sm text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800/80 hover:bg-slate-200 dark:hover:bg-slate-800 rounded-xl transition-colors focus:ring-2 focus:ring-primary" aria-label="Search articles (Ctrl+K)">
+            <i class="fa-solid fa-magnifying-glass text-xs"></i>
+            <span class="hidden sm:inline">Search</span>
+            <!--<kbd class="hidden sm:inline-block text-[10px] font-mono font-semibold px-1.5 py-0.5 rounded bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-400">Ctrl K</kbd>-->
+        </button>
+        <!-- Sort Select -->
+        <div class="relative">
+          <select id="sort-select" class="appearance-none bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 text-xs font-medium rounded-xl pl-3.5 pr-8 py-2 focus:ring-2 focus:ring-primary focus:outline-none cursor-pointer">
+            <option value="newest">Latest First</option>
+            <option value="popular">Most Popular</option>
+            <option value="comments">Most Discussed</option>
+          </select>
+          <i class="fa-solid fa-chevron-down absolute right-3 top-1/2 -translate-y-1/2 text-[10px] text-slate-400 pointer-events-none"></i>
+        </div>
+
+        <!-- View Switcher (Grid vs List) -->
+        <div class="flex items-center bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-1">
+          <button id="view-grid-btn" class="p-2 rounded-lg text-xs transition-colors bg-primary text-white shadow-sm" aria-label="Grid layout">
+            <i class="fa-solid fa-table-cells-large"></i>
+          </button>
+          <button id="view-list-btn" class="p-2 rounded-lg text-xs transition-colors text-slate-400 hover:text-slate-700 dark:hover:text-slate-200" aria-label="List layout">
+            <i class="fa-solid fa-list"></i>
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Layout Grid: Main Post Feed & Sidebar -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
+      
+      <!-- Main Posts Column -->
+      <div class="lg:col-span-8">
+        
+        <!-- Active Filter Indicator -->
+        <div id="active-filter-indicator" class="hidden mb-4 items-center justify-between bg-primary-light dark:bg-slate-900/60 p-3 rounded-xl border border-primary/20 text-xs">
+          <span class="font-medium text-slate-700 dark:text-slate-300" id="filter-status-text">Showing filtered articles</span>
+          <button id="clear-filters-btn" class="text-primary font-semibold hover:underline">Reset Filters</button>
+        </div>
+
+        <!-- Posts Container -->
+        <div id="posts-container" class="grid grid-cols-1 sm:grid-cols-2 gap-6 transition-all duration-300">
+          <!-- Dynamically populated -->
+        </div>
+
+        <!-- Empty State -->
+        <div id="no-posts-found" class="hidden py-16 text-center border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-2xl">
+          <i class="fa-solid fa-newspaper text-4xl text-slate-300 dark:text-slate-600 mb-3"></i>
+          <h3 class="text-lg font-bold text-slate-700 dark:text-slate-200">No articles found</h3>
+          <p class="text-sm text-slate-500 dark:text-slate-400 max-w-sm mx-auto mt-1">Try changing your search term or switching to another category filter.</p>
+        </div>
+
+        <!-- Pagination & Infinite Scroll Trigger -->
+        <div class="mt-12 pt-8 border-t border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div class="text-xs text-slate-500 dark:text-slate-400" id="pagination-info">
+            Showing <span class="font-semibold text-slate-800 dark:text-white" id="page-count-text">1-6</span> of all articles
+          </div>
+
+          <div class="flex items-center gap-2">
+            <button id="load-more-btn" class="px-5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-900 text-xs font-semibold text-slate-700 dark:text-slate-300 flex items-center gap-2 transition-all">
+              <i class="fa-solid fa-arrows-rotate text-[10px]"></i> Load More Articles
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Sidebar -->
+      <aside class="lg:col-span-4 space-y-8">
+        
+        <!-- Newsletter Box -->
+        <div class="p-6 rounded-2xl bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-slate-900 dark:to-slate-900/40 border border-indigo-100 dark:border-slate-800 shadow-sm relative overflow-hidden">
+          <div class="w-20 h-20 bg-primary/10 rounded-full blur-xl absolute -right-6 -top-6 pointer-events-none"></div>
+          <span class="text-[10px] font-bold uppercase tracking-wider text-primary bg-primary-light dark:bg-slate-800 px-2 py-0.5 rounded">Weekly Briefing</span>
+          <h3 class="text-lg font-bold text-slate-900 dark:text-white mt-2">Get our best essays in your inbox</h3>
+          <p class="text-xs text-slate-600 dark:text-slate-400 mt-1.5 leading-relaxed">Join 35,000+ engineers, designers, and creators who read BrainDump every Sunday morning.</p>
+          
+          <form id="sidebar-newsletter-form" class="mt-4 flex flex-col gap-2.5">
+            <input type="email" required placeholder="name@domain.com" class="w-full px-3.5 py-2.5 rounded-xl text-xs bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary" />
+            <button type="submit" class="w-full py-2.5 rounded-xl bg-primary hover:bg-primary-hover text-white text-xs font-semibold shadow-md shadow-indigo-500/10 transition-colors">
+              Subscribe Free
+            </button>
+          </form>
+          <p class="text-[10px] text-slate-400 dark:text-slate-500 text-center mt-2.5">No spam. Unsubscribe at any time.</p>
+        </div>
+
+        <!-- Trending Articles Widget -->
+        <div class="p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm">
+          <div class="flex items-center gap-2 mb-5">
+            <i class="fa-solid fa-arrow-trend-up text-primary text-sm"></i>
+            <h3 class="text-sm font-bold uppercase tracking-wider text-slate-900 dark:text-white">Trending This Week</h3>
+          </div>
+          <div id="trending-posts-container" class="space-y-4">
+            <!-- Populated via JS -->
+          </div>
+        </div>
+
+        <!-- Popular Tags Cloud -->
+        <div class="p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm">
+          <h3 class="text-sm font-bold uppercase tracking-wider text-slate-900 dark:text-white mb-4">Explore Tags</h3>
+          <div class="flex flex-wrap gap-2" id="tags-cloud">
+            <button class="tag-badge px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-primary hover:text-white transition-colors">#Design Systems</button>
+            <button class="tag-badge px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-primary hover:text-white transition-colors">#Performance</button>
+            <button class="tag-badge px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-primary hover:text-white transition-colors">#CSS Architecture</button>
+            <button class="tag-badge px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-primary hover:text-white transition-colors">#AI Tooling</button>
+            <button class="tag-badge px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-primary hover:text-white transition-colors">#Web Vitals</button>
+            <button class="tag-badge px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-primary hover:text-white transition-colors">#Subgrid</button>
+          </div>
+        </div>
+
+      </aside>
+
+    </div>
+
+  </main>
+
+  
+  <?php ltImport('ThemeBrainDump','Store.js')  ?>
+  <?php ltImport('ThemeBrainDump','Nav.js')  ?>
+  
+ <script>
+    // Blog Listing Page Controller
+    const state = {
+      page: 1,
+      limit: 6,
+      q: '',
+      category: 'All',
+      sort: 'newest'
+    };
+
+    let currentLayout = 'grid'; // 'grid' | 'list'
+    let loadedPosts = [];
+    let currentFeaturedPost = null;
+    let paginationData = {
+      totalItems: 0,
+      currentPage: 1,
+      hasMore: false
+    };
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      await renderCategoryPills();
+      await loadBlogFeed(false);
+      fetchSidebarWidget('popular', 'trending-posts-container');
+      setupEvents();
+    });
+
+    // Render dynamic category pills and footer links from server response
+    async function renderCategoryPills() {
+      const container = document.getElementById('category-pills');
+      const footerList = document.getElementById('footer-categories-list');
+      if (!container) return;
+
+      // Fetch categories from server or local store
+      const catRes = await BlogStore.fetchCategoriesFromServer();
+      const categories = catRes.responseData || [];
+
+      let pillsHTML = `
+        <button data-category="All" class="category-pill px-4 py-2 rounded-full text-xs font-semibold whitespace-nowrap ${state.category === 'All' ? 'bg-primary text-white shadow-sm' : 'bg-slate-200/80 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-slate-700'} transition-all">
+          All Stories
+        </button>
+      `;
+
+      pillsHTML += categories.map(cat => {
+        const catId = cat.ltId !== undefined ? cat.ltId : cat.id;
+        const isActive = String(state.category) === String(catId) || state.category === cat.categoryName;
+        return `
+          <button data-category="${catId}" data-category-name="${cat.categoryName}" class="category-pill px-4 py-2 rounded-full text-xs font-semibold whitespace-nowrap ${isActive ? 'bg-primary text-white shadow-sm' : 'bg-slate-200/80 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-slate-700'} transition-all">
+            ${cat.categoryName}
+          </button>
+        `;
+      }).join('');
+
+      container.innerHTML = pillsHTML;
+
+      // Attach click events
+      container.querySelectorAll('.category-pill').forEach(btn => {
+        btn.addEventListener('click', () => {
+          container.querySelectorAll('.category-pill').forEach(b => {
+            b.classList.remove('bg-primary', 'text-white', 'shadow-sm');
+            b.classList.add('bg-slate-200/80', 'dark:bg-slate-800', 'text-slate-600', 'dark:text-slate-300');
+          });
+          btn.classList.add('bg-primary', 'text-white', 'shadow-sm');
+          btn.classList.remove('bg-slate-200/80', 'dark:bg-slate-800', 'text-slate-600', 'dark:text-slate-300');
+          state.category = btn.dataset.category;
+          state.page = 1;
+          loadBlogFeed(false);
+        });
+      });
+
+      // Update footer categories list
+      if (footerList) {
+        footerList.innerHTML = categories.slice(0, 7).map(cat => {
+          const catId = cat.ltId !== undefined ? cat.ltId : cat.id;
+          return `<li><a href="#" onclick="filterByCategory('${catId}', '${cat.categoryName}'); return false;" class="hover:text-primary transition-colors">${cat.categoryName}</a></li>`;
+        }).join('');
+      }
+    }
+
+    async function loadBlogFeed(isAppend = false) {
+      const loadMoreBtn = document.getElementById('load-more-btn');
+      if (loadMoreBtn && isAppend) {
+        loadMoreBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-[10px]"></i> Loading...';
+      }
+
+      // Fetch from server or fallback store
+      const response = await BlogStore.fetchPostsFromServer(state);
+      const data = response.responseData?.data || [];
+      currentFeaturedPost = response.responseData?.featured || null;
+      paginationData = response.responseData?.pagination || {
+        totalItems: data.length,
+        currentPage: state.page,
+        hasMore: false
+      };
+
+      if (isAppend) {
+        loadedPosts = [...loadedPosts, ...data];
+      } else {
+        loadedPosts = data;
+      }
+
+      // 1. Featured Post Hero: ONLY show if isFeatured is 1!
+      renderHeroPost(currentFeaturedPost);
+
+      // 2. Main Posts Grid / List
+      renderPosts(loadedPosts);
+
+      // 3. Update Pagination Controls & Counts
+      updatePaginationUI();
+    }
+
+    function setupEvents() {
+
+      // Sort select
+      const sortSelect = document.getElementById('sort-select');
+      if (sortSelect) {
+        sortSelect.addEventListener('change', (e) => {
+          state.sort = e.target.value;
+          state.page = 1;
+          loadBlogFeed(false);
+        });
+      }
+
+      // View switcher
+      const gridBtn = document.getElementById('view-grid-btn');
+      const listBtn = document.getElementById('view-list-btn');
+      if (gridBtn && listBtn) {
+        gridBtn.addEventListener('click', () => {
+          currentLayout = 'grid';
+          gridBtn.className = 'p-2 rounded-lg text-xs transition-colors bg-primary text-white shadow-sm';
+          listBtn.className = 'p-2 rounded-lg text-xs transition-colors text-slate-400 hover:text-slate-700 dark:hover:text-slate-200';
+          renderPosts(loadedPosts);
+        });
+        listBtn.addEventListener('click', () => {
+          currentLayout = 'list';
+          listBtn.className = 'p-2 rounded-lg text-xs transition-colors bg-primary text-white shadow-sm';
+          gridBtn.className = 'p-2 rounded-lg text-xs transition-colors text-slate-400 hover:text-slate-700 dark:hover:text-slate-200';
+          renderPosts(loadedPosts);
+        });
+      }
+
+      // Load more / Infinite scroll
+      const loadMoreBtn = document.getElementById('load-more-btn');
+      if (loadMoreBtn) {
+        loadMoreBtn.addEventListener('click', () => {
+          if (paginationData.hasMore) {
+            state.page += 1;
+            loadBlogFeed(true);
+          } else {
+            BlogStore.showToast('All available published articles are currently loaded!', 'info');
+          }
+        });
+      }
+
+      // Reset filters
+      const clearBtn = document.getElementById('clear-filters-btn');
+      if (clearBtn) {
+        clearBtn.addEventListener('click', () => {
+          state.category = 'All';
+          state.q = '';
+          state.page = 1;
+          document.querySelectorAll('.category-pill').forEach(b => {
+            if (b.dataset.category === 'All') {
+              b.classList.add('bg-primary', 'text-white');
+            } else {
+              b.classList.remove('bg-primary', 'text-white');
+            }
+          });
+          loadBlogFeed(false);
+        });
+      }
+
+      // Tag badges in sidebar
+      document.querySelectorAll('.tag-badge').forEach(badge => {
+        badge.addEventListener('click', () => {
+          const tag = badge.textContent.replace('#', '').trim();
+          state.q = tag;
+          state.page = 1;
+          loadBlogFeed(false);
+        });
+      });
+
+      // Newsletter form
+      const newsForm = document.getElementById('sidebar-newsletter-form');
+      if (newsForm) {
+        newsForm.addEventListener('submit', (e) => {
+          e.preventDefault();
+          BlogStore.showToast('Thanks for subscribing to BrainDump Journal!', 'success');
+          newsForm.reset();
+        });
+      }
+    }
+
+    function renderHeroPost(featuredOverride = null) {
+      const heroContainer = document.getElementById('hero-post-container');
+      if (!heroContainer) return;
+
+      // Check if a featured post was passed separately or exists in loadedPosts where isFeatured === 1
+      let hero = featuredOverride;
+      if (!hero) {
+        hero = loadedPosts.find(p => p.isFeatured === 1 || p.is_featured === 1);
+      }
+
+      // Only show featured post when isFeatured is set to 1! If not, hide section
+      if (!hero || (hero.isFeatured !== 1 && hero.is_featured !== 1)) {
+        heroContainer.innerHTML = '';
+        heroContainer.classList.add('hidden');
+        return;
+      }
+
+      heroContainer.classList.remove('hidden');
+      const isBookmarked = BlogStore.isBookmarked(hero.id);
+      const coverImageUrl = hero.coverImage || getPostCoverImage(hero);
+      const defaultAvatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(hero.author || 'User')}&background=random`;
+      const avatarUrl = hero.avatar ? `${window.BLOG_CONFIG?.siteHostAddress}/${hero.avatar}` : defaultAvatar;
+
+      heroContainer.innerHTML = `
+        <div class="relative rounded-3xl overflow-hidden bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xl group">
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-0">
+            <div class="lg:col-span-7 relative h-72 lg:h-[440px] overflow-hidden">
+              <img src="${coverImageUrl}" alt="${hero.title}" onerror="this.onerror=null;this.src='https://picsum.photos/seed/${encodeURIComponent(hero.category)}/1200/800';" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out" />
+              <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent lg:hidden"></div>
+              <div class="absolute top-4 left-4">
+                <span class="px-3.5 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider bg-primary text-white shadow-lg shadow-indigo-500/30">
+                  Featured Story
+                </span>
+              </div>
+            </div>
+            <div class="lg:col-span-5 p-6 sm:p-10 flex flex-col justify-between">
+              <div>
+                <div class="flex items-center gap-3 text-xs font-semibold text-primary uppercase tracking-wider mb-3">
+                  <span>${hero.category}</span>
+                  <span class="text-slate-300 dark:text-slate-700">&bull;</span>
+                  <span class="text-slate-500 dark:text-slate-400 font-normal normal-case">${hero.readTime}</span>
+                </div>
+                <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white leading-tight hover:text-primary transition-colors">
+                  <a href="${window.BLOG_CONFIG?.siteHostAddress}/ThemeBrainDump/post?slug=${hero.slug}">${hero.title}</a>
+                </h2>
+                <p class="text-sm sm:text-base text-slate-600 dark:text-slate-300 mt-4 line-clamp-3 leading-relaxed">
+                  ${hero.excerpt}
+                </p>
+              </div>
+
+              <div class="pt-6 mt-6 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                  <img src="${avatarUrl}" alt="${hero.author || 'Unknown'}" class="w-10 h-10 rounded-full object-cover border border-slate-200 dark:border-slate-700" />
+                  <div>
+                    <h4 class="text-xs font-bold text-slate-900 dark:text-white">${hero.author || 'Unknown'}</h4>
+                    <p class="text-[11px] text-slate-400">${hero.publishedAt}</p>
+                  </div>
+                </div>
+                <div class="flex items-center gap-2">
+                  <button onclick="handleBookmarkToggle(event, ${hero.id})" class="p-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-400 hover:text-primary transition-colors" title="Bookmark article">
+                    <i class="${isBookmarked ? 'fa-solid text-primary' : 'fa-regular'} fa-bookmark"></i>
+                  </button>
+                  <a href="${window.BLOG_CONFIG?.siteHostAddress}/ThemeBrainDump/post?slug=${hero.slug}" class="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 dark:bg-white dark:hover:bg-slate-100 text-white dark:text-slate-900 text-xs font-bold transition-colors">
+                    Read Story
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderPosts(postsToRender = loadedPosts) {
+      const container = document.getElementById('posts-container');
+      const emptyState = document.getElementById('no-posts-found');
+      const filterIndicator = document.getElementById('active-filter-indicator');
+      const filterText = document.getElementById('filter-status-text');
+
+      if (!container) return;
+
+      if (state.category !== 'All' || state.q) {
+        filterIndicator.classList.remove('hidden');
+        filterIndicator.classList.add('flex');
+        filterText.textContent = `Showing articles in ${getCategoryName(state.category)}${state.q ? ` matching "${state.q}"` : ''} (${paginationData.totalItems || postsToRender.length})`;
+      } else {
+        filterIndicator.classList.add('hidden');
+        filterIndicator.classList.remove('flex');
+      }
+
+      if (postsToRender.length === 0) {
+        container.innerHTML = '';
+        emptyState.classList.remove('hidden');
+        return;
+      }
+
+      emptyState.classList.add('hidden');
+
+      if (currentLayout === 'grid') {
+        container.className = 'grid grid-cols-1 sm:grid-cols-2 gap-6 transition-all duration-300';
+        container.innerHTML = postsToRender.map(post => {
+          const isBookmarked = BlogStore.isBookmarked(post.id);
+          const coverImageUrl = post.coverImage || getPostCoverImage(post);
+          const defaultAvatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(post.author || 'User')}&background=random`;
+          const avatarUrl =     post.avatar ? `${window.BLOG_CONFIG?.siteHostAddress}/${post.avatar}` : defaultAvatar;
+
+          return `
+            <article class="flex flex-col bg-white dark:bg-slate-900 rounded-2xl overflow-hidden border border-slate-200/90 dark:border-slate-800 shadow-sm hover:shadow-xl transition-all duration-300 group">
+              <div class="relative h-48 overflow-hidden">
+                <img src="${coverImageUrl}" alt="${post.title}" onerror="this.onerror=null;this.src='https://picsum.photos/seed/${encodeURIComponent(post.category)}/800/600';" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                <div class="absolute top-3 left-3">
+                  <span class="px-2.5 py-1 rounded-md text-[11px] font-bold uppercase tracking-wider bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm text-primary shadow-sm">
+                    ${post.category}
+                  </span>
+                </div>
+                <button onclick="handleBookmarkToggle(event, ${post.id})" class="absolute top-3 right-3 w-8 h-8 rounded-full bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm flex items-center justify-center text-slate-600 dark:text-slate-300 hover:text-primary shadow-sm transition-colors" aria-label="Bookmark">
+                  <i class="${isBookmarked ? 'fa-solid text-primary' : 'fa-regular'} fa-bookmark text-xs"></i>
+                </button>
+              </div>
+
+              <div class="p-5 flex flex-col flex-grow justify-between">
+                <div>
+                  <div class="flex items-center gap-2 text-xs text-slate-400 mb-2">
+                    <span>${post.publishedAt}</span>
+                    <span>&bull;</span>
+                    <span>${post.readTime}</span>
+                  </div>
+                  <h3 class="text-base font-bold text-slate-900 dark:text-white group-hover:text-primary transition-colors leading-snug">
+                    <a href="${window.BLOG_CONFIG?.siteHostAddress}/ThemeBrainDump/post?slug=${post.slug}">${post.title}</a>
+                  </h3>
+                  <p class="text-xs text-slate-500 dark:text-slate-400 mt-2 line-clamp-2 leading-relaxed">
+                    ${post.excerpt}
+                  </p>
+                </div>
+
+                <div class="pt-4 mt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
+                  <div class="flex items-center gap-2.5">
+                    <img src="${avatarUrl}" alt="${post.author}" class="w-7 h-7 rounded-full object-cover" />
+                    <span class="text-xs font-semibold text-slate-700 dark:text-slate-300">${post.author || "Unknown"}</span>
+                  </div>
+                  <div class="flex items-center gap-3 text-xs text-slate-400">
+                    <span class="flex items-center gap-1"><i class="fa-regular fa-eye text-[11px]"></i> ${(post.views / 1000).toFixed(1)}k</span>
+                    <span class="flex items-center gap-1"><i class="fa-regular fa-comment text-[11px]"></i> ${post.comments?.length || 0}</span>
+                  </div>
+                </div>
+              </div>
+            </article>
+          `;
+        }).join('');
+      } else {
+        // List Layout
+        container.className = 'flex flex-col gap-5 transition-all duration-300';
+        container.innerHTML = postsToRender.map(post => {
+          const isBookmarked = BlogStore.isBookmarked(post.id);
+          const coverImageUrl = post.coverImage || getPostCoverImage(post);
+          const defaultAvatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(post.author || 'User')}&background=random`;
+          const avatarUrl =     post.avatar ? `${window.BLOG_CONFIG?.siteHostAddress}/${post.avatar}` : defaultAvatar;
+          return `
+            <article class="flex flex-col sm:flex-row bg-white dark:bg-slate-900 rounded-2xl overflow-hidden border border-slate-200/90 dark:border-slate-800 shadow-sm hover:shadow-xl transition-all duration-300 group">
+              <div class="relative sm:w-64 h-48 sm:h-auto overflow-hidden flex-shrink-0">
+                <img src="${coverImageUrl}" alt="${post.title}" onerror="this.onerror=null;this.src='https://picsum.photos/seed/${encodeURIComponent(post.category)}/800/600';" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                <div class="absolute top-3 left-3 sm:hidden">
+                  <span class="px-2.5 py-1 rounded-md text-[11px] font-bold uppercase tracking-wider bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm text-primary">
+                    ${post.category}
+                  </span>
+                </div>
+              </div>
+
+              <div class="p-6 flex flex-col justify-between flex-grow">
+                <div>
+                  <div class="flex items-center gap-3 text-xs font-semibold text-primary uppercase tracking-wider mb-2">
+                    <span class="hidden sm:inline">${post.category}</span>
+                    <span class="hidden sm:inline text-slate-300 dark:text-slate-700">&bull;</span>
+                    <span class="text-slate-400 font-normal normal-case">${post.publishedAt}</span>
+                    <span class="text-slate-300 dark:text-slate-700">&bull;</span>
+                    <span class="text-slate-400 font-normal normal-case">${post.readTime}</span>
+                  </div>
+                  <h3 class="text-lg font-bold text-slate-900 dark:text-white group-hover:text-primary transition-colors leading-snug">
+                    <a href="${window.BLOG_CONFIG?.siteHostAddress}/ThemeBrainDump/post?slug=${post.slug}">${post.title}</a>
+                  </h3>
+                  <p class="text-sm text-slate-500 dark:text-slate-400 mt-2 line-clamp-2 leading-relaxed">
+                    ${post.excerpt}
+                  </p>
+                </div>
+
+                <div class="pt-4 mt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
+                  <div class="flex items-center gap-3">
+                    <img src="${avatarUrl}" alt="${post.author}" class="w-8 h-8 rounded-full object-cover" />
+                    <span class="text-xs font-semibold text-slate-700 dark:text-slate-300">${post.author || "Unknown"}</span>
+                  </div>
+                  <div class="flex items-center gap-4">
+                    <span class="text-xs text-slate-400 flex items-center gap-1.5"><i class="fa-regular fa-eye"></i> ${post.views}</span>
+                    <span class="text-xs text-slate-400 flex items-center gap-1.5"><i class="fa-regular fa-comment"></i> ${post.comments?.length || 0}</span>
+                    <button onclick="handleBookmarkToggle(event, ${post.id})" class="p-2 rounded-lg text-slate-400 hover:text-primary transition-colors" title="Bookmark">
+                      <i class="${isBookmarked ? 'fa-solid text-primary' : 'fa-regular'} fa-bookmark"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </article>
+          `;
+        }).join('');
+      }
+    }
+
+    function updatePaginationUI() {
+      const pageCountText = document.getElementById('page-count-text');
+      const loadMoreBtn = document.getElementById('load-more-btn');
+      
+      const total = paginationData.totalItems || loadedPosts.length;
+      const shown = loadedPosts.length;
+
+      if (pageCountText) {
+        pageCountText.textContent = total > 0 ? `1-${shown} of ${total}` : '0 of 0';
+      }
+
+      if (loadMoreBtn) {
+        if (paginationData.hasMore) {
+          loadMoreBtn.classList.remove('hidden');
+          loadMoreBtn.disabled = false;
+          loadMoreBtn.className = 'px-5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-900 text-xs font-semibold text-slate-700 dark:text-slate-300 flex items-center gap-2 transition-all cursor-pointer';
+          loadMoreBtn.innerHTML = '<i class="fa-solid fa-arrows-rotate text-[10px]"></i> Load More Articles';
+        } else {
+          loadMoreBtn.innerHTML = '<i class="fa-solid fa-check text-[10px] text-emerald-500"></i> All Articles Loaded';
+          loadMoreBtn.disabled = true;
+          loadMoreBtn.className = 'px-5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 text-xs font-semibold text-slate-400 dark:text-slate-500 flex items-center gap-2 opacity-75 cursor-default';
+        }
+      }
+    }
+
+
+    function handleBookmarkToggle(e, id) {
+      e.preventDefault();
+      e.stopPropagation();
+      const status = BlogStore.toggleBookmark(id);
+      BlogStore.showToast(status ? 'Saved to bookmarks' : 'Removed from bookmarks', status ? 'success' : 'info');
+      renderPosts(loadedPosts);
+      if (currentFeaturedPost && currentFeaturedPost.id === id) {
+        renderHeroPost(currentFeaturedPost);
+      }
+    }
+
+    function filterByCategory(catId, catName = '') {
+      state.category = catId;
+      state.page = 1;
+      const container = document.getElementById('category-pills');
+      if (container) {
+        container.querySelectorAll('.category-pill').forEach(b => {
+          const isMatch = String(b.dataset.category) === String(catId) || (catName && b.dataset.categoryName === catName);
+          if (isMatch) {
+            b.classList.add('bg-primary', 'text-white', 'shadow-sm');
+            b.classList.remove('bg-slate-200/80', 'dark:bg-slate-800', 'text-slate-600', 'dark:text-slate-300');
+          } else {
+            b.classList.remove('bg-primary', 'text-white', 'shadow-sm');
+            b.classList.add('bg-slate-200/80', 'dark:bg-slate-800', 'text-slate-600', 'dark:text-slate-300');
+          }
+        });
+      }
+      loadBlogFeed(false);
+      window.scrollTo({ top: 400, behavior: 'smooth' });
+    }
+    
+        async function fetchSidebarWidget(type, containerId, currentPostId = null, currentPostCategory = null) {
+        const containerEl = document.getElementById(containerId);
+        
+        if (!containerEl) return;
+        
+        try {
+            // Construct the URL dynamically
+            let url = `${window.BLOG_CONFIG.BASE_URL}/blogs/posts/widget?limit=4&type=${type}`;
+            if (type === 'related' && currentPostId) {
+                url += `&postId=${currentPostId}&categoryId=${currentPostCategory || ''}`;
+            }
+    
+            const response = await fetch(url, {
+                headers: { Accept: "application/json" }
+            });
+    
+            if (!response.ok) {
+                throw new Error(`Error: API returned status ${response.status}`);
+            }
+    
+            const { responseData, responseResult, responseCategory } = await response.json();
+    
+            if (responseCategory == '200') {
+                const posts = Array.isArray(responseData) ? responseData : [];
+                
+                if (posts.length === 0) {
+                    containerEl.innerHTML = `<p class="text-xs italic text-muted">No ${type} posts available.</p>`;
+                    return;
+                }
+    
+                // Render the compact posts
+                containerEl.innerHTML = posts.map((post, idx) => `
+                    <a href="${window.BLOG_CONFIG?.siteHostAddress}/ThemeBrainDump/post?slug=${post.slug}" class="flex items-start gap-4 group">
+                      <span class="text-2xl font-black text-slate-300 dark:text-slate-700 group-hover:text-primary transition-colors font-mono">0${idx + 1}</span>
+                      <div>
+                        <span class="text-[10px] font-bold uppercase tracking-wider text-primary">${getCategoryName(post.category)}</span>
+                        <h4 class="text-xs font-bold text-slate-800 dark:text-white group-hover:text-primary transition-colors line-clamp-2 mt-0.5">${post.title}</h4>
+                        <span class="text-[11px] text-slate-400 mt-1 inline-block">${post.readingTime} min read &bull; ${post?.author || 'Unknown'}</span>
+                      </div>
+                    </a>
+                  `).join('');
+                
+            } else {
+                // Throwing the error here safely sends execution to the catch block
+                throw new Error(responseResult || 'Failed to fetch widget data');
+            }
+    
+        } catch (error) {
+            console.error(`Sidebar Widget Error (${type}):`, error);
+            
+            // Ensure errorMsgWidget exists before calling it, otherwise use a fallback
+            containerEl.innerHTML = `<p class="text-xs text-red-500 p-4 bg-red-50/50 rounded-lg">Unable to load ${type} posts.</p>`; 
+        }
+    }
+
+    
+  </script>
+  
+</body>
+</html>

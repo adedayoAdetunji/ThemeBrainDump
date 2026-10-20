@@ -1,0 +1,17 @@
+{
+    "ltId": "178879985315477",
+    "packageName": "ThemeBrainDump",
+    "packageType": "theme",
+    "version": "1.0.0",
+    "dependsOn": [
+        {
+            "packageName": "MdBlog",
+            "version": "2.0.0"
+        }
+    ],
+    "isPublished": 0,
+    "readme": "ThemeBrainDump - Modern Blog Theme for MdBlog",
+    "languageUsed": "html, tailwind\/css, javascript",
+    "description": "Emptying the mind, one post at a time",
+    "ltVersion": "2.7.4"
+}

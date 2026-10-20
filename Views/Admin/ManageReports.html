@@ -1,0 +1,516 @@
+<!-- Reports Workspace -->
+<main class="mx-auto w-full space-y-6 p-2 sm:p-4">
+  
+  <!-- Filters & Actions Toolbar -->
+  <div class="flex flex-col items-center justify-between gap-4 rounded-3xl border border-slate-200 bg-white p-4 shadow-sm sm:flex-row sm:p-5 dark:border-slate-800 dark:bg-slate-900">
+    <div class="flex w-full flex-col sm:flex-row items-center gap-3 sm:w-auto">
+      <!-- Search Input -->
+      <div class="relative w-full sm:w-72">
+        <i class="fa-solid fa-magnifying-glass absolute top-1/2 left-3.5 -translate-y-1/2 text-xs text-slate-400"></i>
+        <input type="text" id="report-search" placeholder="Search by title, author, reason..." class="w-full rounded-xl border border-slate-200 bg-slate-50 py-2 pr-4 pl-9 text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-primary dark:border-slate-700 dark:bg-slate-800 dark:text-white" />
+      </div>
+
+      <!-- Status Filter -->
+      <select id="report-status-filter" class="w-full sm:w-auto rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-primary dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">
+        <option value="all">All Statuses</option>
+        <option value="pending">Pending</option>
+        <option value="reviewed">Reviewed</option>
+        <option value="dismissed">Dismissed</option>
+        <option value="action taken">Action Taken</option>
+      </select>
+    </div>
+
+    <!-- Actions -->
+    <div class="flex w-full items-center gap-3 sm:w-auto">
+      <button type="button" id="btn-export-reports-csv" class="flex items-center gap-2 rounded-xl border border-slate-200 px-4 py-2.5 text-xs font-bold text-slate-700 hover:bg-slate-100 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800">
+        <i class="fa-solid fa-file-csv text-emerald-500"></i> Export CSV
+      </button>
+    </div>
+  </div>
+
+  <!-- Metric Quick Tiles -->
+  <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+    <div class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+      <span class="text-[11px] font-extrabold uppercase tracking-wider text-slate-400">Total Reports</span>
+      <div class="mt-2 text-2xl font-black text-slate-900 dark:text-white" id="stat-total-reports">0</div>
+    </div>
+    <div class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+      <span class="text-[11px] font-extrabold uppercase tracking-wider text-amber-500">Pending Review</span>
+      <div class="mt-2 text-2xl font-black text-amber-500" id="stat-pending-reports">0</div>
+    </div>
+    <div class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+      <span class="text-[11px] font-extrabold uppercase tracking-wider text-indigo-500">Reviewed</span>
+      <div class="mt-2 text-2xl font-black text-indigo-500" id="stat-reviewed-reports">0</div>
+    </div>
+    <div class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+      <span class="text-[11px] font-extrabold uppercase tracking-wider text-emerald-500">Action Taken</span>
+      <div class="mt-2 text-2xl font-black text-emerald-500" id="stat-resolved-reports">0</div>
+    </div>
+  </div>
+
+  <!-- Reports Table Container -->
+  <div class="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
+    <div class="overflow-x-auto">
+      <table class="w-full text-left text-xs">
+        <thead class="border-b border-slate-200 bg-slate-50 text-[10px] font-extrabold uppercase tracking-wider text-slate-400 dark:border-slate-800 dark:bg-slate-800/60">
+          <tr>
+            <th class="px-6 py-4">Reported Post</th>
+            <th class="px-4 py-4">Reported By</th>
+            <th class="px-4 py-4">Reason</th>
+            <th class="px-4 py-4">Notes / Comment</th>
+            <th class="px-4 py-4">Date Reported</th>
+            <th class="px-4 py-4">Status</th>
+            <th class="px-6 py-4 text-right">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="reports-table-body" class="divide-y divide-slate-100 dark:divide-slate-800">
+          <tr>
+            <td colspan="7" class="py-12 text-center text-slate-400">Loading reports...</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Table Footer with Pagination Controls -->
+    <div class="flex flex-col sm:flex-row items-center justify-between border-t border-slate-100 dark:border-slate-800 p-4 gap-4 text-xs text-slate-400">
+      <span id="reports-count-indicator">Showing 0 of 0 reports</span>
+      <div id="reports-pagination" class="flex items-center gap-1.5"></div>
+    </div>
+  </div>
+</main>
+
+<?php  ltImport('ThemeBrainDump','Script.js') ?>
+<script>
+    
+    document.addEventListener('DOMContentLoaded', () => {
+        
+        updateHeader('Workspace', "Manage Reports");
+  // State
+  let reportsData = [];
+  let filteredData = [];
+  let currentPage = 1;
+  const itemsPerPage = 8;
+
+  // DOM Elements
+  const tableBody = document.getElementById('reports-table-body');
+  const countIndicator = document.getElementById('reports-count-indicator');
+  const paginationContainer = document.getElementById('reports-pagination');
+  const searchInput = document.getElementById('report-search');
+  const statusFilter = document.getElementById('report-status-filter');
+  const exportBtn = document.getElementById('btn-export-reports-csv');
+
+  // Metric Tiles
+  const statTotal = document.getElementById('stat-total-reports');
+  const statPending = document.getElementById('stat-pending-reports');
+  const statReviewed = document.getElementById('stat-reviewed-reports');
+  const statResolved = document.getElementById('stat-resolved-reports');
+
+  // --- Fetch Reports ---
+  async function fetchReports() {
+    tableBody.innerHTML = `
+      <tr>
+        <td colspan="7" class="py-12 text-center text-slate-400">
+          <i class="fa-solid fa-spinner fa-spin text-base mr-2"></i> Loading reports...
+        </td>
+      </tr>
+    `;
+
+    try {
+      const response = await fetch(`${BASE_URL}/blogs/reports`, {
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': `Bearer ${LW_TOKEN}`
+        }
+      });
+
+      const res = await response.json();
+      if (res.responseCategory == 200 || res.responseCode == 201) {
+        reportsData = Array.isArray(res.responseData) ? res.responseData : [];
+        updateMetrics();
+        applyFilter();
+      } else {
+        throw new Error(res.responseResult || 'Failed to load reports');
+      }
+    } catch (err) {
+      console.error(err);
+      tableBody.innerHTML = `
+        <tr>
+          <td colspan="7" class="py-8 text-center text-rose-500 font-semibold">
+            <i class="fa-solid fa-triangle-exclamation mr-1.5"></i> Unable to load reports from server.
+          </td>
+        </tr>
+      `;
+    }
+  }
+
+  // --- Calculate Metric Counters ---
+  function updateMetrics() {
+    if (statTotal) statTotal.textContent = reportsData.length;
+    if (statPending) {
+      statPending.textContent = reportsData.filter(r => (r.status || '').toLowerCase() === 'pending').length;
+    }
+    if (statReviewed) {
+      statReviewed.textContent = reportsData.filter(r => (r.status || '').toLowerCase() === 'reviewed').length;
+    }
+    if (statResolved) {
+      statResolved.textContent = reportsData.filter(r => (r.status || '').toLowerCase() === 'action taken').length;
+    }
+  }
+
+  // --- Search & Status Filtering ---
+  function applyFilter() {
+    const q = searchInput ? searchInput.value.toLowerCase().trim() : '';
+    const selectedStatus = statusFilter ? statusFilter.value.toLowerCase() : 'all';
+
+    filteredData = reportsData.filter(item => {
+      const title = (item.title || '').toLowerCase();
+      const reportedBy = (item.reportedBy || '').toLowerCase();
+      const reason = (item.reason || '').toLowerCase();
+      const itemStatus = (item.status || 'pending').toLowerCase();
+
+      const matchesSearch = title.includes(q) || reportedBy.includes(q) || reason.includes(q);
+      const matchesStatus = (selectedStatus === 'all') || (itemStatus === selectedStatus);
+
+      return matchesSearch && matchesStatus;
+    });
+
+    currentPage = 1;
+    renderTable();
+  }
+
+  if (searchInput) searchInput.addEventListener('input', applyFilter);
+  if (statusFilter) statusFilter.addEventListener('change', applyFilter);
+
+  // --- Render Table & Pagination ---
+  function renderTable() {
+    const totalItems = filteredData.length;
+    const totalPages = Math.ceil(totalItems / itemsPerPage) || 1;
+
+    if (currentPage > totalPages) currentPage = totalPages;
+
+    const startIdx = (currentPage - 1) * itemsPerPage;
+    const currentSlice = filteredData.slice(startIdx, startIdx + itemsPerPage);
+
+    if (countIndicator) {
+      const shownCount = currentSlice.length;
+      countIndicator.textContent = `Showing ${shownCount > 0 ? startIdx + 1 : 0}-${startIdx + shownCount} of ${totalItems} reports`;
+    }
+
+    if (currentSlice.length === 0) {
+      tableBody.innerHTML = `
+        <tr>
+          <td colspan="7" class="py-12 text-center text-slate-400">No reports found matching criteria.</td>
+        </tr>
+      `;
+      renderPaginationControls(totalPages);
+      return;
+    }
+
+    tableBody.innerHTML = currentSlice.map(item => {
+      const currentStatus = (item.status || 'pending').toLowerCase();
+      const postSlug = item.postSlug || '';
+      const postUrl = `${siteHostAddress || ''}/ThemeBrainDump/post?slug=${encodeURIComponent(postSlug)}`;
+
+      return `
+        <tr class="hover:bg-slate-50/70 dark:hover:bg-slate-800/40 transition-colors">
+          <!-- Article Title -->
+          <td class="px-6 py-4 font-bold text-slate-900 dark:text-white max-w-xs">
+            <div class="flex flex-col">
+              <span class="text-xs font-bold line-clamp-2">${item.title || 'Untitled Post'}</span>
+              <span class="text-[10px] text-slate-400 font-mono">Author: ${item.postAuthor || "Unknown"}</span>
+            </div>
+          </td>
+
+          <!-- Author / Reported By -->
+          <td class="px-4 py-4 text-slate-600 dark:text-slate-300 font-medium">
+            ${item.reportedBy || 'Anonymous'}
+          </td>
+
+          <!-- Reason Badge -->
+          <td class="px-4 py-4">
+            <span class="px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider bg-rose-50 text-rose-600 dark:bg-rose-950/40 dark:text-rose-400 border border-rose-200 dark:border-rose-900">
+              ${(item.reason || 'General').replace('_', ' ')}
+            </span>
+          </td>
+
+          <!-- Comment / Note -->
+          <td class="px-4 py-4 text-slate-500 dark:text-slate-400 text-xs max-w-xs truncate">
+            ${item.comments && item.comments.trim() ? item.comments : '<span class="text-slate-300 dark:text-slate-600">N/A</span>'}
+          </td>
+
+          <!-- Created Date -->
+          <td class="px-4 py-4 text-[11px] text-slate-400 whitespace-nowrap">
+            ${item.createdAt || 'N/A'}
+          </td>
+
+          <!-- Status Dropdown Selector -->
+          <td class="px-4 py-4">
+            <select 
+              data-action="change-status" 
+              data-id="${item.ltId}" 
+              class="rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-2.5 py-1 text-[11px] font-bold focus:outline-none focus:ring-2 focus:ring-primary ${getStatusSelectColor(currentStatus)}"
+            >
+              <option value="pending" ${currentStatus === 'pending' ? 'selected' : ''}>Pending</option>
+              <option value="reviewed" ${currentStatus === 'reviewed' ? 'selected' : ''}>Reviewed</option>
+              <option value="action taken" ${currentStatus === 'action taken' ? 'selected' : ''}>Action Taken</option>
+              <option value="dismissed" ${currentStatus === 'dismissed' ? 'selected' : ''}>Dismissed</option>
+            </select>
+          </td>
+
+          <!-- Actions -->
+          <td class="px-6 py-4 text-right">
+            <div class="inline-flex items-center gap-1.5">
+              <a 
+                href="${postUrl}" 
+                target="_blank" 
+                class="px-2.5 py-1 rounded-lg text-primary hover:bg-indigo-50 dark:hover:bg-indigo-950/50 font-bold text-xs inline-flex items-center gap-1 transition-colors"
+                title="View Post"
+              >
+                <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i> View
+              </a>
+              <button 
+                type="button" 
+                data-action="delete" 
+                data-id="${item.ltId}" 
+                class="p-1.5 rounded-lg text-slate-400 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors" 
+                title="Delete Report"
+              >
+                <i class="fa-solid fa-trash-can pointer-events-none"></i>
+              </button>
+            </div>
+          </td>
+        </tr>
+      `;
+    }).join('');
+
+    renderPaginationControls(totalPages);
+  }
+
+  function getStatusSelectColor(status) {
+    switch (status) {
+      case 'pending':
+        return 'text-amber-600 dark:text-amber-400';
+      case 'reviewed':
+        return 'text-indigo-600 dark:text-indigo-400';
+      case 'action taken':
+        return 'text-emerald-600 dark:text-emerald-400';
+      case 'dismissed':
+        return 'text-slate-500 dark:text-slate-400';
+      default:
+        return 'text-slate-700 dark:text-slate-300';
+    }
+  }
+
+  function renderPaginationControls(totalPages) {
+    if (!paginationContainer) return;
+    if (totalPages <= 1) {
+      paginationContainer.innerHTML = '';
+      return;
+    }
+
+    let buttons = '';
+
+    buttons += `
+      <button 
+        type="button" 
+        data-page="${currentPage - 1}" 
+        ${currentPage === 1 ? 'disabled class="opacity-30 cursor-not-allowed"' : 'class="hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300"'} 
+        class="page-btn w-7 h-7 flex items-center justify-center rounded-lg border border-slate-200 dark:border-slate-800 text-[10px]"
+      >
+        <i class="fa-solid fa-chevron-left pointer-events-none"></i>
+      </button>
+    `;
+
+    for (let p = 1; p <= totalPages; p++) {
+      const activeClass = p === currentPage
+        ? 'bg-primary text-white font-bold border-primary shadow-sm'
+        : 'border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800';
+
+      buttons += `
+        <button 
+          type="button" 
+          data-page="${p}" 
+          class="page-btn w-7 h-7 flex items-center justify-center rounded-lg border text-xs font-semibold ${activeClass}"
+        >
+          ${p}
+        </button>
+      `;
+    }
+
+    buttons += `
+      <button 
+        type="button" 
+        data-page="${currentPage + 1}" 
+        ${currentPage === totalPages ? 'disabled class="opacity-30 cursor-not-allowed"' : 'class="hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300"'} 
+        class="page-btn w-7 h-7 flex items-center justify-center rounded-lg border border-slate-200 dark:border-slate-800 text-[10px]"
+      >
+        <i class="fa-solid fa-chevron-right pointer-events-none"></i>
+      </button>
+    `;
+
+    paginationContainer.innerHTML = buttons;
+  }
+
+  // --- Pagination Click Delegation ---
+  if (paginationContainer) {
+    paginationContainer.addEventListener('click', (e) => {
+      const btn = e.target.closest('.page-btn:not([disabled])');
+      if (!btn) return;
+
+      const target = parseInt(btn.dataset.page, 10);
+      if (target && target !== currentPage) {
+        currentPage = target;
+        renderTable();
+      }
+    });
+  }
+
+  // --- Table Actions (Status Update & Deletion) ---
+  tableBody.addEventListener('change', async (e) => {
+    const select = e.target.closest('select[data-action="change-status"]');
+    if (!select) return;
+
+    const ltId = select.dataset.id;
+    const newStatus = select.value;
+
+    await updateReportStatus(ltId, newStatus, select);
+  });
+
+  tableBody.addEventListener('click', async (e) => {
+    const deleteBtn = e.target.closest('button[data-action="delete"]');
+    if (!deleteBtn) return;
+
+    const ltId = deleteBtn.dataset.id;
+    await deleteReport(ltId);
+  });
+
+  // --- Update Report Status API ---
+  async function updateReportStatus(ltId, newStatus, selectElement) {
+    selectElement.disabled = true;
+
+    try {
+      const response = await fetch(`${BASE_URL}/blogs/reports/update-status`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': `Bearer ${LW_TOKEN}`
+        },
+        body: JSON.stringify({
+          ltId: ltId,
+          status: newStatus
+        })
+      });
+
+      const res = await response.json();
+
+      if (res.responseCategory == 200 || res.responseCode == '2007') {
+        const item = reportsData.find(r => String(r.ltId) === String(ltId));
+        if (item) item.status = newStatus;
+
+        updateMetrics();
+
+        Swal.fire({
+          toast: true,
+          position: 'top-end',
+          icon: 'success',
+          title: res.responseResult || 'Status updated',
+          timer: 1400,
+          showConfirmButton: false
+        });
+      } else {
+        throw new Error(res.responseResult || 'Could not update status');
+      }
+    } catch (err) {
+      console.error(err);
+      Swal.fire('Error', err.message || 'Status update failed', 'error');
+      // Revert selection
+      const original = reportsData.find(r => String(r.ltId) === String(ltId));
+      if (original) selectElement.value = original.status;
+    } finally {
+      selectElement.disabled = false;
+    }
+  }
+
+  // --- Delete Report API ---
+  async function deleteReport(ltId) {
+    const { isConfirmed } = await Swal.fire({
+      title: 'Delete Report Entry?',
+      text: 'This will remove the report record from the moderation queue.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#e11d48',
+      cancelButtonColor: '#64748b',
+      confirmButtonText: 'Yes, delete'
+    });
+
+    if (!isConfirmed) return;
+
+    try {
+      const response = await fetch(`${BASE_URL}/blogs/reports/${encodeURIComponent(ltId)}`, {
+        method: 'DELETE',
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': `Bearer ${LW_TOKEN}`
+        }
+      });
+
+      const res = await response.json();
+
+      if (res.responseCategory == 200 || res.responseCode == 201) {
+        reportsData = reportsData.filter(r => String(r.ltId) !== String(ltId));
+        updateMetrics();
+        applyFilter();
+
+        Swal.fire({
+          icon: 'success',
+          title: 'Deleted',
+          text: res.responseResult || 'Report record deleted.',
+          timer: 1500,
+          showConfirmButton: false
+        });
+      } else {
+        throw new Error(res.responseResult || 'Could not delete report');
+      }
+    } catch (err) {
+      console.error(err);
+      Swal.fire('Error', err.message || 'Failed to delete report', 'error');
+    }
+  }
+
+  // --- Export CSV Handler ---
+  if (exportBtn) {
+    exportBtn.addEventListener('click', () => {
+      if (!reportsData.length) {
+        Swal.fire('Notice', 'No report records available to export.', 'info');
+        return;
+      }
+
+      const headers = ['Report ID', 'Post ID', 'Post Title', 'Reported By', 'Reason', 'Comments', 'Status', 'Date Reported'];
+      const rows = reportsData.map(r => [
+        `"${r.ltId || ''}"`,
+        `"${r.postId || ''}"`,
+        `"${(r.title || '').replace(/"/g, '""')}"`,
+        `"${(r.reportedBy || '').replace(/"/g, '""')}"`,
+        `"${r.reason || ''}"`,
+        `"${(r.comments || '').replace(/"/g, '""')}"`,
+        `"${r.status || 'pending'}"`,
+        `"${r.createdAt || ''}"`
+      ]);
+
+      const csvContent = 'data:text/csv;charset=utf-8,' + [headers.join(','), ...rows.map(e => e.join(','))].join('\n');
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement('a');
+      link.setAttribute('href', encodedUri);
+      link.setAttribute('download', `moderation_reports_${new Date().toISOString().slice(0, 10)}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    });
+  }
+
+  // Initial Fetch
+  fetchReports();
+});
+    
+</script>
